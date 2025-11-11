@@ -518,6 +518,15 @@ body {
     font-size: 1.2rem;
 }
 
+/* Tema escuro - corrigir contraste dos ícones nas seções */
+[data-theme="dark"] .section-header h2 i {
+    color: #74c0fc; /* Azul claro para melhor contraste no fundo escuro */
+}
+
+[data-theme="dark"] .section-header h2 {
+    color: var(--text-primary); /* Garantir texto claro no tema escuro */
+}
+
 .btn-add {
     background: var(--accent-gradient);
     color: white;
@@ -875,67 +884,74 @@ body {
 
 .btn-edit,
 .btn-delete {
-    padding: 8px 12px;
-    border: 1px solid transparent;
-    border-radius: 6px;
+    padding: 8px 16px;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
     cursor: pointer;
-    font-size: 0.8rem;
+    font-size: 0.85rem;
     font-weight: 500;
     transition: all 0.2s ease;
     display: flex;
     align-items: center;
-    gap: 5px;
+    gap: 6px;
     text-transform: none;
     letter-spacing: 0;
     position: relative;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     white-space: nowrap;
-    min-width: 70px;
+    min-width: 80px;
     justify-content: center;
+    background: var(--bg-secondary);
+    color: var(--text-secondary);
 }
 
 .btn-edit {
-    background: rgba(237, 137, 54, 0.1);
-    color: var(--secondary-orange);
-    border-color: rgba(237, 137, 54, 0.2);
+    border-color: rgba(88, 166, 255, 0.2);
 }
 
 .btn-edit:hover {
-    background: var(--secondary-orange);
+    background: var(--text-accent);
     color: white;
+    border-color: var(--text-accent);
     transform: translateY(-1px);
-    box-shadow: 0 2px 8px rgba(237, 137, 54, 0.3);
+    box-shadow: 0 4px 12px rgba(88, 166, 255, 0.25);
 }
 
 .btn-delete {
-    background: rgba(197, 48, 48, 0.1);
-    color: var(--error-red);
     border-color: rgba(197, 48, 48, 0.2);
 }
 
 .btn-delete:hover {
     background: var(--error-red);
     color: white;
+    border-color: var(--error-red);
     transform: translateY(-1px);
-    box-shadow: 0 2px 8px rgba(197, 48, 48, 0.3);
+    box-shadow: 0 4px 12px rgba(197, 48, 48, 0.25);
 }
 
 /* Tema escuro - ajustes para melhor contraste */
 [data-theme="dark"] .btn-edit {
-    background: rgba(246, 173, 85, 0.15);
-    color: var(--light-orange);
-    border-color: rgba(246, 173, 85, 0.3);
+    background: var(--bg-tertiary);
+    color: var(--text-secondary);
+    border-color: rgba(88, 166, 255, 0.3);
 }
 
 [data-theme="dark"] .btn-edit:hover {
-    background: var(--accent-orange);
-    color: var(--dark-navy);
+    background: var(--text-accent);
+    color: var(--bg-primary);
+    border-color: var(--text-accent);
 }
 
 [data-theme="dark"] .btn-delete {
-    background: rgba(239, 68, 68, 0.15);
-    color: #f87171;
+    background: var(--bg-tertiary);
+    color: var(--text-secondary);
     border-color: rgba(239, 68, 68, 0.3);
+}
+
+[data-theme="dark"] .btn-delete:hover {
+    background: #ef4444;
+    color: var(--bg-primary);
+    border-color: #ef4444;
 }
 
 [data-theme="dark"] .btn-delete:hover {
@@ -1361,8 +1377,10 @@ body {
     
     .btn-edit,
     .btn-delete {
-        padding: 8px 12px;
+        padding: 8px 14px;
         font-size: 0.8rem;
+        min-width: 75px;
+        gap: 4px;
     }
     
     .market-info {
