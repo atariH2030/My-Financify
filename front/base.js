@@ -389,23 +389,23 @@ function renderList(category) {
         return;
     }
     
-    list.innerHTML = items.map((item, index) => `
+    list.innerHTML = items.map((item, index) => {
+        const truncatedTitle = item.title && item.title.length > 25 ? item.title.substring(0, 25) + '...' : item.title || 'Sem título';
+        const truncatedDescription = item.description && item.description.length > 30 ? item.description.substring(0, 30) + '...' : item.description;
+        
+        return `
         <div class="financial-item">
             <div class="item-header">
-                <div class="item-title" onclick="makeEditable(this, '${category}', ${index}, 'title')">
-                    ${item.title || 'Sem título'}
+                <div class="item-title" 
+                     onclick="makeEditable(this, '${category}', ${index}, 'title')"
+                     ${item.title && item.title.length > 25 ? `data-original-title="${item.title}"` : ''}
+                     title="${item.title || 'Sem título'}">
+                    ${truncatedTitle}
                 </div>
                 <div class="item-amount ${category === 'income' ? 'income' : 'expense'}" 
-                     onclick="makeEditable(this, '${category}', ${index}, 'amount')">
+                     onclick="makeEditable(this, '${category}', ${index}, 'amount')"
+                     title="${formatCurrency(item.amount || 0)}">
                     ${formatCurrency(item.amount || 0)}
-                </div>
-                <div class="item-actions">
-                    <button class="btn-edit" onclick="editItem('${category}', ${index})">
-                        <i class="fas fa-edit"></i> Editar
-                    </button>
-                    <button class="btn-delete" onclick="deleteItem('${category}', ${index})">
-                        <i class="fas fa-trash"></i> Excluir
-                    </button>
                 </div>
             </div>
             <div class="item-details">
@@ -413,10 +413,29 @@ function renderList(category) {
                     <i class="fas fa-calendar"></i>
                     ${formatDate(item.date)}
                 </div>
-                ${item.description ? `<div class="item-description">${item.description}</div>` : ''}
+                ${truncatedDescription ? `<div class="item-description" 
+                    ${item.description && item.description.length > 30 ? `data-original-title="${item.description}"` : ''}
+                    title="${item.description}">${truncatedDescription}</div>` : ''}
+            </div>
+            <div class="item-actions">
+                <button class="btn-edit" onclick="editItem('${category}', ${index})">
+                    <i class="fas fa-edit"></i> Editar
+                </button>
+                <button class="btn-delete" onclick="deleteItem('${category}', ${index})">
+                    <i class="fas fa-trash"></i> Excluir
+                </button>
             </div>
         </div>
-    `).join('');
+        `;
+    }).join('');
+    
+    // Setup tooltips for truncated elements
+    setTimeout(() => {
+        const titlesWithTooltips = list.querySelectorAll('[data-original-title]');
+        titlesWithTooltips.forEach(element => {
+            setupTooltipForElement(element);
+        });
+    }, 50);
 }
 
 // Utility Functions
@@ -584,3 +603,94 @@ setTimeout(() => {
         loadSampleData();
     }
 }, 1000);
+
+// Tooltip management functions
+function createTooltip(text, element) {
+    const tooltip = document.createElement('div');
+    tooltip.className = 'tooltip';
+    tooltip.textContent = text;
+    document.body.appendChild(tooltip);
+    
+    const rect = element.getBoundingClientRect();
+    tooltip.style.left = rect.left + (rect.width / 2) - (tooltip.offsetWidth / 2) + 'px';
+    tooltip.style.top = rect.top - tooltip.offsetHeight - 10 + 'px';
+    
+    // Ensure tooltip stays within viewport
+    const tooltipRect = tooltip.getBoundingClientRect();
+    if (tooltipRect.right > window.innerWidth) {
+        tooltip.style.left = window.innerWidth - tooltip.offsetWidth - 10 + 'px';
+    }
+    if (tooltipRect.left < 0) {
+        tooltip.style.left = '10px';
+    }
+    if (tooltipRect.top < 0) {
+        tooltip.style.top = rect.bottom + 10 + 'px';
+    }
+    
+    setTimeout(() => tooltip.classList.add('show'), 10);
+    return tooltip;
+}
+
+function removeTooltip(tooltip) {
+    if (tooltip) {
+        tooltip.classList.remove('show');
+        setTimeout(() => {
+            if (tooltip.parentNode) {
+                tooltip.parentNode.removeChild(tooltip);
+            }
+        }, 200);
+    }
+}
+
+function setupTooltipForElement(element) {
+    if (!element) return;
+    
+    let tooltip = null;
+    
+    element.addEventListener('mouseenter', function() {
+        const originalTitle = this.getAttribute('data-original-title');
+        if (originalTitle && originalTitle !== this.textContent.trim()) {
+            tooltip = createTooltip(originalTitle, this);
+        }
+    });
+    
+    element.addEventListener('mouseleave', function() {
+        if (tooltip) {
+            removeTooltip(tooltip);
+            tooltip = null;
+        }
+    });
+}
+
+// Utility function to show notifications
+function showNotification(message, type = 'success') {
+    // Remove existing notification
+    const existing = document.querySelector('.notification');
+    if (existing) {
+        existing.remove();
+    }
+    
+    const notification = document.createElement('div');
+    notification.className = `notification ${type}`;
+    notification.innerHTML = `
+        <div class="notification-content">
+            <i class="fas fa-${type === 'success' ? 'check-circle' : 'exclamation-triangle'}"></i>
+            <span>${message}</span>
+        </div>
+    `;
+    
+    document.body.appendChild(notification);
+    
+    // Show notification
+    setTimeout(() => notification.classList.add('show'), 100);
+    
+    // Auto remove after 3 seconds
+    setTimeout(() => {
+        notification.classList.remove('show');
+        setTimeout(() => {
+            if (notification.parentNode) {
+                notification.parentNode.removeChild(notification);
+            }
+        }, 300);
+    }, 3000);
+}
