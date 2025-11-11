@@ -650,12 +650,12 @@ body {
 }
 
 .item-title {
-    font-size: 1.1rem;
-    font-weight: 600;
+    font-size: 1.2rem;
+    font-weight: 700;
     color: var(--text-primary);
     cursor: pointer;
-    padding: 8px 12px;
-    border-radius: 6px;
+    padding: 10px 14px;
+    border-radius: 8px;
     transition: all 0.2s ease;
     flex: 1;
     border: 1px solid transparent;
@@ -665,11 +665,17 @@ body {
     white-space: nowrap;
     max-width: 250px;
     min-width: 0;
+    letter-spacing: 0.3px;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+    background: linear-gradient(135deg, transparent 0%, rgba(88, 166, 255, 0.05) 100%);
 }
 
 .item-title:hover {
-    background-color: var(--bg-tertiary);
-    border-color: var(--border-color);
+    background: linear-gradient(135deg, rgba(88, 166, 255, 0.1) 0%, rgba(88, 166, 255, 0.15) 100%);
+    border-color: rgba(88, 166, 255, 0.3);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(88, 166, 255, 0.15);
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
 }
 
 /* Tooltip para título completo */
@@ -704,6 +710,45 @@ body {
 [data-theme="dark"] .item-title::after {
     background: var(--off-white);
     color: var(--dark-navy);
+}
+
+/* Tema escuro - garantir contraste máximo para títulos dos itens */
+[data-theme="dark"] .item-title {
+    color: #ffffff; /* Branco puro para máximo destaque */
+    background: linear-gradient(135deg, rgba(116, 192, 252, 0.08) 0%, rgba(116, 192, 252, 0.12) 100%);
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+    font-weight: 700;
+}
+
+[data-theme="dark"] .item-title:hover {
+    color: #ffffff;
+    background: linear-gradient(135deg, rgba(116, 192, 252, 0.15) 0%, rgba(116, 192, 252, 0.25) 100%);
+    border-color: rgba(116, 192, 252, 0.4);
+    transform: translateY(-1px);
+    box-shadow: 0 6px 20px rgba(116, 192, 252, 0.2);
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.6);
+}
+
+/* Efeito de destaque adicional para o título */
+.item-title::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 4px;
+    height: 100%;
+    background: linear-gradient(135deg, var(--text-accent), rgba(88, 166, 255, 0.6));
+    border-radius: 2px;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+}
+
+.item-title:hover::before {
+    opacity: 1;
+}
+
+[data-theme="dark"] .item-title::before {
+    background: linear-gradient(135deg, #74c0fc, rgba(116, 192, 252, 0.8));
 }
 
 .item-amount {
@@ -807,6 +852,11 @@ body {
     color: var(--dark-navy);
 }
 
+/* Tema escuro - melhorar contraste das descrições */
+[data-theme="dark"] .item-description {
+    color: #c9d1d9; /* Texto secundário mais claro no tema escuro */
+}
+
 .item-header {
     display: flex;
     justify-content: space-between;
@@ -884,25 +934,45 @@ body {
 
 .btn-edit,
 .btn-delete {
-    padding: 8px 16px;
-    border: 1px solid var(--border-color);
+    padding: 10px 16px;
+    border: none;
     border-radius: 8px;
     cursor: pointer;
     font-size: 0.85rem;
-    font-weight: 500;
-    transition: all 0.2s ease;
+    font-weight: 600;
+    transition: all 0.3s ease;
     display: flex;
     align-items: center;
     gap: 6px;
     text-transform: none;
-    letter-spacing: 0;
+    letter-spacing: 0.2px;
     position: relative;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
     white-space: nowrap;
     min-width: 80px;
     justify-content: center;
     background: var(--bg-secondary);
     color: var(--text-secondary);
+    backdrop-filter: blur(10px);
+    overflow: hidden;
+}
+
+.btn-edit::before,
+.btn-delete::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: left 0.5s ease;
+}
+
+.btn-edit:hover::before,
+.btn-delete:hover::before {
+    left: 100%;
+}
 }
 
 .btn-edit {
@@ -929,41 +999,85 @@ body {
     box-shadow: 0 4px 12px rgba(197, 48, 48, 0.25);
 }
 
-/* Tema escuro - ajustes para melhor contraste */
+/* Tema escuro - botões com design moderno */
 [data-theme="dark"] .btn-edit {
-    background: var(--bg-tertiary);
-    color: var(--text-secondary);
-    border-color: rgba(88, 166, 255, 0.3);
+    background: linear-gradient(135deg, rgba(116, 192, 252, 0.12) 0%, rgba(116, 192, 252, 0.08) 100%);
+    color: #74c0fc;
+    border: 1px solid rgba(116, 192, 252, 0.25);
+    backdrop-filter: blur(10px);
 }
 
 [data-theme="dark"] .btn-edit:hover {
-    background: var(--text-accent);
+    background: linear-gradient(135deg, #74c0fc 0%, #58a6ff 100%);
     color: var(--bg-primary);
-    border-color: var(--text-accent);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(116, 192, 252, 0.4);
 }
 
 [data-theme="dark"] .btn-delete {
-    background: var(--bg-tertiary);
-    color: var(--text-secondary);
-    border-color: rgba(239, 68, 68, 0.3);
+    background: linear-gradient(135deg, rgba(248, 113, 113, 0.12) 0%, rgba(248, 113, 113, 0.08) 100%);
+    color: #f87171;
+    border: 1px solid rgba(248, 113, 113, 0.25);
+    backdrop-filter: blur(10px);
 }
 
 [data-theme="dark"] .btn-delete:hover {
-    background: #ef4444;
+    background: linear-gradient(135deg, #f87171 0%, #ef4444 100%);
     color: var(--bg-primary);
-    border-color: #ef4444;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(248, 113, 113, 0.4);
 }
 
-[data-theme="dark"] .btn-delete:hover {
-    background: #ef4444;
-    color: white;
+/* Efeitos de ícone para os botões */
+.btn-edit i,
+.btn-delete i {
+    font-size: 0.9rem;
+    transition: transform 0.2s ease;
 }
-    background-color: #ef4444;
+
+.btn-edit:hover i {
+    transform: rotate(15deg) scale(1.1);
+}
+
+.btn-delete:hover i {
+    transform: rotate(-15deg) scale(1.1);
+}
+
+/* Responsividade dos botões */
+@media (max-width: 768px) {
+    .btn-edit,
+    .btn-delete {
+        padding: 8px 12px;
+        font-size: 0.8rem;
+        min-width: 70px;
+        gap: 4px;
+    }
+}
+
+.btn-edit {
+    background: linear-gradient(135deg, rgba(88, 166, 255, 0.1) 0%, rgba(88, 166, 255, 0.05) 100%);
+    color: var(--text-accent);
+    border: 1px solid rgba(88, 166, 255, 0.2);
+}
+
+.btn-edit:hover {
+    background: linear-gradient(135deg, var(--text-accent) 0%, rgba(88, 166, 255, 0.9) 100%);
     color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(88, 166, 255, 0.3);
+}
+
+.btn-delete {
+    background: linear-gradient(135deg, rgba(239, 68, 68, 0.1) 0%, rgba(239, 68, 68, 0.05) 100%);
+    color: #ef4444;
+    border: 1px solid rgba(239, 68, 68, 0.2);
 }
 
 .btn-delete:hover {
-    background-color: #dc2626;
+    background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(239, 68, 68, 0.3);
 }
 
 .item-details {
@@ -1071,25 +1185,49 @@ body {
     display: block;
     margin-bottom: 8px;
     font-weight: 500;
-    color: #374151;
+    color: var(--text-primary);
 }
 
 .form-group input,
-.form-group textarea {
+.form-group textarea,
+.form-group select {
     width: 100%;
     padding: 12px 16px;
-    border: 2px solid #e5e7eb;
+    border: 2px solid var(--border-color);
     border-radius: 8px;
     font-size: 1rem;
     transition: border-color 0.2s ease;
     font-family: inherit;
+    background: var(--bg-primary);
+    color: var(--text-primary);
 }
 
 .form-group input:focus,
-.form-group textarea:focus {
+.form-group textarea:focus,
+.form-group select:focus {
     outline: none;
-    border-color: #3b82f6;
-    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+    border-color: var(--text-accent);
+    box-shadow: 0 0 0 3px rgba(88, 166, 255, 0.1);
+}
+
+/* Tema escuro - melhorar contraste dos inputs */
+[data-theme="dark"] .form-group label {
+    color: var(--text-primary); /* Texto claro no tema escuro */
+}
+
+[data-theme="dark"] .form-group input,
+[data-theme="dark"] .form-group textarea,
+[data-theme="dark"] .form-group select {
+    background: var(--bg-secondary);
+    color: var(--text-primary);
+    border-color: var(--border-color);
+}
+
+[data-theme="dark"] .form-group input:focus,
+[data-theme="dark"] .form-group textarea:focus,
+[data-theme="dark"] .form-group select:focus {
+    border-color: #74c0fc;
+    box-shadow: 0 0 0 3px rgba(116, 192, 252, 0.1);
 }
 
 .modal-footer {
@@ -1154,21 +1292,256 @@ body {
 
 /* Input editing styles */
 .editing-input {
-    background: white !important;
-    border: 2px solid #3b82f6 !important;
+    background: var(--bg-primary) !important;
+    border: 2px solid var(--text-accent) !important;
     outline: none;
     font-weight: inherit;
     font-size: inherit;
-    color: inherit;
+    color: var(--text-primary);
     padding: 8px 12px;
     border-radius: 6px;
     width: auto;
     min-width: 100px;
 }
 
+/* Tema escuro - corrigir edição inline */
+[data-theme="dark"] .editing-input {
+    background: var(--bg-secondary) !important;
+    color: var(--text-primary) !important;
+    border-color: #74c0fc !important;
+}
+
+/* Placeholder styles for better visibility */
+.form-group input::placeholder,
+.form-group textarea::placeholder {
+    color: var(--text-secondary);
+    opacity: 0.7;
+}
+
+[data-theme="dark"] .form-group input::placeholder,
+[data-theme="dark"] .form-group textarea::placeholder {
+    color: var(--text-secondary);
+    opacity: 0.8;
+}
+
 /* ========================================
-   RESPONSIVE DESIGN - MEDIA QUERIES
+   RESPONSIVE DESIGN - ADAPTIVE BREAKPOINTS
    ======================================== */
+
+/* Ultra-wide screens (≥2560px) */
+@media (min-width: 2560px) {
+    .sidebar {
+        width: 320px;
+    }
+    
+    .main-content {
+        margin-left: 320px;
+        padding: 40px;
+    }
+    
+    .container {
+        max-width: 1800px;
+    }
+}
+
+/* Large screens (1440px - 2559px) */
+@media (min-width: 1440px) and (max-width: 2559px) {
+    .sidebar {
+        width: 300px;
+    }
+    
+    .main-content {
+        margin-left: 300px;
+    }
+}
+
+/* Standard desktop (1200px - 1439px) */
+@media (min-width: 1200px) and (max-width: 1439px) {
+    .sidebar {
+        width: 280px;
+    }
+    
+    .main-content {
+        margin-left: 280px;
+    }
+}
+
+/* Compact desktop / Small desktop windows (900px - 1199px) */
+@media (min-width: 900px) and (max-width: 1199px) {
+    .sidebar {
+        width: 260px;
+        transform: translateX(0);
+        position: fixed;
+    }
+    
+    .main-content {
+        margin-left: 260px;
+        padding: 20px;
+    }
+    
+    /* Compact sidebar for narrow windows */
+    .sidebar-header h3 {
+        font-size: 1.1rem;
+    }
+    
+    .nav-item {
+        padding: 12px 20px;
+        font-size: 0.9rem;
+    }
+}
+
+/* Split screen / Narrow windows (600px - 899px) */
+@media (min-width: 600px) and (max-width: 899px) {
+    .sidebar {
+        width: 240px;
+        transform: translateX(-100%);
+        transition: transform 0.3s ease;
+        z-index: 1500;
+    }
+    
+    .sidebar.active {
+        transform: translateX(0);
+    }
+    
+    .main-content {
+        margin-left: 0;
+        padding: 15px;
+        width: 100%;
+    }
+    
+    /* Compact mobile toggle */
+    .mobile-menu-toggle {
+        display: block !important;
+        top: 15px;
+        left: 15px;
+        z-index: 1501;
+    }
+    
+    /* Auto-hide on interaction for split screens */
+    .sidebar:not(:hover):not(.active) {
+        transform: translateX(-240px);
+    }
+    
+    .sidebar:hover {
+        transform: translateX(0);
+    }
+}
+
+/* Mobile landscape / Small tablets (480px - 599px) */
+@media (min-width: 480px) and (max-width: 599px) {
+    .sidebar {
+        width: 200px;
+        transform: translateX(-100%);
+        z-index: 1500;
+    }
+    
+    .sidebar.active {
+        transform: translateX(0);
+    }
+    
+    .mobile-menu-toggle {
+        display: block !important;
+        z-index: 1501;
+    }
+    
+    .main-content {
+        margin-left: 0;
+        padding: 10px;
+    }
+}
+
+/* Mobile portrait (≤479px) */
+@media (max-width: 479px) {
+    .sidebar {
+        width: 280px;
+        transform: translateX(-100%);
+        z-index: 1500;
+    }
+    
+    .sidebar.active {
+        transform: translateX(0);
+    }
+    
+    .mobile-menu-toggle {
+        display: block !important;
+        z-index: 1501;
+    }
+    
+    .main-content {
+        margin-left: 0;
+        padding: 10px;
+    }
+}
+
+/* Aspect ratio specific adaptations */
+
+/* Ultrawide aspect ratio (≥21:9) */
+@media (min-aspect-ratio: 21/9) {
+    .sidebar {
+        width: 350px;
+    }
+    
+    .main-content {
+        margin-left: 350px;
+        max-width: none;
+    }
+    
+    .container {
+        grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+        gap: 30px;
+    }
+}
+
+/* Square-ish screens (1:1 to 4:3) */
+@media (max-aspect-ratio: 4/3) and (min-width: 800px) {
+    .sidebar {
+        width: 220px;
+    }
+    
+    .main-content {
+        margin-left: 220px;
+    }
+    
+    .container {
+        grid-template-columns: 1fr;
+        gap: 20px;
+    }
+}
+
+/* Portrait orientation (taller than wide) */
+@media (orientation: portrait) and (min-width: 600px) {
+    .sidebar {
+        width: 240px;
+    }
+    
+    .main-content {
+        margin-left: 240px;
+    }
+    
+    .container {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Very tall screens optimization */
+@media (min-height: 1200px) {
+    .sidebar {
+        padding-bottom: 40px;
+    }
+    
+    .sidebar-nav ul {
+        gap: 8px;
+    }
+    
+    .nav-item {
+        padding: 16px 25px;
+    }
+    
+    .sidebar-footer {
+        margin-top: auto;
+        padding: 30px 25px;
+    }
+}
 
 /* Desktop grande */
 @media (max-width: 1200px) {
@@ -1183,24 +1556,8 @@ body {
     }
 }
 
-/* Tablets grandes */
+/* Specific content adaptations for different screen sizes */
 @media (max-width: 1024px) {
-    .sidebar {
-        transform: translateX(-100%);
-        transition: transform 0.3s ease;
-        z-index: 1000;
-    }
-    
-    .sidebar.active {
-        transform: translateX(0);
-    }
-    
-    .main-content {
-        margin-left: 0;
-        padding: 20px;
-        width: 100%;
-    }
-    
     .header {
         flex-direction: column;
         gap: 20px;
@@ -1222,7 +1579,6 @@ body {
     }
 }
 
-/* Tablets */
 @media (max-width: 768px) {
     .main-content {
         padding: 15px;

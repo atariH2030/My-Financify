@@ -694,3 +694,149 @@ function showNotification(message, type = 'success') {
         }, 300);
     }, 3000);
 }
+
+// Enhanced Sidebar Management for Responsive Design
+let sidebarState = {
+    isOpen: false,
+    autoHideTimer: null,
+    lastWidth: window.innerWidth,
+    lastHeight: window.innerHeight
+};
+
+function initializeSidebar() {
+    const sidebar = document.querySelector('.sidebar');
+    const overlay = document.querySelector('.sidebar-overlay');
+    const mobileToggle = document.querySelector('.mobile-menu-toggle');
+    
+    // Set initial state based on screen size
+    updateSidebarVisibility();
+    
+    // Listen for resize events
+    let resizeTimer;
+    window.addEventListener('resize', () => {
+        clearTimeout(resizeTimer);
+        resizeTimer = setTimeout(() => {
+            handleResponsiveChange();
+        }, 100);
+    });
+    
+    // Mobile toggle functionality
+    if (mobileToggle) {
+        mobileToggle.addEventListener('click', toggleSidebar);
+    }
+    
+    // Overlay click to close
+    if (overlay) {
+        overlay.addEventListener('click', closeSidebar);
+    }
+    
+    // Auto-hide functionality for split screens
+    setupAutoHide();
+}
+
+function updateSidebarVisibility() {
+    const width = window.innerWidth;
+    const height = window.innerHeight;
+    const aspectRatio = width / height;
+    
+    const sidebar = document.querySelector('.sidebar');
+    const mainContent = document.querySelector('.main-content');
+    const mobileToggle = document.querySelector('.mobile-menu-toggle');
+    
+    // Detect if likely in split screen mode
+    const isSplitScreen = width < 900 && width > 600;
+    const isNarrowWindow = width < 1200;
+    const isUltrawide = aspectRatio > 2.1;
+    
+    if (width >= 1200 && !isSplitScreen) {
+        // Desktop: Always show sidebar
+        sidebar.classList.remove('active');
+        sidebar.style.transform = 'translateX(0)';
+        if (mobileToggle) mobileToggle.style.display = 'none';
+        sidebarState.isOpen = true;
+    } else if (isSplitScreen || (isNarrowWindow && width >= 600)) {
+        // Split screen or narrow desktop: Toggle sidebar with smart behavior
+        if (mobileToggle) mobileToggle.style.display = 'block';
+        if (!sidebarState.isOpen) {
+            sidebar.style.transform = 'translateX(-100%)';
+        }
+    } else {
+        // Mobile: Hide by default, show toggle
+        if (mobileToggle) mobileToggle.style.display = 'block';
+        sidebar.style.transform = 'translateX(-100%)';
+        sidebarState.isOpen = false;
+    }
+    
+    // Adjust main content margin
+    if (width >= 1200 && !isSplitScreen) {
+        const sidebarWidth = isUltrawide ? '350px' : width >= 1440 ? '300px' : '280px';
+        if (mainContent) mainContent.style.marginLeft = sidebarWidth;
+    } else {
+        if (mainContent) mainContent.style.marginLeft = '0';
+    }
+}
+
+function handleResponsiveChange() {
+    const currentWidth = window.innerWidth;
+    const currentHeight = window.innerHeight;
+    
+    // Detect significant changes that might indicate split screen
+    const widthChange = Math.abs(currentWidth - sidebarState.lastWidth);
+    const heightChange = Math.abs(currentHeight - sidebarState.lastHeight);
+    
+    if (widthChange > 100 || heightChange > 100) {
+        updateSidebarVisibility();
+        sidebarState.lastWidth = currentWidth;
+        sidebarState.lastHeight = currentHeight;
+    }
+}
+
+function toggleSidebar() {
+    const sidebar = document.querySelector('.sidebar');
+    const overlay = document.querySelector('.sidebar-overlay');
+    
+    sidebarState.isOpen = !sidebarState.isOpen;
+    
+    if (sidebarState.isOpen) {
+        sidebar.classList.add('active');
+        if (overlay) overlay.classList.add('active');
+        sidebar.style.transform = 'translateX(0)';
+    } else {
+        closeSidebar();
+    }
+}
+
+function closeSidebar() {
+    const sidebar = document.querySelector('.sidebar');
+    const overlay = document.querySelector('.sidebar-overlay');
+    
+    sidebar.classList.remove('active');
+    if (overlay) overlay.classList.remove('active');
+    sidebar.style.transform = 'translateX(-100%)';
+    sidebarState.isOpen = false;
+}
+
+function setupAutoHide() {
+    const sidebar = document.querySelector('.sidebar');
+    
+    // Auto-hide for split screen scenarios
+    sidebar.addEventListener('mouseenter', () => {
+        if (window.innerWidth >= 600 && window.innerWidth < 900) {
+            clearTimeout(sidebarState.autoHideTimer);
+            sidebar.style.transform = 'translateX(0)';
+        }
+    });
+    
+    sidebar.addEventListener('mouseleave', () => {
+        if (window.innerWidth >= 600 && window.innerWidth < 900 && !sidebarState.isOpen) {
+            sidebarState.autoHideTimer = setTimeout(() => {
+                sidebar.style.transform = 'translateX(-240px)';
+            }, 2000);
+        }
+    });
+}
+
+// Initialize sidebar when DOM is loaded
+document.addEventListener('DOMContentLoaded', () => {
+    setTimeout(initializeSidebar, 100);
+});
