@@ -11,6 +11,9 @@ let currentCategory = null;
 
 // Initialize the application
 document.addEventListener('DOMContentLoaded', function() {
+    // Initialize theme
+    initializeTheme();
+    
     loadFinancialData();
     fetchMarketData();
     updateSummaryCards();
@@ -22,7 +25,48 @@ document.addEventListener('DOMContentLoaded', function() {
     setInterval(fetchMarketData, 300000);
 });
 
+// Theme Management
+function initializeTheme() {
+    const savedTheme = localStorage.getItem('theme') || 'light';
+    document.documentElement.setAttribute('data-theme', savedTheme);
+    updateThemeIcon(savedTheme);
+}
+
+function toggleTheme() {
+    const currentTheme = document.documentElement.getAttribute('data-theme');
+    const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+    
+    document.documentElement.setAttribute('data-theme', newTheme);
+    localStorage.setItem('theme', newTheme);
+    updateThemeIcon(newTheme);
+    
+    // Add cool transition effect
+    document.body.style.transition = 'all 0.5s ease';
+    setTimeout(() => {
+        document.body.style.transition = '';
+    }, 500);
+}
+
+function updateThemeIcon(theme) {
+    const themeToggle = document.getElementById('themeToggle');
+    const icon = themeToggle.querySelector('i');
+    
+    if (theme === 'dark') {
+        icon.className = 'fas fa-sun';
+        themeToggle.title = 'Modo claro';
+    } else {
+        icon.className = 'fas fa-moon';
+        themeToggle.title = 'Modo escuro';
+    }
+}
+
 function setupEventListeners() {
+    // Theme toggle
+    const themeToggle = document.getElementById('themeToggle');
+    if (themeToggle) {
+        themeToggle.addEventListener('click', toggleTheme);
+    }
+    
     // Mobile menu toggle
     const mobileMenuToggle = document.getElementById('mobileMenuToggle');
     const sidebar = document.querySelector('.sidebar');
