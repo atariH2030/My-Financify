@@ -10,7 +10,9 @@
         "Configurações",
         "Variáveis",
         "selic",
-        "SELIC"
+        "SELIC",
+        "powerbi",
+        "PowerBI"
     ],
     "ignorePaths": [
         "node_modules/**",
