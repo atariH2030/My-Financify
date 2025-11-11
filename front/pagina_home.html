@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Financify - Gestão Financeira</title>
+    <link rel="stylesheet" href="estilo_base.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <div class="sidebar-header">
+            <h3><i class="fas fa-chart-line"></i> My Financify</h3>
+        </div>        <nav class="sidebar-nav">
+            <ul>
+                <li><a href="pagina_home.html" class="nav-item active"><i class="fas fa-home"></i> Dashboard</a></li>
+                <li><a href="relatorios.html" class="nav-item"><i class="fas fa-chart-bar"></i> Relatórios</a></li>
+                <li><a href="#" class="nav-item"><i class="fas fa-exchange-alt"></i> Transações</a></li>
+                <li><a href="#" class="nav-item"><i class="fas fa-bullseye"></i> Metas</a></li>
+                <li><a href="#" class="nav-item"><i class="fas fa-cog"></i> Configurações</a></li>
+            </ul>
+        </nav>
+        <div class="sidebar-footer">
+            <div class="user-profile">
+                <div class="user-avatar">
+                    <i class="fas fa-user"></i>
+                </div>
+                <div class="user-info">
+                    <span class="user-name">Usuário</span>
+                    <small class="user-email">usuario@email.com</small>
+                </div>
+            </div>
+            <button class="logout-btn" onclick="logout()">
+                <i class="fas fa-sign-out-alt"></i> Sair
+            </button>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-left">
+                <h1>Dashboard Financeiro</h1>
+                <p>Gerencie suas finanças de forma inteligente</p>
+            </div>
+            <div class="header-right">
+                <div class="market-info">
+                    <div class="market-item">
+                        <span class="label">USD/BRL:</span>
+                        <span id="usd-rate" class="value">Carregando...</span>
+                    </div>
+                    <div class="market-item">
+                        <span class="label">SELIC:</span>
+                        <span id="selic-rate" class="value">Carregando...</span>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Summary Cards -->
+        <div class="summary-cards">
+            <div class="card">
+                <div class="card-icon income">
+                    <i class="fas fa-arrow-up"></i>
+                </div>
+                <div class="card-content">
+                    <h3 id="total-income">R$ 0,00</h3>
+                    <p>Total de Receitas</p>
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-icon expense">
+                    <i class="fas fa-arrow-down"></i>
+                </div>
+                <div class="card-content">
+                    <h3 id="total-expenses">R$ 0,00</h3>
+                    <p>Total de Gastos</p>
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-icon balance">
+                    <i class="fas fa-wallet"></i>
+                </div>
+                <div class="card-content">
+                    <h3 id="balance">R$ 0,00</h3>
+                    <p>Saldo Atual</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Financial Sections -->
+        <div class="financial-sections">
+            <!-- Receitas Section -->
+            <section class="section">
+                <div class="section-header">
+                    <h2><i class="fas fa-plus-circle"></i> Receitas</h2>
+                    <button class="btn-add" onclick="addIncomeItem()">
+                        <i class="fas fa-plus"></i> Adicionar Receita
+                    </button>
+                </div>
+                <div class="section-content">
+                    <div id="income-list" class="items-list">
+                        <div class="empty-state">
+                            <i class="fas fa-inbox"></i>
+                            <p>Nenhuma receita cadastrada. Clique em "Adicionar Receita" para começar.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Gastos Fixos Section -->
+            <section class="section">
+                <div class="section-header">
+                    <h2><i class="fas fa-calendar-check"></i> Gastos Fixos</h2>
+                    <button class="btn-add" onclick="addFixedExpenseItem()">
+                        <i class="fas fa-plus"></i> Adicionar Gasto Fixo
+                    </button>
+                </div>
+                <div class="section-content">
+                    <div id="fixed-expenses-list" class="items-list">
+                        <div class="empty-state">
+                            <i class="fas fa-inbox"></i>
+                            <p>Nenhum gasto fixo cadastrado. Clique em "Adicionar Gasto Fixo" para começar.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Gastos Variáveis Section -->
+            <section class="section">
+                <div class="section-header">
+                    <h2><i class="fas fa-shopping-cart"></i> Gastos Variáveis</h2>
+                    <button class="btn-add" onclick="addVariableExpenseItem()">
+                        <i class="fas fa-plus"></i> Adicionar Gasto Variável
+                    </button>
+                </div>
+                <div class="section-content">
+                    <div id="variable-expenses-list" class="items-list">
+                        <div class="empty-state">
+                            <i class="fas fa-inbox"></i>
+                            <p>Nenhum gasto variável cadastrado. Clique em "Adicionar Gasto Variável" para começar.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </div>
+
+    <!-- Modal for Adding/Editing Items -->
+    <div id="itemModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modal-title">Adicionar Item</h3>
+                <span class="close" onclick="closeModal()">&times;</span>
+            </div>
+            <div class="modal-body">
+                <form id="itemForm">
+                    <div class="form-group">
+                        <label for="item-title">Título:</label>
+                        <input type="text" id="item-title" name="title" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="item-amount">Valor (R$):</label>
+                        <input type="number" id="item-amount" name="amount" step="0.01" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="item-date">Data:</label>
+                        <input type="date" id="item-date" name="date" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="item-description">Descrição (opcional):</label>
+                        <textarea id="item-description" name="description" rows="3"></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn-cancel" onclick="closeModal()">Cancelar</button>
+                <button type="submit" class="btn-save" onclick="saveItem()">Salvar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Confirmation Modal -->
+    <div id="confirmModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Confirmação</h3>
+                <span class="close" onclick="closeConfirmModal()">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div class="warning-icon">
+                    <i class="fas fa-exclamation-triangle"></i>
+                </div>
+                <p id="confirm-message">Deseja realmente realizar esta alteração?</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn-cancel" onclick="closeConfirmModal()">Cancelar</button>
+                <button type="button" class="btn-confirm" onclick="confirmAction()">Confirmar</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="base.js"></script>
+</body>
+</html>

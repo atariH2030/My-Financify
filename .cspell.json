@@ -1,0 +1,21 @@
+{
+    "version": "0.2",
+    "language": "en,pt,pt-BR",
+    "words": [
+        "Financify",
+        "financify",
+        "Relatórios",
+        "Receitas",
+        "Transações",
+        "Configurações",
+        "Variáveis",
+        "selic",
+        "SELIC"
+    ],
+    "ignorePaths": [
+        "node_modules/**",
+        ".git/**",
+        "dist/**",
+        "build/**"
+    ]
+}
