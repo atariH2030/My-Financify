@@ -8,6 +8,14 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
 </head>
 <body>
+    <!-- Mobile Menu Toggle -->
+    <button class="mobile-menu-toggle" id="mobileMenuToggle" style="display: none;">
+        <i class="fas fa-bars"></i>
+    </button>
+
+    <!-- Sidebar Overlay -->
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
     <!-- Sidebar -->
     <div class="sidebar">
         <div class="sidebar-header">
@@ -61,7 +69,7 @@
 
         <!-- Summary Cards -->
         <div class="summary-cards">
-            <div class="card">
+            <div class="card income-card">
                 <div class="card-icon income">
                     <i class="fas fa-arrow-up"></i>
                 </div>
@@ -70,7 +78,7 @@
                     <p>Total de Receitas</p>
                 </div>
             </div>
-            <div class="card">
+            <div class="card expense-card">
                 <div class="card-icon expense">
                     <i class="fas fa-arrow-down"></i>
                 </div>
@@ -79,7 +87,7 @@
                     <p>Total de Gastos</p>
                 </div>
             </div>
-            <div class="card">
+            <div class="card balance-card">
                 <div class="card-icon balance">
                     <i class="fas fa-wallet"></i>
                 </div>
