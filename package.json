@@ -1,0 +1,46 @@
+{
+  "name": "financy-life",
+  "version": "2.0.0",
+  "description": "Sistema de gestão financeira pessoal com arquitetura moderna",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview",
+    "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
+    "format": "prettier --write ."
+  },
+  "dependencies": {
+    "@types/chart.js": "^2.9.41",
+    "@types/lodash": "^4.14.202",
+    "@types/react": "^19.2.4",
+    "@types/react-dom": "^19.2.3",
+    "chart.js": "^4.5.1",
+    "date-fns": "^4.1.0",
+    "lodash": "^4.17.21",
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0",
+    "uuid": "^13.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.19.25",
+    "@types/uuid": "^10.0.0",
+    "@typescript-eslint/eslint-plugin": "^6.21.0",
+    "@typescript-eslint/parser": "^6.21.0",
+    "@vitejs/plugin-react": "^5.1.1",
+    "eslint": "^8.55.0",
+    "prettier": "^3.6.2",
+    "terser": "^5.44.1",
+    "typescript": "^5.3.0",
+    "vite": "^7.2.2"
+  },
+  "keywords": [
+    "financeiro",
+    "gestao",
+    "typescript",
+    "vite",
+    "performance"
+  ],
+  "author": "Rickson",
+  "license": "MIT"
+}

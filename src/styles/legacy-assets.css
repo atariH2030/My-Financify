@@ -1,0 +1,314 @@
+/**
+ * Legacy Assets Migration - Elementos Aproveitáveis
+ * 
+ * EXTRAÍDO DE: front/estilo_base.css
+ * OBJETIVO: Integrar sistema de cores e componentes existentes na nova arquitetura
+ */
+
+/* ========================================
+   SISTEMA DE CORES PROFISSIONAL (MIGRADO)
+   ======================================== */
+
+:root {
+    /* === CORES PRIMÁRIAS EXISTENTES === */
+    --primary-blue: #1a365d;
+    --secondary-blue: #2c5282;
+    --accent-blue: #3182ce;
+    --light-blue: #4299e1;
+    
+    --primary-orange: #c05621;
+    --secondary-orange: #dd6b20;
+    --accent-orange: #ed8936;
+    --light-orange: #f6ad55;
+    
+    --success-green: #22543d;
+    --success-light: #38a169;
+    --warning-yellow: #d69e2e;
+    --error-red: #c53030;
+    
+    /* === TONS NEUTROS ELEGANTES === */
+    --dark-navy: #1a202c;
+    --medium-navy: #2d3748;
+    --light-navy: #4a5568;
+    --warm-gray: #718096;
+    --cool-gray: #a0aec0;
+    --light-gray: #e2e8f0;
+    --off-white: #f7fafc;
+    
+    /* === GRADIENTES PROFISSIONAIS === */
+    --sidebar-gradient: linear-gradient(135deg, var(--primary-blue) 0%, var(--secondary-blue) 50%, var(--accent-blue) 100%);
+    --card-gradient: linear-gradient(145deg, #ffffff 0%, #f7fafc 100%);
+    --accent-gradient: linear-gradient(135deg, var(--accent-blue) 0%, var(--primary-orange) 100%);
+    
+    /* === SHADOWS CORPORATIVAS === */
+    --shadow-soft: rgba(0, 0, 0, 0.1);
+    --shadow-medium: rgba(0, 0, 0, 0.15);
+    --shadow-strong: rgba(0, 0, 0, 0.25);
+}
+
+/* ========================================
+   TEMAS CLARO/ESCURO (MIGRADO)
+   ======================================== */
+
+:root {
+    /* Tema Claro */
+    --bg-primary: #ffffff;
+    --bg-secondary: #f7fafc;
+    --bg-tertiary: #edf2f7;
+    --text-primary: #1a202c;
+    --text-secondary: #4a5568;
+    --text-accent: var(--accent-blue);
+    --border-color: #e2e8f0;
+}
+
+[data-theme="dark"] {
+    /* Tema Escuro */
+    --bg-primary: #0d1117;
+    --bg-secondary: #161b22;
+    --bg-tertiary: #21262d;
+    --text-primary: #f0f6fc;
+    --text-secondary: #7d8590;
+    --text-accent: var(--light-blue);
+    --border-color: #30363d;
+}
+
+/* ========================================
+   COMPONENTES REUTILIZÁVEIS (MIGRADOS)
+   ======================================== */
+
+/* === CARDS PROFISSIONAIS === */
+.card-professional {
+    background: var(--card-gradient);
+    border: 1px solid var(--border-color);
+    border-radius: 16px;
+    padding: 1.5rem;
+    box-shadow: var(--shadow-soft);
+    transition: all 0.3s ease;
+}
+
+.card-professional:hover {
+    box-shadow: var(--shadow-medium);
+    transform: translateY(-2px);
+}
+
+[data-theme="dark"] .card-professional {
+    background: var(--bg-secondary);
+    border-color: var(--border-color);
+}
+
+/* === BUTTONS CORPORATIVOS === */
+.btn-professional {
+    padding: 12px 24px;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 0.9rem;
+    transition: all 0.2s ease;
+    border: none;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.btn-primary-professional {
+    background: var(--accent-gradient);
+    color: white;
+    box-shadow: 0 4px 12px rgba(49, 130, 206, 0.3);
+}
+
+.btn-primary-professional:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(49, 130, 206, 0.4);
+}
+
+.btn-secondary-professional {
+    background: transparent;
+    color: var(--text-primary);
+    border: 2px solid var(--border-color);
+}
+
+.btn-secondary-professional:hover {
+    background: var(--bg-secondary);
+    border-color: var(--accent-blue);
+}
+
+/* === SIDEBAR COMPONENT (MIGRADO) === */
+.sidebar-legacy {
+    background: var(--sidebar-gradient);
+    backdrop-filter: blur(10px);
+    border-right: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.sidebar-header-legacy {
+    padding: 25px 20px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.theme-toggle-legacy {
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: white;
+    border-radius: 8px;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(10px);
+}
+
+.theme-toggle-legacy:hover {
+    background: rgba(255, 255, 255, 0.2);
+    transform: scale(1.05);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+/* ========================================
+   FINANCIAL SPECIFIC STYLES (MIGRADOS)
+   ======================================== */
+
+/* === VALORES MONETÁRIOS === */
+.money-positive {
+    color: var(--success-light);
+    font-weight: 600;
+}
+
+.money-negative {
+    color: var(--error-red);
+    font-weight: 600;
+}
+
+.money-neutral {
+    color: var(--text-primary);
+    font-weight: 500;
+}
+
+/* === PROGRESS INDICATORS === */
+.progress-ring {
+    width: 80px;
+    height: 80px;
+    position: relative;
+    display: inline-block;
+}
+
+.progress-ring circle {
+    transition: stroke-dasharray 0.5s ease;
+    stroke: var(--accent-blue);
+    stroke-width: 4;
+    fill: transparent;
+}
+
+/* === CATEGORY BADGES === */
+.category-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 500;
+    background: var(--bg-secondary);
+    color: var(--text-secondary);
+    border: 1px solid var(--border-color);
+}
+
+.category-badge.income {
+    background: rgba(34, 84, 61, 0.1);
+    color: var(--success-green);
+    border-color: rgba(34, 84, 61, 0.2);
+}
+
+.category-badge.expense {
+    background: rgba(197, 48, 48, 0.1);
+    color: var(--error-red);
+    border-color: rgba(197, 48, 48, 0.2);
+}
+
+/* ========================================
+   ANIMATION PRESETS (MIGRADOS)
+   ======================================== */
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes slideInRight {
+    from {
+        opacity: 0;
+        transform: translateX(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+.animate-fade-in-up {
+    animation: fadeInUp 0.6s ease forwards;
+}
+
+.animate-slide-in-right {
+    animation: slideInRight 0.4s ease forwards;
+}
+
+/* ========================================
+   RESPONSIVE UTILITIES (MIGRADOS)
+   ======================================== */
+
+.container-professional {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 1rem;
+}
+
+@media (min-width: 768px) {
+    .container-professional {
+        padding: 0 2rem;
+    }
+}
+
+@media (min-width: 1024px) {
+    .container-professional {
+        padding: 0 3rem;
+    }
+}
+
+/* ========================================
+   ACCESSIBILITY (MIGRADO)
+   ======================================== */
+
+.focus-visible {
+    outline: 2px solid var(--accent-blue);
+    outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    * {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+}
+
+/* High contrast mode */
+@media (prefers-contrast: high) {
+    :root {
+        --border-color: #000000;
+        --text-secondary: #000000;
+    }
+    
+    [data-theme="dark"] {
+        --border-color: #ffffff;
+        --text-secondary: #ffffff;
+    }
+}
