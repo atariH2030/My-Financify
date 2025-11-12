@@ -12,7 +12,9 @@
         "selic",
         "SELIC",
         "powerbi",
-        "PowerBI"
+        "PowerBI",
+        "ultrawide",
+        "Ultrawide"
     ],
     "ignorePaths": [
         "node_modules/**",
