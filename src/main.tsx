@@ -10,7 +10,10 @@ const App: React.FC = () => {
   const [theme, setTheme] = React.useState(() => {
     return localStorage.getItem('theme') || 'light';
   });
-  const [sidebarActive, setSidebarActive] = React.useState(false);
+  const [sidebarActive, setSidebarActive] = React.useState(() => {
+    // Desktop: sidebar aberto por padrão, Mobile: fechado por padrão  
+    return window.innerWidth > 768;
+  });
 
   // Initialize theme
   React.useEffect(() => {
@@ -25,6 +28,26 @@ const App: React.FC = () => {
     }
   }, []);
 
+  // Handle window resize for responsive sidebar
+  React.useEffect(() => {
+    const handleResize = () => {
+      const width = window.innerWidth;
+      if (width > 768) {
+        setSidebarActive(true); // Desktop: sidebar visível
+      } else {
+        setSidebarActive(false); // Mobile: sidebar escondido
+      }
+    };
+
+    // Detectar mudanças de tamanho
+    window.addEventListener('resize', handleResize);
+    
+    // Executar na inicialização
+    handleResize();
+    
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
   const toggleTheme = () => {
     const newTheme = theme === 'dark' ? 'light' : 'dark';
     setTheme(newTheme);
@@ -37,7 +60,7 @@ const App: React.FC = () => {
     }, 500);
   };
 
-  const toggleMobileSidebar = () => {
+  const toggleSidebar = () => {
     setSidebarActive(!sidebarActive);
   };
 
@@ -61,10 +84,18 @@ const App: React.FC = () => {
 
   return (
     <>
-      {/* Mobile Menu Toggle */}
+      {/* Sidebar Toggle Button - sempre visível no desktop */}
+      <button 
+        className={`sidebar-toggle ${sidebarActive ? 'sidebar-open' : ''}`}
+        onClick={toggleSidebar}
+      >
+        <i className={sidebarActive ? 'fas fa-times' : 'fas fa-bars'}></i>
+      </button>
+
+      {/* Mobile Menu Toggle - só visível no mobile */}
       <button 
         className="mobile-menu-toggle" 
-        onClick={toggleMobileSidebar}
+        onClick={toggleSidebar}
         style={{ display: 'none' }}
       >
         <i className="fas fa-bars"></i>
@@ -77,7 +108,7 @@ const App: React.FC = () => {
       ></div>
 
       {/* Sidebar (estrutura idêntica ao HTML original) */}
-      <div className={`sidebar ${sidebarActive ? 'active' : ''}`}>
+      <div className={`sidebar ${window.innerWidth <= 768 ? (sidebarActive ? 'active' : '') : (sidebarActive ? '' : 'collapsed')}`}>
         <div className="sidebar-header">
           <h3><i className="fas fa-chart-line"></i> My Financify</h3>
           <button className="theme-toggle" onClick={toggleTheme} title="Alternar tema">
@@ -148,7 +179,7 @@ const App: React.FC = () => {
       </div>
 
       {/* Main Content (estrutura idêntica ao HTML) */}
-      <div className="main-content">
+      <div className={`main-content ${!sidebarActive ? 'sidebar-collapsed' : ''}`}>
         {renderPage()}
       </div>
     </>

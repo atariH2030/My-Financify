@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import './dashboard.css';
 
 // Interfaces para manter type safety
 interface FinancialItem {
@@ -318,8 +319,7 @@ const Dashboard: React.FC<{ className?: string }> = ({ className }) => {
   const balance = totalIncome - totalExpenses;
 
   return (
-    <div className={`main-content ${className || ''}`}>
-      {/* Header (estrutura idêntica ao HTML) */}
+    <div className="dashboard-container">
       <header className="header">
         <div className="header-left">
           <h1>Dashboard Financeiro</h1>
