@@ -318,7 +318,7 @@ const Dashboard: React.FC<{ className?: string }> = ({ className }) => {
   const balance = totalIncome - totalExpenses;
 
   return (
-    <div className={`dashboard main-content ${className || ''}`}>
+    <div className={`main-content ${className || ''}`}>
       {/* Header (estrutura idêntica ao HTML) */}
       <header className="header">
         <div className="header-left">
