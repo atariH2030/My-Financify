@@ -339,8 +339,9 @@ const Dashboard: React.FC<{ className?: string }> = ({ className }) => {
         </div>
       </header>
 
-      {/* Summary Cards (estrutura idêntica ao HTML) */}
-      <div className="summary-cards">
+      <div className="dashboard-content">
+        {/* Summary Cards (estrutura idêntica ao HTML) */}
+        <div className="summary-cards">
         <div className="card income-card">
           <div className="card-icon income">
             <i className="fas fa-arrow-up"></i>
@@ -466,13 +467,14 @@ const Dashboard: React.FC<{ className?: string }> = ({ className }) => {
       </div>
 
       {/* Modal (estrutura idêntica ao HTML) */}
-      <ItemModal
-        isOpen={modalState.isOpen}
-        onClose={closeModal}
-        onSave={saveItem}
-        title={modalState.title}
-        editingItem={modalState.editingItem}
-      />
+        <ItemModal
+          isOpen={modalState.isOpen}
+          onClose={closeModal}
+          onSave={saveItem}
+          title={modalState.title}
+          editingItem={modalState.editingItem}
+        />
+      </div>
     </div>
   );
 };

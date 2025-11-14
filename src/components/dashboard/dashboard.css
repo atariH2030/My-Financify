@@ -17,6 +17,15 @@
   flex: 1;
 }
 
+/* ===== DASHBOARD CONTENT WRAPPER ===== */
+.dashboard-content {
+  width: 100%;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
 /* ===== HEADER DASHBOARD ===== */
 .header {
   display: flex;
@@ -27,10 +36,15 @@
   box-sizing: border-box;
   background: var(--gradient-primary);
   color: white;
-  margin-bottom: 0;
-  box-shadow: var(--shadow-lg);
   border-radius: 0 0 20px 20px;
-  margin: 0 1rem 2rem 1rem;
+  box-shadow: var(--shadow-lg);
+  margin-bottom: 2rem;
+}
+
+.header-left {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
 }
 
 .header-left h1 {
@@ -92,7 +106,8 @@
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
   gap: 1.5rem;
-  margin: 0 1rem 2rem 1rem;
+  margin-bottom: 2rem;
+  width: 100%;
 }
 
 .card {
@@ -178,7 +193,7 @@
   display: flex;
   flex-direction: column;
   gap: 2rem;
-  margin: 0 1rem;
+  width: 100%;
 }
 
 .section {

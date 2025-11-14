@@ -10,6 +10,24 @@
 @import './sidebar.css';
 @import './reports.css';
 
+/* ===== GLOBAL LAYOUT ===== */
+* {
+  box-sizing: border-box;
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+  font-family: var(--font-primary);
+}
+
+#root {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
 /* ===== LOADING SCREEN ===== */
 .loading-screen {
   position: fixed;

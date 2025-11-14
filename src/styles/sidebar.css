@@ -1,5 +1,27 @@
 /* ===== SIDEBAR STYLES (migrado de estilo_base.css) ===== */
 
+/* Otimização global para transições suaves */
+* {
+  /* Reduz o repaint e reflow durante transições */
+  will-change: auto;
+}
+
+/* Garante transições suaves em todos os elementos relacionados */
+.sidebar, .main-content, .main-content > * {
+  /* Força GPU acceleration para transições mais suaves */
+  -webkit-transform: translateZ(0);
+  -moz-transform: translateZ(0);
+  -ms-transform: translateZ(0);
+  -o-transform: translateZ(0);
+  transform: translateZ(0);
+  
+  /* Elimina flicker durante transições */
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+  -webkit-perspective: 1000;
+  perspective: 1000;
+}
+
 /* Layout Container */
 .app-container {
   display: flex;
@@ -7,8 +29,62 @@
   transition: all 0.3s ease;
 }
 
-/* Sidebar Toggle Button - sempre visível */
+/* Botão flutuante para abrir sidebar quando fechado */
+.floating-toggle-btn {
+  position: fixed;
+  top: 1rem;
+  left: 1rem;
+  z-index: 1003;
+  background: var(--primary-color);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  width: 44px;
+  height: 44px;
+  font-size: 1.2rem;
+  cursor: pointer;
+  box-shadow: var(--shadow-lg);
+  /* Transição mais rápida para responsividade */
+  transition: all 0.2s cubic-bezier(0.25, 0.8, 0.25, 1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  will-change: transform, background-color;
+}
+
+.floating-toggle-btn:hover {
+  transform: scale(1.05);
+  background: var(--accent-color);
+  box-shadow: var(--shadow-xl);
+}
+
+/* Sidebar Toggle Button - integrado no header */
 .sidebar-toggle {
+  background: rgba(255, 255, 255, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  color: white;
+  border-radius: 8px;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  /* Transição mais responsiva */
+  transition: all 0.2s cubic-bezier(0.25, 0.8, 0.25, 1);
+  backdrop-filter: blur(10px);
+  font-size: 1.1rem;
+  will-change: transform, background-color;
+}
+
+.sidebar-toggle:hover {
+  background: rgba(255, 255, 255, 0.3);
+  border-color: rgba(255, 255, 255, 0.5);
+  transform: scale(1.05);
+}
+
+/* Mobile toggle button - apenas para mobile */
+.mobile-sidebar-toggle {
   position: fixed;
   top: 1rem;
   left: 1rem;
@@ -23,20 +99,15 @@
   cursor: pointer;
   box-shadow: var(--shadow-md);
   transition: all var(--transition-base);
-  display: flex;
+  display: none;
   align-items: center;
   justify-content: center;
 }
 
-.sidebar-toggle:hover {
+.mobile-sidebar-toggle:hover {
   transform: scale(1.05);
   box-shadow: var(--shadow-lg);
   background: var(--accent-color);
-}
-
-/* Ajustar posição quando sidebar está ativo - no canto direito do sidebar */
-.sidebar-toggle.sidebar-open {
-  left: 240px; /* 280px - 40px para ficar no canto direito */
 }
 
 /* Mobile Menu Toggle (mantido por compatibilidade) */
@@ -71,50 +142,147 @@
   z-index: 1000;
   border-right: 1px solid var(--border-color);
   transform: translateX(0);
-  transition: all 0.3s ease;
+  /* Transição sincronizada com main-content */
+  transition: transform 0.35s cubic-bezier(0.4, 0.0, 0.2, 1);
+  will-change: transform;
+  /* Hardware acceleration aprimorado */
+  -webkit-transform: translate3d(0, 0, 0);
+  transform: translate3d(0, 0, 0);
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
 }
 
-/* Estados do Sidebar */
+/* Estados do Sidebar - universais */
 .sidebar.collapsed {
   transform: translateX(-280px);
 }
 
-.sidebar.mobile-hidden {
-  transform: translateX(-100%);
+.sidebar.active {
+  transform: translateX(0);
 }
 
-/* Main Content Area - adapta ao sidebar */
+/* Main Content Area - Sistema de centralização avançado e responsivo */
 .main-content {
-  margin-left: 280px;
   min-height: 100vh;
-  width: calc(100vw - 280px);
-  transition: all 0.3s ease;
   background: var(--bg-primary);
+  box-sizing: border-box;
+  
+  /* Sistema híbrido: margin-left + centralização interna */
+  margin-left: 0;
+  width: calc(100vw - 0px); /* Dinâmico baseado no estado da sidebar */
+  /* Transição mais suave e sincronizada para eliminar pulo */
+  transition: margin-left 0.35s cubic-bezier(0.4, 0.0, 0.2, 1),
+              width 0.35s cubic-bezier(0.4, 0.0, 0.2, 1),
+              padding 0.35s cubic-bezier(0.4, 0.0, 0.2, 1);
+  will-change: margin-left, width, padding;
+  
+  /* Centralização interna do conteúdo */
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  
+  /* Padding responsivo para tela cheia (sem sidebar) */
+  padding: 20px min(15%, 200px);
+  
+  /* Hardware acceleration melhorado */
+  -webkit-transform: translate3d(0, 0, 0);
+  transform: translate3d(0, 0, 0);
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  perspective: 1000px;
+  -webkit-perspective: 1000px;
+}
+
+.main-content > * {
+  width: 100%;
+  max-width: 1400px; /* Largura máxima para telas muito grandes */
+  margin: 0 auto;
   padding: 0;
   box-sizing: border-box;
 }
 
-.main-content.sidebar-collapsed {
-  margin-left: 0;
-  width: 100vw;
+/* Quando sidebar ATIVO - centralizado nos ~80% restantes */
+.sidebar.active ~ .main-content,
+.main-content.sidebar-active {
+  margin-left: 280px;
+  width: calc(100vw - 280px);
+  
+  /* Padding maior para centralizar melhor no espaço reduzido */
+  padding: 20px min(15%, 120px);
 }
 
-/* Layout Container para controle global */
-body {
+.sidebar.active ~ .main-content > *,
+.main-content.sidebar-active > * {
+  width: 100%;
+  max-width: 900px; /* Menor e mais centralizado quando sidebar ativa */
+  margin: 0 auto;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* Estados colapsados - volta ao estado de tela cheia */
+.sidebar.collapsed + .main-content,
+.main-content.sidebar-collapsed {
+  margin-left: 0;
+  width: calc(100vw - 0px);
+  padding: 20px min(15%, 200px);
+}
+
+.sidebar.collapsed + .main-content > *,
+.main-content.sidebar-collapsed > * {
+  width: 100%;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.sidebar.collapsed + .main-content > *,
+.main-content.sidebar-collapsed > * {
+  width: 100%;
+  max-width: none;
   margin: 0;
   padding: 0;
-  overflow-x: hidden;
+  box-sizing: border-box;
 }
 
 /* Sidebar Header */
 .sidebar-header {
   display: flex;
-  align-items: center;
-  justify-content: space-between;
+  flex-direction: column;
+  gap: 1rem;
   padding: 1.5rem;
   background: var(--gradient-primary);
   color: white;
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.sidebar-header-top {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+.sidebar-header-top h3 {
+  font-size: 1.3rem;
+  font-weight: 700;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.sidebar-header-top h3 i {
+  font-size: 1.4rem;
+  opacity: 0.9;
+}
+
+.sidebar-header-bottom {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
 }
 
 .sidebar-header h3 {
@@ -143,8 +311,13 @@ body {
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  transition: all var(--transition-base);
+  /* Transição mais rápida para responsividade */
+  transition: all 0.2s cubic-bezier(0.25, 0.8, 0.25, 1);
   backdrop-filter: blur(10px);
+  will-change: transform, background-color;
+  /* Hardware acceleration */
+  transform: translateZ(0);
+  backface-visibility: hidden;
 }
 
 .theme-toggle:hover {
@@ -328,84 +501,225 @@ body {
   color: var(--primary-color-light, #60a5fa);
 }
 
-/* === RESPONSIVE DESIGN === */
-@media (min-width: 1200px) {
-  /* Telas grandes: layout otimizado */
-  .main-content {
-    margin-left: 280px;
-    width: calc(100vw - 280px);
-  }
-  
-  .main-content.sidebar-collapsed {
-    margin-left: 0;
-    width: 100vw;
-  }
-}
-
-@media (min-width: 769px) and (max-width: 1199px) {
-  /* Telas médias e divididas: sidebar mais estreito */
-  .sidebar {
-    width: 240px;
-  }
-  
-  .main-content {
-    margin-left: 240px;
-    width: calc(100vw - 240px);
-  }
-  
-  .main-content.sidebar-collapsed {
-    margin-left: 0;
-    width: 100vw;
-  }
-  
-  .sidebar-toggle.sidebar-open {
-    left: 200px; /* Ajustado para sidebar menor */
-  }
-  
-  .sidebar.collapsed {
-    transform: translateX(-240px);
-  }
-  
-  /* Desktop: Sistema de collapse do sidebar */
-  .sidebar-toggle {
+/* === RESPONSIVE DESIGN UNIVERSAL === */
+@media (min-width: 769px) {
+  /* Desktop: Botões integrados no header */
+  .floating-toggle-btn {
     display: flex;
   }
   
-  .mobile-menu-toggle {
+  .mobile-sidebar-toggle {
     display: none;
   }
   
   .sidebar-overlay {
     display: none;
   }
+  
+  /* Sidebar menor em telas médias */
+  @media (max-width: 1199px) {
+    .sidebar {
+      width: 240px;
+    }
+    
+    .sidebar.collapsed {
+      transform: translateX(-240px);
+    }
+    
+    /* Quando sidebar ativo em telas médias */
+    .sidebar.active ~ .main-content,
+    .main-content.sidebar-active {
+      margin-left: 240px;
+      width: calc(100vw - 240px);
+      padding: 20px min(8%, 60px);
+    }
+    
+    .sidebar.active ~ .main-content > *,
+    .main-content.sidebar-active > * {
+      max-width: 900px;
+    }
+    
+    /* Quando sidebar inativo em telas médias */
+    .sidebar.collapsed + .main-content,
+    .main-content.sidebar-collapsed {
+      margin-left: 0;
+      width: calc(100vw - 0px);
+      padding: 20px min(12%, 120px);
+    }
+    
+    .sidebar.collapsed + .main-content > *,
+    .main-content.sidebar-collapsed > * {
+      max-width: 1200px;
+    }
+  }
+}
+
+/* ===== MEDIA QUERIES RESPONSIVAS ===== */
+
+/* Telas muito grandes (> 1600px) - padding mais generoso */
+@media (min-width: 1601px) {
+  .main-content {
+    padding: 20px min(18%, 280px);
+  }
+  
+  .sidebar.active ~ .main-content,
+  .main-content.sidebar-active {
+    padding: 20px min(18%, 180px);
+  }
+  
+  .main-content > * {
+    max-width: 1600px;
+  }
+  
+  .sidebar.active ~ .main-content > *,
+  .main-content.sidebar-active > * {
+    max-width: 1000px; /* Mais centralizado */
+  }
+}
+
+/* Telas grandes (1400px - 1600px) */
+@media (min-width: 1401px) and (max-width: 1600px) {
+  .main-content {
+    padding: 20px min(16%, 240px);
+  }
+  
+  .sidebar.active ~ .main-content,
+  .main-content.sidebar-active {
+    padding: 20px min(16%, 140px);
+  }
+  
+  .main-content > * {
+    max-width: 1500px;
+  }
+  
+  .sidebar.active ~ .main-content > *,
+  .main-content.sidebar-active > * {
+    max-width: 950px; /* Mais centralizado */
+  }
+}
+
+/* Telas médias-grandes (1200px - 1400px) */
+@media (min-width: 1201px) and (max-width: 1400px) {
+  .main-content {
+    padding: 20px min(14%, 200px);
+  }
+  
+  .sidebar.active ~ .main-content,
+  .main-content.sidebar-active {
+    padding: 20px min(15%, 120px);
+  }
+  
+  .main-content > * {
+    max-width: 1400px;
+  }
+  
+  .sidebar.active ~ .main-content > *,
+  .main-content.sidebar-active > * {
+    max-width: 850px; /* Mais centralizado */
+  }
+}
+
+/* Telas grandes (1401px - 1600px) */
+@media (min-width: 1401px) and (max-width: 1600px) {
+  .main-content {
+    padding: 20px min(18%, 200px) !important;
+  }
+  
+  .sidebar.active ~ .main-content,
+  .main-content.sidebar-active {
+    padding: 20px min(12%, 120px) !important;
+  }
+}
+
+/* Telas médias-grandes (1200px - 1400px) */
+@media (min-width: 1201px) and (max-width: 1400px) {
+  .main-content {
+    padding: 20px min(15%, 150px) !important;
+  }
+  
+  .sidebar.active ~ .main-content,
+  .main-content.sidebar-active {
+    padding: 20px min(10%, 80px) !important;
+  }
+}
+
+/* Telas médias (900px - 1200px) */
+@media (min-width: 901px) and (max-width: 1200px) {
+  .main-content {
+    padding: 20px min(12%, 100px);
+  }
+  
+  .sidebar.active ~ .main-content,
+  .main-content.sidebar-active {
+    transform: translateX(280px);
+    padding: 20px min(8%, 60px);
+  }
+}
+
+/* Tablets (769px - 900px) */
+@media (min-width: 769px) and (max-width: 900px) {
+  .main-content {
+    padding: 20px min(8%, 80px);
+  }
+  
+  .sidebar.active ~ .main-content,
+  .main-content.sidebar-active {
+    margin-left: 280px;
+    width: calc(100vw - 280px);
+    padding: 20px min(6%, 50px);
+  }
+  
+  .main-content > * {
+    max-width: 900px;
+  }
+  
+  .sidebar.active ~ .main-content > *,
+  .main-content.sidebar-active > * {
+    max-width: 700px;
+  }
 }
 
 @media (max-width: 768px) {
   /* Mobile: Sistema de overlay */
-  .sidebar-toggle {
+  .floating-toggle-btn {
     display: none;
   }
   
-  .mobile-menu-toggle {
+  .mobile-sidebar-toggle {
     display: flex !important;
   }
   
   .sidebar {
     width: 280px;
-    transform: translateX(-100%);
     z-index: 1001;
+  }
+  
+  .sidebar.collapsed {
+    transform: translateX(-100%);
   }
   
   .sidebar.active {
     transform: translateX(0);
   }
   
-  .main-content,
-  .main-content.sidebar-collapsed {
-    margin-left: 0;
-    width: 100vw;
-    padding-top: 60px;
-  }
+  /* Content sempre fullwidth e centrado no mobile */
+.main-content,
+.main-content.sidebar-active,
+.main-content.sidebar-collapsed {
+  margin-left: 0;
+  width: 100vw;
+  padding: 60px min(5%, 20px) 0 !important;
+  justify-content: center;
+}
+
+.main-content > *,
+.main-content.sidebar-active > *,
+.main-content.sidebar-collapsed > * {
+  max-width: none;
+  width: 100%;
+  padding: 0;
+  margin: 0;
+}
   
   .sidebar-overlay.active {
     display: block;

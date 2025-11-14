@@ -21,6 +21,8 @@ const App: React.FC = () => {
     return window.innerWidth > 768;
   });
 
+  const [isTransitioning, setIsTransitioning] = React.useState(false);
+
   // Atualizar tema no DOM
   React.useEffect(() => {
     document.documentElement.setAttribute('data-theme', theme);
@@ -60,7 +62,17 @@ const App: React.FC = () => {
   };
 
   const toggleSidebar = () => {
-    setSidebarActive(!sidebarActive);
+    setIsTransitioning(true);
+    
+    // Usar setTimeout para garantir que a classe seja aplicada no próximo frame
+    setTimeout(() => {
+      setSidebarActive(!sidebarActive);
+      
+      // Finalizar transição após a animação
+      setTimeout(() => {
+        setIsTransitioning(false);
+      }, 350); // Mesmo tempo da CSS transition
+    }, 16); // Um frame de delay
   };
 
   const logout = () => {
@@ -194,6 +206,8 @@ const App: React.FC = () => {
       {/* Main Content (estrutura idêntica ao HTML) */}
       <div className={`main-content ${
         sidebarActive ? 'sidebar-active' : 'sidebar-collapsed'
+      } ${
+        isTransitioning ? 'transitioning' : ''
       }`}>
         {renderPage()}
       </div>
@@ -213,27 +227,3 @@ root.render(
     <App />
   </React.StrictMode>
 );
-
-// Função para esconder loading screen de forma robusta
-const hideLoadingScreen = () => {
-  const loadingScreen = document.getElementById('loading-screen');
-  if (loadingScreen) {
-    loadingScreen.classList.add('hidden');
-    // Backup: remover após animação
-    setTimeout(() => {
-      if (loadingScreen.parentNode) {
-        loadingScreen.parentNode.removeChild(loadingScreen);
-      }
-    }, 500);
-  }
-};
-
-// Esconder loading screen após React carregar
-setTimeout(hideLoadingScreen, 100);
-
-// Backup case: esconder loading screen quando a página estiver totalmente carregada
-if (document.readyState === 'complete') {
-  hideLoadingScreen();
-} else {
-  window.addEventListener('load', hideLoadingScreen);
-}
