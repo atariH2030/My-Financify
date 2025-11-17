@@ -1,7 +1,7 @@
 {
   "name": "financy-life",
-  "version": "2.0.0",
-  "description": "Sistema de gestão financeira pessoal com arquitetura moderna",
+  "version": "2.3.0",
+  "description": "Sistema de gestão financeira pessoal com arquitetura moderna, robusta e otimizada",
   "type": "module",
   "scripts": {
     "dev": "vite",

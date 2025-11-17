@@ -4,8 +4,23 @@ import './styles/globals.css';
 import './styles/smooth-transitions.css';
 import Dashboard from './components/dashboard/Dashboard';
 import Reports from './components/reports/Reports';
+import { ErrorBoundary, ToastProvider } from './components/common';
+import Logger from './services/logger.service';
+import Seeder from './services/seeder.service';
 
-// Componente App principal com sidebar (idêntico à pagina_home.html)
+// Inicializa Database Seeder automaticamente em desenvolvimento
+if (process.env.NODE_ENV === 'development') {
+  Seeder.seed({ forceReset: false })
+    .then(() => Seeder.getStats())
+    .then(stats => {
+      Logger.info('📊 Database Stats', stats, 'APP');
+    })
+    .catch(error => {
+      Logger.error('Falha ao executar seeder', error as Error, 'APP');
+    });
+}
+
+// Componente App principal com sidebar
 const App: React.FC = () => {
   const [currentPage, setCurrentPage] = React.useState('dashboard');
   const [theme, setTheme] = React.useState(() => {
@@ -210,7 +225,11 @@ if (!container) {
 const root = createRoot(container);
 root.render(
   <React.StrictMode>
-    <App />
+    <ErrorBoundary>
+      <ToastProvider>
+        <App />
+      </ToastProvider>
+    </ErrorBoundary>
   </React.StrictMode>
 );
 

@@ -1,12 +1,22 @@
 /**
  * Global Styles - Estilos base da aplicação
- * Integração com legacy assets para aproveitar sistema de design existente
+ * Integração com legacy assets + componentes modernos
+ * v2.3 - Performance Otimizada + Skeleton Loaders
  */
 
-/* ===== IMPORT LEGACY ASSETS ===== */
+/* ===== IMPORT DESIGN SYSTEM ===== */
 @import './legacy-assets.css';
 
-/* ===== IMPORT MODERN MODULES ===== */
+/* ===== IMPORT COMPONENTS CSS ===== */
+@import '../components/common/Button.css';
+@import '../components/common/Card.css';
+@import '../components/common/Input.css';
+@import '../components/common/Modal.css';
+@import '../components/common/ErrorBoundary.css';
+@import '../components/common/Toast.css';
+@import '../components/common/SkeletonLoader.css';
+
+/* ===== IMPORT MODULES ===== */
 @import './sidebar.css';
 @import './reports.css';
 
