@@ -290,14 +290,14 @@ const TransactionsTable: React.FC<TransactionsTableProps> = ({
                       <table className="transactions-list">
                         <thead>
                           <tr>
-                            <th onClick={() => handleSort('date')} className="sortable">
+                            <th onClick={() => handleSort('date')} className="sortable date-col">
                               Data {sortBy === 'date' && (sortOrder === 'asc' ? '↑' : '↓')}
                             </th>
-                            <th onClick={() => handleSort('description')} className="sortable">
+                            <th onClick={() => handleSort('description')} className="sortable description-col">
                               Descrição {sortBy === 'description' && (sortOrder === 'asc' ? '↑' : '↓')}
                             </th>
-                            <th>Categoria</th>
-                            <th>Tipo</th>
+                            <th className="category-col">Categoria</th>
+                            <th className="type-col">Tipo</th>
                             <th onClick={() => handleSort('amount')} className="sortable amount-col">
                               Valor {sortBy === 'amount' && (sortOrder === 'asc' ? '↑' : '↓')}
                             </th>
@@ -360,20 +360,22 @@ const TransactionsTable: React.FC<TransactionsTableProps> = ({
                                 {formatCurrency(transaction.amount)}
                               </td>
                               <td className="actions-col">
-                                <button
-                                  className="action-btn edit"
-                                  onClick={() => onEdit(transaction)}
-                                  title="Editar registro"
-                                >
-                                  ✏️
-                                </button>
-                                <button
-                                  className="action-btn delete"
-                                  onClick={() => handleDelete(transaction)}
-                                  title="Excluir registro"
-                                >
-                                  🗑️
-                                </button>
+                                <div className="action-buttons">
+                                  <button
+                                    className="action-btn edit"
+                                    onClick={() => onEdit(transaction)}
+                                    title="Editar registro"
+                                  >
+                                    ✏️
+                                  </button>
+                                  <button
+                                    className="action-btn delete"
+                                    onClick={() => handleDelete(transaction)}
+                                    title="Excluir registro"
+                                  >
+                                    🗑️
+                                  </button>
+                                </div>
                               </td>
                             </motion.tr>
                           );

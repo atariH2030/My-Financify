@@ -11,6 +11,16 @@ import Budgets from './components/budgets/Budgets';
 import { ErrorBoundary, ToastProvider } from './components/common';
 import Logger from './services/logger.service';
 import Seeder from './services/seeder.service';
+import MigrationService from './services/migration.service';
+
+// Executa migrações antes do seeder
+MigrationService.runMigrations()
+  .then(() => {
+    Logger.info('✅ Migrações concluídas', undefined, 'APP');
+  })
+  .catch(error => {
+    Logger.error('Falha nas migrações', error as Error, 'APP');
+  });
 
 // Inicializa Database Seeder automaticamente em desenvolvimento
 if (process.env.NODE_ENV === 'development') {

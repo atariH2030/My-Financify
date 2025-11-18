@@ -273,6 +273,34 @@
   white-space: nowrap;
 }
 
+/* Alinhamento específico dos headers */
+.transactions-list th.date-col {
+  text-align: left !important;
+  padding-left: 16px !important;
+}
+
+.transactions-list th.description-col {
+  text-align: left !important;
+}
+
+.transactions-list th.category-col {
+  text-align: left !important;
+}
+
+.transactions-list th.type-col {
+  text-align: center !important;
+}
+
+.transactions-list th.amount-col {
+  text-align: right !important;
+  padding-right: 16px !important;
+}
+
+.transactions-list th.actions-col {
+  text-align: center !important;
+  padding-right: 16px !important;
+}
+
 /* Controle responsivo de larguras */
 .transactions-list th:nth-child(1),
 .transactions-list td:nth-child(1) {
@@ -460,7 +488,7 @@
   font-size: 12px;
   font-weight: 600;
   white-space: nowrap;
-  margin: 0 auto;
+  min-width: 100px;
 }
 
 .amount-col {
@@ -482,6 +510,14 @@
 .actions-col {
   text-align: center !important;
   white-space: nowrap;
+  padding-right: 16px !important;
+}
+
+.action-buttons {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
 }
 
 .action-btn {
@@ -492,7 +528,6 @@
   cursor: pointer;
   font-size: 16px;
   transition: all 0.2s ease;
-  margin: 0 3px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
