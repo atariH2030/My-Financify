@@ -6,6 +6,7 @@ import Modal from '../common/Modal';
 import Button from '../common/Button';
 import { useToast } from '../common/Toast';
 import StorageService from '../../services/storage.service';
+import NotificationService from '../../services/notification.service';
 import type { Budget, Transaction } from '../../types/financial.types';
 
 const Budgets: React.FC = () => {
@@ -78,6 +79,26 @@ const Budgets: React.FC = () => {
     return spent;
   };
 
+  // Check budget alerts and notify if necessary
+  const checkBudgetAlerts = (updatedBudgets: Budget[]) => {
+    updatedBudgets.forEach(budget => {
+      if (budget.status !== 'active') return;
+
+      const percentage = (budget.currentSpent / budget.limitAmount) * 100;
+      const alertThreshold = budget.alertThreshold || 80;
+
+      // Notify if exceeded threshold
+      if (percentage >= alertThreshold) {
+        NotificationService.notifyBudgetAlert(
+          budget.category,
+          budget.currentSpent,
+          budget.limitAmount,
+          percentage
+        );
+      }
+    });
+  };
+
   // Recalculate all budgets when transactions change
   const recalculateBudgets = async () => {
     const loadedTransactions = await StorageService.load<Transaction[]>('transactions') || [];
@@ -87,6 +108,9 @@ const Budgets: React.FC = () => {
     });
     setBudgets(updatedBudgets);
     setTransactions(loadedTransactions);
+    
+    // Check alerts for updated budgets
+    checkBudgetAlerts(updatedBudgets);
     
     // Save updated budgets
     await StorageService.save('budgets', updatedBudgets);

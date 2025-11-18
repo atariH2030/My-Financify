@@ -11,6 +11,7 @@ import Button from '../common/Button';
 import Modal from '../common/Modal';
 import { useToast } from '../common/Toast';
 import StorageService from '../../services/storage.service';
+import NotificationService from '../../services/notification.service';
 import Logger from '../../services/logger.service';
 import type { Transaction } from '../../types/financial.types';
 import './Transactions.css';
@@ -68,6 +69,9 @@ const Transactions: React.FC = () => {
         'success'
       );
 
+      // Notify about new transaction
+      NotificationService.notifyTransaction('created', data.description, data.amount);
+
       setIsFormOpen(false);
       Logger.info('Transação criada', { id: newTransaction.id }, 'TRANSACTIONS');
     } catch (error) {
@@ -93,6 +97,9 @@ const Transactions: React.FC = () => {
         'success'
       );
 
+      // Notify about updated transaction
+      NotificationService.notifyTransaction('updated', data.description, data.amount);
+
       setIsFormOpen(false);
       setEditingTransaction(undefined);
       Logger.info('Transação atualizada', { id: editingTransaction.id }, 'TRANSACTIONS');
@@ -113,6 +120,11 @@ const Transactions: React.FC = () => {
         `Transação "${transaction?.description}" excluída com sucesso!`,
         'success'
       );
+
+      // Notify about deleted transaction
+      if (transaction) {
+        NotificationService.notifyTransaction('deleted', transaction.description, transaction.amount);
+      }
 
       Logger.info('Transação excluída', { id }, 'TRANSACTIONS');
     } catch (error) {

@@ -8,6 +8,7 @@ import Transactions from './components/transactions/Transactions';
 import Reports from './components/reports/Reports';
 import Goals from './components/goals/Goals';
 import Budgets from './components/budgets/Budgets';
+import NotificationCenter from './components/notifications/NotificationCenter';
 import { ErrorBoundary, ToastProvider } from './components/common';
 import Logger from './services/logger.service';
 import Seeder from './services/seeder.service';
@@ -153,6 +154,7 @@ const App: React.FC = () => {
             <button className="sidebar-toggle" onClick={toggleSidebar} title="Alternar sidebar">
               <i className="fas fa-chevron-left"></i>
             </button>
+            <NotificationCenter />
             <button className="theme-toggle" onClick={toggleTheme} title="Alternar tema">
               <i className={theme === 'dark' ? 'fas fa-sun' : 'fas fa-moon'}></i>
             </button>
