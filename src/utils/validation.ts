@@ -1,7 +1,7 @@
 /**
  * @file validation.ts
  * @description Sistema de validação avançada com Zod
- * @version 2.4.0
+ * @version 3.0.0 - Atualizado com nova estrutura hierárquica
  * @author DEV - Rickson (TQM)
  */
 
@@ -83,7 +83,7 @@ export const accountSchema = z.object({
 });
 
 /**
- * Schema para validação de transação
+ * Schema para validação de transação (v3.0 - com hierarquia)
  */
 export const transactionSchema = z.object({
   description: z
@@ -91,57 +91,96 @@ export const transactionSchema = z.object({
     .min(3, 'Descrição deve ter no mínimo 3 caracteres')
     .max(200, 'Descrição muito longa'),
   amount: currencySchema,
-  type: z.enum(['income', 'expense', 'transfer'], {
+  type: z.enum(['income', 'expense'], {
     message: 'Tipo de transação inválido',
   }),
+  
+  // Hierarquia: Sessão → Categoria → Subcategoria
+  section: z
+    .string()
+    .min(2, 'Sessão é obrigatória'),
   category: z
     .string()
     .min(2, 'Categoria deve ter no mínimo 2 caracteres')
     .max(50, 'Categoria muito longa'),
-  date: dateSchema,
-  accountId: z.string().uuid('ID de conta inválido'),
+  subcategory: z
+    .string()
+    .max(50, 'Subcategoria muito longa')
+    .optional(),
+  
+  // Tipo de despesa (apenas para expenses)
+  expenseType: z.enum(['fixed', 'variable'], {
+    message: 'Tipo de despesa inválido',
+  }).optional(),
+  
+  date: z.string().min(1, 'Data é obrigatória'),
   tags: z.array(z.string()).optional(),
-  notes: z.string().max(500, 'Notas muito longas').optional(),
-  recurring: z.boolean().optional(),
+  
+  // Recorrência
+  recurring: z.object({
+    enabled: z.boolean(),
+    frequency: z.enum(['once', 'daily', 'weekly', 'monthly', 'yearly']),
+    endDate: z.string().optional(),
+  }).optional(),
+  
+  // Metadados
+  metadata: z.object({
+    method: z.enum(['cash', 'debit', 'credit', 'transfer', 'pix', 'other']).optional(),
+    notes: z.string().max(500).optional(),
+  }).optional(),
 });
 
 /**
- * Schema para validação de orçamento
+ * Schema para validação de orçamento (v3.0)
  */
 export const budgetSchema = z.object({
+  section: z
+    .string()
+    .min(2, 'Sessão é obrigatória'),
   category: z
     .string()
     .min(2, 'Categoria deve ter no mínimo 2 caracteres')
     .max(50, 'Categoria muito longa'),
+  expenseType: z.enum(['fixed', 'variable'], {
+    message: 'Tipo de despesa inválido',
+  }).optional(),
   limit: currencySchema,
-  period: z.enum(['daily', 'weekly', 'monthly', 'yearly'], {
+  period: z.enum(['weekly', 'monthly', 'yearly'], {
     message: 'Período inválido',
   }),
   startDate: dateSchema,
   endDate: dateSchema,
-  alerts: z
-    .object({
-      enabled: z.boolean(),
-      threshold: z.number().min(0).max(100),
-    })
-    .optional(),
+  alertThreshold: z.number().min(0).max(100).default(80),
 });
 
 /**
- * Schema para validação de meta financeira
+ * Schema para validação de meta financeira (v3.0 - com lista de desejos)
  */
 export const goalSchema = z.object({
-  name: z
+  title: z
     .string()
-    .min(3, 'Nome deve ter no mínimo 3 caracteres')
-    .max(100, 'Nome muito longo'),
+    .min(3, 'Título deve ter no mínimo 3 caracteres')
+    .max(100, 'Título muito longo'),
+  description: z
+    .string()
+    .max(500, 'Descrição muito longa')
+    .optional(),
+  type: z.enum(['savings', 'investment', 'emergency', 'wishlist', 'debt-payment'], {
+    message: 'Tipo de meta inválido',
+  }),
   targetAmount: currencySchema,
   currentAmount: currencySchema.optional().default(0),
   deadline: dateSchema,
+  section: z.string().optional(),
   category: z.string().optional(),
   priority: z.enum(['low', 'medium', 'high'], {
     message: 'Prioridade inválida',
   }),
+  
+  // Para lista de desejos
+  isWishlist: z.boolean().optional(),
+  imageUrl: z.string().url('URL inválida').optional(),
+  link: z.string().url('URL inválida').optional(),
 });
 
 /**

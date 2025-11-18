@@ -3,28 +3,73 @@
  * 
  * DECISÃO: Tipos centralizados e bem definidos
  * BENEFÍCIO: Type safety + IntelliSense + documentação automática
+ * 
+ * @version 3.0.0 - Reestruturação com Sessões e Subcategorias
  */
+
+// ===== CONFIGURAÇÃO DE CATEGORIAS =====
+
+export interface CategoryConfig {
+  id: string;
+  name: string;
+  icon: string;
+  color: string;
+  section: string; // Sessão à qual pertence
+  subcategories?: string[]; // Subcategorias disponíveis
+}
+
+export interface SectionConfig {
+  id: string;
+  name: string;
+  icon: string;
+  color: string;
+  description: string;
+  categories: CategoryConfig[];
+}
 
 // ===== CORE TYPES =====
 
+export type TransactionType = 'income' | 'expense';
+export type ExpenseType = 'fixed' | 'variable'; // Fixo ou Variável
+export type RecurrenceFrequency = 'once' | 'daily' | 'weekly' | 'monthly' | 'yearly';
+export type PaymentMethod = 'cash' | 'debit' | 'credit' | 'transfer' | 'pix' | 'other';
+
 export interface Transaction {
   id: string;
-  type: 'income' | 'expense';
+  type: TransactionType;
   amount: number;
   description: string;
-  category: string;
+  
+  // Hierarquia: Sessão → Categoria → Subcategoria
+  section: string;        // Ex: "Despesas da Casa"
+  category: string;       // Ex: "Moradia"
+  subcategory?: string;   // Ex: "Aluguel"
+  
+  // Tipo de despesa (apenas para expenses)
+  expenseType?: ExpenseType; // 'fixed' | 'variable'
+  
   date: Date;
   tags?: string[];
+  
+  // Recorrência
   recurring?: {
     enabled: boolean;
-    frequency: 'daily' | 'weekly' | 'monthly' | 'yearly';
+    frequency: RecurrenceFrequency;
     endDate?: Date;
+    nextDate?: Date;
   };
+  
+  // Metadados
   metadata?: {
     location?: string;
-    method?: 'cash' | 'card' | 'transfer' | 'pix';
+    method?: PaymentMethod;
     notes?: string;
+    attachment?: string; // URL do comprovante
   };
+  
+  // Auditoria
+  createdAt?: string;
+  updatedAt?: string;
 }
 
 export interface FinancialSummary {
@@ -150,25 +195,51 @@ export interface CategoryTemplate {
 
 // ===== GOALS & BUDGETS =====
 
+export type GoalType = 'savings' | 'investment' | 'emergency' | 'wishlist' | 'debt-payment';
+
 export interface FinancialGoal {
   id: string;
   title: string;
+  description?: string;
+  type: GoalType; // savings, investment, emergency, wishlist, debt-payment
   targetAmount: number;
   currentAmount: number;
   deadline: Date;
+  section?: string; // Sessão relacionada
   category?: string;
   priority: 'low' | 'medium' | 'high';
-  status: 'active' | 'completed' | 'paused';
+  status: 'active' | 'completed' | 'paused' | 'cancelled';
+  icon?: string;
+  color?: string;
+  
+  // Para lista de desejos
+  isWishlist?: boolean;
+  imageUrl?: string; // Imagem do desejo
+  link?: string; // Link do produto/serviço
+  
+  // Auditoria
+  createdAt?: string;
+  updatedAt?: string;
+  completedAt?: string;
 }
 
 export interface Budget {
   id: string;
+  section: string; // Sessão
   category: string;
+  expenseType?: ExpenseType; // 'fixed' | 'variable'
   limit: number;
   spent: number;
+  remaining: number; // Calculado automaticamente
   period: 'weekly' | 'monthly' | 'yearly';
-  alertThreshold: number; // Percentage
+  alertThreshold: number; // Percentage (ex: 80 = alerta aos 80%)
   isExceeded: boolean;
+  
+  // Metadados
+  startDate: Date;
+  endDate: Date;
+  createdAt?: string;
+  updatedAt?: string;
 }
 
 // ===== API RESPONSES =====

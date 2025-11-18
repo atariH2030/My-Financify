@@ -1,6 +1,6 @@
 {
   "name": "financy-life",
-  "version": "2.4.0",
+  "version": "2.5.0",
   "description": "Sistema de gestão financeira pessoal com arquitetura moderna, robusta e otimizada",
   "type": "module",
   "scripts": {
@@ -24,6 +24,7 @@
     "framer-motion": "^12.23.24",
     "lodash": "^4.17.21",
     "react": "^19.2.0",
+    "react-chartjs-2": "^5.3.1",
     "react-dom": "^19.2.0",
     "uuid": "^13.0.0",
     "workbox-window": "^7.3.0",

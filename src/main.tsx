@@ -3,6 +3,8 @@ import { createRoot } from 'react-dom/client';
 import './styles/globals.css';
 import './styles/smooth-transitions.css';
 import Dashboard from './components/dashboard/Dashboard';
+import DashboardV2 from './components/dashboard/DashboardV2';
+import Transactions from './components/transactions/Transactions';
 import Reports from './components/reports/Reports';
 import { ErrorBoundary, ToastProvider } from './components/common';
 import Logger from './services/logger.service';
@@ -88,11 +90,13 @@ const App: React.FC = () => {
   const renderPage = () => {
     switch (currentPage) {
       case 'dashboard':
-        return <Dashboard />;
+        return <DashboardV2 />;
+      case 'transactions':
+        return <Transactions />;
       case 'reports':
         return <Reports />;
       default:
-        return <Dashboard />;
+        return <DashboardV2 />;
     }
   };
 
@@ -148,11 +152,14 @@ const App: React.FC = () => {
                 onClick={(e) => {
                   e.preventDefault();
                   setCurrentPage('dashboard');
-                  setSidebarActive(false);
+                  // Fecha sidebar apenas no mobile
+                  if (window.innerWidth <= 768) {
+                    setSidebarActive(false);
+                  }
                 }}
               >
                 <i className="fas fa-tachometer-alt"></i>
-                <span>Dashboard</span>
+                <span>Painel Principal</span>
               </a>
             </li>
             <li>
@@ -162,7 +169,10 @@ const App: React.FC = () => {
                 onClick={(e) => {
                   e.preventDefault();
                   setCurrentPage('reports');
-                  setSidebarActive(false);
+                  // Fecha sidebar apenas no mobile
+                  if (window.innerWidth <= 768) {
+                    setSidebarActive(false);
+                  }
                 }}
               >
                 <i className="fas fa-chart-bar"></i>
@@ -170,15 +180,32 @@ const App: React.FC = () => {
               </a>
             </li>
             <li>
-              <a href="#" className="nav-item">
-                <i className="fas fa-exchange-alt"></i>
-                <span>Transações</span>
+              <a 
+                href="#" 
+                className={`nav-item ${currentPage === 'transactions' ? 'active' : ''}`}
+                onClick={(e) => {
+                  e.preventDefault();
+                  setCurrentPage('transactions');
+                  // Fecha sidebar apenas no mobile
+                  if (window.innerWidth <= 768) {
+                    setSidebarActive(false);
+                  }
+                }}
+              >
+                <i className="fas fa-wallet"></i>
+                <span>Receitas e Despesas</span>
               </a>
             </li>
             <li>
               <a href="#" className="nav-item">
                 <i className="fas fa-bullseye"></i>
-                <span>Metas</span>
+                <span>Metas e Objetivos</span>
+              </a>
+            </li>
+            <li>
+              <a href="#" className="nav-item">
+                <i className="fas fa-chart-pie"></i>
+                <span>Orçamentos</span>
               </a>
             </li>
             <li>
