@@ -192,9 +192,11 @@
 }
 
 /* Loading state */
-.dashboard-v2.loading {
-  opacity: 0.6;
-  pointer-events: none;
+.dashboard-loading {
+  text-align: center;
+  padding: var(--spacing-xxxl);
+  color: var(--text-secondary);
+  font-size: 1.1rem;
 }
 
 /* Empty state */
@@ -204,11 +206,13 @@
   color: var(--text-secondary);
 }
 
-.dashboard-empty h3 {
-  font-size: 1.5rem;
+.dashboard-empty p:first-child {
+  font-size: 3rem;
   margin-bottom: var(--spacing-md);
 }
 
-.dashboard-empty p {
-  margin-bottom: var(--spacing-xl);
+.dashboard-empty-hint {
+  font-size: 1rem;
+  color: var(--text-tertiary);
+  margin-top: var(--spacing-sm);
 }
