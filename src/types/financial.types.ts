@@ -225,19 +225,14 @@ export interface FinancialGoal {
 
 export interface Budget {
   id: string;
-  section: string; // Sessão
   category: string;
-  expenseType?: ExpenseType; // 'fixed' | 'variable'
-  limit: number;
-  spent: number;
-  remaining: number; // Calculado automaticamente
-  period: 'weekly' | 'monthly' | 'yearly';
+  description?: string;
+  period: 'monthly' | 'quarterly' | 'yearly';
+  limitAmount: number;
+  currentSpent: number;
   alertThreshold: number; // Percentage (ex: 80 = alerta aos 80%)
-  isExceeded: boolean;
-  
-  // Metadados
-  startDate: Date;
-  endDate: Date;
+  status: 'active' | 'paused' | 'completed';
+  startDate: string;
   createdAt?: string;
   updatedAt?: string;
 }

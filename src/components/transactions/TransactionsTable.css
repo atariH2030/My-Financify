@@ -360,10 +360,41 @@
 }
 
 .transactions-list td {
-  padding: 16px;
+  padding: 14px 12px;
   font-size: 14px;
   color: var(--text-primary, #1f2937);
   vertical-align: middle;
+}
+
+/* Forçar alinhamento específico de cada coluna */
+.transactions-list td:nth-child(1) {
+  text-align: left !important;
+  padding-left: 16px !important;
+}
+
+.transactions-list td:nth-child(2) {
+  text-align: left !important;
+  white-space: normal;
+  max-width: 300px;
+}
+
+.transactions-list td:nth-child(3) {
+  text-align: left !important;
+}
+
+.transactions-list td:nth-child(4) {
+  text-align: center !important;
+}
+
+.transactions-list td:nth-child(5) {
+  text-align: right !important;
+  padding-right: 16px !important;
+  font-weight: 600;
+}
+
+.transactions-list td:nth-child(6) {
+  text-align: center !important;
+  padding-right: 16px !important;
 }
 
 .date-col {

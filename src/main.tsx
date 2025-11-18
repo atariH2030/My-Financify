@@ -7,6 +7,7 @@ import DashboardV2 from './components/dashboard/DashboardV2';
 import Transactions from './components/transactions/Transactions';
 import Reports from './components/reports/Reports';
 import Goals from './components/goals/Goals';
+import Budgets from './components/budgets/Budgets';
 import { ErrorBoundary, ToastProvider } from './components/common';
 import Logger from './services/logger.service';
 import Seeder from './services/seeder.service';
@@ -96,6 +97,8 @@ const App: React.FC = () => {
         return <Transactions />;
       case 'goals':
         return <Goals />;
+      case 'budgets':
+        return <Budgets />;
       case 'reports':
         return <Reports />;
       default:
@@ -217,14 +220,19 @@ const App: React.FC = () => {
               </a>
             </li>
             <li>
-              <a href="#" className="nav-item">
-                <i className="fas fa-bullseye"></i>
-                <span>Metas e Objetivos</span>
-              </a>
-            </li>
-            <li>
-              <a href="#" className="nav-item">
-                <i className="fas fa-chart-pie"></i>
+              <a 
+                href="#" 
+                className={`nav-item ${currentPage === 'budgets' ? 'active' : ''}`}
+                onClick={(e) => {
+                  e.preventDefault();
+                  setCurrentPage('budgets');
+                  // Fecha sidebar apenas no mobile
+                  if (window.innerWidth <= 768) {
+                    setSidebarActive(false);
+                  }
+                }}
+              >
+                <i className="fas fa-wallet"></i>
                 <span>Orçamentos</span>
               </a>
             </li>

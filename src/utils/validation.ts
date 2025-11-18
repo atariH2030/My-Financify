@@ -131,26 +131,27 @@ export const transactionSchema = z.object({
 });
 
 /**
- * Schema para validação de orçamento (v3.0)
+ * Schema para validação de orçamento (v3.2 - Budget atualizado)
  */
 export const budgetSchema = z.object({
-  section: z
-    .string()
-    .min(2, 'Sessão é obrigatória'),
   category: z
     .string()
     .min(2, 'Categoria deve ter no mínimo 2 caracteres')
     .max(50, 'Categoria muito longa'),
-  expenseType: z.enum(['fixed', 'variable'], {
-    message: 'Tipo de despesa inválido',
-  }).optional(),
-  limit: currencySchema,
-  period: z.enum(['weekly', 'monthly', 'yearly'], {
+  description: z
+    .string()
+    .max(500, 'Descrição muito longa')
+    .optional(),
+  limitAmount: currencySchema,
+  period: z.enum(['monthly', 'quarterly', 'yearly'], {
     message: 'Período inválido',
   }),
-  startDate: dateSchema,
-  endDate: dateSchema,
-  alertThreshold: z.number().min(0).max(100).default(80),
+  startDate: z.string().min(1, 'Data de início é obrigatória'),
+  alertThreshold: z.number().min(50).max(100).default(80),
+  status: z.enum(['active', 'paused', 'completed'], {
+    message: 'Status inválido',
+  }),
+  currentSpent: z.number().min(0).optional().default(0),
 });
 
 /**
@@ -291,3 +292,16 @@ export function getFieldErrors(
     return [];
   }
 }
+
+/**
+ * Validation functions for convenience
+ */
+export const validateTransaction = (data: unknown) => transactionSchema.safeParse(data);
+export const validateGoal = (data: unknown) => goalSchema.safeParse(data);
+export const validateBudget = (data: unknown) => budgetSchema.safeParse(data);
+
+/**
+ * Export ValidationError type from Zod
+ */
+export type ValidationError = z.ZodIssue;
+
