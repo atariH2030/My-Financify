@@ -225,3 +225,36 @@ export const safeStorage = {
     }
   }
 };
+
+// Aliases para retrocompatibilidade com testes
+export const formatCurrency = formatCurrencyString;
+
+/**
+ * Format percentage - Formata número como porcentagem
+ */
+export const formatPercentage = (value: number, decimals: number = 2): string => {
+  return `${(value * 100).toFixed(decimals).replace('.', ',')}%`;
+};
+
+/**
+ * Truncate string - Trunca string longa
+ */
+export const truncateString = (str: string, maxLength: number): string => {
+  if (str.length <= maxLength) return str;
+  return `${str.substring(0, maxLength)}...`;
+};
+
+/**
+ * Deep clone object - Cria cópia profunda
+ */
+export const deepClone = <T>(obj: T): T => {
+  return JSON.parse(JSON.stringify(obj));
+};
+
+/**
+ * Check if object is empty
+ */
+export const isEmptyObject = (obj: object): boolean => {
+  return Object.keys(obj).length === 0;
+};
+

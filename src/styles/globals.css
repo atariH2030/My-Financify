@@ -1,7 +1,7 @@
 /**
  * Global Styles - Estilos base da aplicação
  * Integração com legacy assets + componentes modernos
- * v2.3 - Performance Otimizada + Skeleton Loaders
+ * v2.4 - Animações + PWA + Testes
  */
 
 /* ===== IMPORT DESIGN SYSTEM ===== */
@@ -15,6 +15,7 @@
 @import '../components/common/ErrorBoundary.css';
 @import '../components/common/Toast.css';
 @import '../components/common/SkeletonLoader.css';
+@import '../components/common/AnimationsDemo.css';
 
 /* ===== IMPORT MODULES ===== */
 @import './sidebar.css';
