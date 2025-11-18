@@ -6,6 +6,7 @@ import Dashboard from './components/dashboard/Dashboard';
 import DashboardV2 from './components/dashboard/DashboardV2';
 import Transactions from './components/transactions/Transactions';
 import Reports from './components/reports/Reports';
+import Goals from './components/goals/Goals';
 import { ErrorBoundary, ToastProvider } from './components/common';
 import Logger from './services/logger.service';
 import Seeder from './services/seeder.service';
@@ -93,6 +94,8 @@ const App: React.FC = () => {
         return <DashboardV2 />;
       case 'transactions':
         return <Transactions />;
+      case 'goals':
+        return <Goals />;
       case 'reports':
         return <Reports />;
       default:
@@ -194,6 +197,23 @@ const App: React.FC = () => {
               >
                 <i className="fas fa-wallet"></i>
                 <span>Receitas e Despesas</span>
+              </a>
+            </li>
+            <li>
+              <a 
+                href="#" 
+                className={`nav-item ${currentPage === 'goals' ? 'active' : ''}`}
+                onClick={(e) => {
+                  e.preventDefault();
+                  setCurrentPage('goals');
+                  // Fecha sidebar apenas no mobile
+                  if (window.innerWidth <= 768) {
+                    setSidebarActive(false);
+                  }
+                }}
+              >
+                <i className="fas fa-bullseye"></i>
+                <span>Metas e Objetivos</span>
               </a>
             </li>
             <li>

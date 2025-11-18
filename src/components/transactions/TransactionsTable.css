@@ -225,9 +225,36 @@
   overflow: hidden;
 }
 
+/* Container com scroll horizontal para telas intermediárias */
+.table-scroll-wrapper {
+  overflow-x: auto;
+  overflow-y: visible;
+  -webkit-overflow-scrolling: touch;
+}
+
+.table-scroll-wrapper::-webkit-scrollbar {
+  height: 8px;
+}
+
+.table-scroll-wrapper::-webkit-scrollbar-track {
+  background: var(--bg-secondary, #f3f4f6);
+  border-radius: 4px;
+}
+
+.table-scroll-wrapper::-webkit-scrollbar-thumb {
+  background: var(--border-color, #d1d5db);
+  border-radius: 4px;
+}
+
+.table-scroll-wrapper::-webkit-scrollbar-thumb:hover {
+  background: var(--text-secondary, #9ca3af);
+}
+
 .transactions-list {
   width: 100%;
   border-collapse: collapse;
+  table-layout: auto;
+  min-width: 100%;
 }
 
 .transactions-list thead {
@@ -236,13 +263,72 @@
 }
 
 .transactions-list th {
-  padding: 14px 16px;
+  padding: 14px 12px;
   text-align: left;
   font-size: 13px;
   font-weight: 700;
   color: var(--text-secondary, #6b7280);
   text-transform: uppercase;
   letter-spacing: 0.5px;
+  white-space: nowrap;
+}
+
+/* Controle responsivo de larguras */
+.transactions-list th:nth-child(1),
+.transactions-list td:nth-child(1) {
+  /* Data */
+  width: 100px;
+  text-align: left;
+  padding-left: 16px;
+  padding-right: 12px;
+}
+
+.transactions-list th:nth-child(2),
+.transactions-list td:nth-child(2) {
+  /* Descrição - Flexível */
+  width: 30%;
+  min-width: 200px;
+  text-align: left;
+  padding-left: 12px;
+  padding-right: 12px;
+}
+
+.transactions-list th:nth-child(3),
+.transactions-list td:nth-child(3) {
+  /* Categoria */
+  width: 18%;
+  min-width: 150px;
+  text-align: left;
+  padding-left: 12px;
+  padding-right: 12px;
+}
+
+.transactions-list th:nth-child(4),
+.transactions-list td:nth-child(4) {
+  /* Tipo */
+  width: 15%;
+  min-width: 120px;
+  text-align: center;
+  padding-left: 8px;
+  padding-right: 8px;
+}
+
+.transactions-list th:nth-child(5),
+.transactions-list td:nth-child(5) {
+  /* Valor */
+  width: 130px;
+  text-align: right;
+  padding-left: 12px;
+  padding-right: 16px;
+}
+
+.transactions-list th:nth-child(6),
+.transactions-list td:nth-child(6) {
+  /* Ações */
+  width: 100px;
+  text-align: center;
+  padding-left: 8px;
+  padding-right: 16px;
 }
 
 .transactions-list th.sortable {
@@ -277,6 +363,7 @@
   padding: 16px;
   font-size: 14px;
   color: var(--text-primary, #1f2937);
+  vertical-align: middle;
 }
 
 .date-col {
@@ -286,7 +373,7 @@
 }
 
 .description-col {
-  min-width: 250px;
+  /* Largura controlada pelo nth-child acima */
 }
 
 .description-content {
@@ -315,7 +402,7 @@
 }
 
 .category-col {
-  min-width: 150px;
+  /* Largura controlada pelo nth-child acima */
 }
 
 .category-badge {
@@ -328,11 +415,13 @@
   font-size: 13px;
   font-weight: 600;
   background: var(--card-bg, #ffffff);
+  white-space: nowrap;
 }
 
 .expense-type-badge {
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: 6px;
   padding: 6px 12px;
   border-radius: 8px;
@@ -340,13 +429,15 @@
   font-size: 12px;
   font-weight: 600;
   white-space: nowrap;
+  margin: 0 auto;
 }
 
 .amount-col {
-  text-align: right;
+  text-align: right !important;
   font-size: 16px;
   font-weight: 700;
   white-space: nowrap;
+  padding-right: 16px !important;
 }
 
 .amount-col.income {
@@ -358,7 +449,7 @@
 }
 
 .actions-col {
-  text-align: right;
+  text-align: center !important;
   white-space: nowrap;
 }
 
@@ -370,7 +461,10 @@
   cursor: pointer;
   font-size: 16px;
   transition: all 0.2s ease;
-  margin-left: 6px;
+  margin: 0 3px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .action-btn:hover {
@@ -415,21 +509,102 @@
 }
 
 /* ===== RESPONSIVE ===== */
+
+/* Monitores grandes e TVs (1920px+) */
+@media (min-width: 1920px) {
+  .transactions-list th:nth-child(2),
+  .transactions-list td:nth-child(2) {
+    width: 35%;
+  }
+}
+
+/* Telas médias-grandes (1200px - 1600px) - Notebooks maiores */
+@media (max-width: 1600px) {
+  .transactions-list th,
+  .transactions-list td {
+    padding: 12px 10px;
+    font-size: 13px;
+  }
+  
+  .category-badge,
+  .expense-type-badge {
+    font-size: 11px;
+    padding: 5px 10px;
+  }
+}
+
+/* Telas médias (1024px - 1200px) - Notebooks padrão, tela dividida em 50% */
+@media (max-width: 1200px) {
+  .transactions-list th:nth-child(2),
+  .transactions-list td:nth-child(2) {
+    width: 25%;
+    min-width: 180px;
+  }
+
+  .transactions-list th:nth-child(3),
+  .transactions-list td:nth-child(3) {
+    width: 20%;
+    min-width: 140px;
+  }
+
+  .transactions-list th:nth-child(4),
+  .transactions-list td:nth-child(4) {
+    width: 15%;
+    min-width: 110px;
+  }
+
+  .section-name {
+    font-size: 16px;
+  }
+}
+
+/* Telas pequenas-médias (768px - 1024px) - Tablets landscape, tela dividida 70/30 */
 @media (max-width: 1024px) {
   .transactions-list {
-    font-size: 13px;
+    font-size: 12px;
   }
 
   .transactions-list th,
   .transactions-list td {
-    padding: 12px;
+    padding: 10px 8px;
   }
 
-  .description-col {
-    min-width: 200px;
+  .transactions-list th:nth-child(2),
+  .transactions-list td:nth-child(2) {
+    width: 28%;
+    min-width: 160px;
+  }
+
+  .transactions-list th:nth-child(3),
+  .transactions-list td:nth-child(3) {
+    width: 18%;
+    min-width: 120px;
+  }
+
+  .transactions-list th:nth-child(4),
+  .transactions-list td:nth-child(4) {
+    width: 14%;
+    min-width: 100px;
+  }
+
+  .transactions-list th:nth-child(5),
+  .transactions-list td:nth-child(5) {
+    width: 120px;
+  }
+
+  .category-badge {
+    font-size: 11px;
+    padding: 4px 8px;
+    gap: 4px;
+  }
+
+  .expense-type-badge {
+    font-size: 10px;
+    padding: 4px 8px;
   }
 }
 
+/* Tablets portrait e telas muito divididas (600px - 768px) */
 @media (max-width: 768px) {
   .table-filters {
     padding: 16px;
@@ -451,6 +626,25 @@
     font-size: 15px;
   }
 
+  /* Esconder colunas menos importantes em telas pequenas */
+  .transactions-list th:nth-child(4),
+  .transactions-list td:nth-child(4) {
+    display: none; /* Esconde coluna TIPO */
+  }
+
+  .transactions-list th:nth-child(2),
+  .transactions-list td:nth-child(2) {
+    width: 40%;
+  }
+
+  .transactions-list th:nth-child(3),
+  .transactions-list td:nth-child(3) {
+    width: 25%;
+  }
+}
+
+/* Mobile (menos de 600px) - Transforma em cards */
+@media (max-width: 600px) {
   /* Tabela responsiva - cards no mobile */
   .transactions-list {
     display: block;
@@ -500,7 +694,11 @@
 
   .action-btn {
     flex: 1;
-    margin-left: 0;
+    margin: 0;
+  }
+
+  .table-summary {
+    grid-template-columns: 1fr;
   }
 }
 

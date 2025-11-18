@@ -286,23 +286,24 @@ const TransactionsTable: React.FC<TransactionsTableProps> = ({
                     exit={{ opacity: 0, height: 0 }}
                     className="section-content"
                   >
-                    <table className="transactions-list">
-                      <thead>
-                        <tr>
-                          <th onClick={() => handleSort('date')} className="sortable">
-                            Data {sortBy === 'date' && (sortOrder === 'asc' ? '↑' : '↓')}
-                          </th>
-                          <th onClick={() => handleSort('description')} className="sortable">
-                            Descrição {sortBy === 'description' && (sortOrder === 'asc' ? '↑' : '↓')}
-                          </th>
-                          <th>Categoria</th>
-                          <th>Tipo</th>
-                          <th onClick={() => handleSort('amount')} className="sortable amount-col">
-                            Valor {sortBy === 'amount' && (sortOrder === 'asc' ? '↑' : '↓')}
-                          </th>
-                          <th className="actions-col">Ações</th>
-                        </tr>
-                      </thead>
+                    <div className="table-scroll-wrapper">
+                      <table className="transactions-list">
+                        <thead>
+                          <tr>
+                            <th onClick={() => handleSort('date')} className="sortable">
+                              Data {sortBy === 'date' && (sortOrder === 'asc' ? '↑' : '↓')}
+                            </th>
+                            <th onClick={() => handleSort('description')} className="sortable">
+                              Descrição {sortBy === 'description' && (sortOrder === 'asc' ? '↑' : '↓')}
+                            </th>
+                            <th>Categoria</th>
+                            <th>Tipo</th>
+                            <th onClick={() => handleSort('amount')} className="sortable amount-col">
+                              Valor {sortBy === 'amount' && (sortOrder === 'asc' ? '↑' : '↓')}
+                            </th>
+                            <th className="actions-col">Ações</th>
+                          </tr>
+                        </thead>
                       <tbody>
                         {group.transactions.map((transaction, index) => {
                           const category = getCategoriesBySection(transaction.section).find(
@@ -379,6 +380,7 @@ const TransactionsTable: React.FC<TransactionsTableProps> = ({
                         })}
                       </tbody>
                     </table>
+                    </div>
                   </motion.div>
                 )}
               </AnimatePresence>
