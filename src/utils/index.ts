@@ -1,7 +1,7 @@
 /**
  * Utils - Exportação centralizada
  * Utilities para performance, hooks customizados, animações, validação e datas
- * v2.4 - Fase 4 Completa
+ * v3.11 - Sistema de formatação de moedas ABNT
  */
 
 // Custom Hooks
@@ -9,6 +9,9 @@ export * from './hooks';
 
 // Performance Utilities
 export * from './performance';
+
+// Currency Formatting (ABNT + International)
+export * from './currency';
 
 // Animations (Framer Motion)
 export * from './animations';

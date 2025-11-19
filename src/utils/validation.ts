@@ -184,31 +184,6 @@ export const recurringTransactionSchema = z.object({
 });
 
 /**
- * Schema para validação de contas/carteiras (v3.7)
- */
-export const accountSchema = z.object({
-  name: z
-    .string()
-    .min(2, 'Nome deve ter no mínimo 2 caracteres')
-    .max(100, 'Nome muito longo'),
-  type: z.enum(['checking', 'savings', 'credit', 'debit', 'cash', 'investment', 'other'], {
-    message: 'Tipo de conta inválido',
-  }),
-  institution: z.string().max(100).optional(),
-  lastFourDigits: z.string().length(4, 'Deve ter exatamente 4 dígitos').optional(),
-  lastDigits: z.string().length(4, 'Deve ter exatamente 4 dígitos').optional(),
-  brand: z.enum(['visa', 'mastercard', 'elo', 'amex', 'hipercard', 'diners', 'discover', 'other', 'none']).optional(),
-  cardBrand: z.enum(['visa', 'mastercard', 'elo', 'amex', 'hipercard', 'diners', 'discover', 'other', 'none']).optional(),
-  color: z.string().min(4, 'Cor é obrigatória'),
-  icon: z.string().min(2, 'Ícone é obrigatório'),
-  creditLimit: z.number().min(0).optional(),
-  initialBalance: z.number().optional(),
-  closingDay: z.number().min(1).max(31).optional(),
-  dueDay: z.number().min(1).max(31).optional(),
-  isActive: z.boolean().default(true),
-});
-
-/**
  * Schema para validação de meta financeira (v3.0 - com lista de desejos)
  */
 export const goalSchema = z.object({
