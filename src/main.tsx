@@ -9,6 +9,7 @@ import Reports from './components/reports/Reports';
 import ReportsAdvanced from './components/reports/ReportsAdvanced';
 import Goals from './components/goals/Goals';
 import Budgets from './components/budgets/Budgets';
+import Settings from './components/settings/Settings';
 import NotificationCenter from './components/notifications/NotificationCenter';
 import { ErrorBoundary, ToastProvider } from './components/common';
 import Logger from './services/logger.service';
@@ -115,6 +116,8 @@ const App: React.FC = () => {
         return <Reports />;
       case 'reports-advanced':
         return <ReportsAdvanced />;
+      case 'settings':
+        return <Settings />;
       default:
         return <DashboardV2 />;
     }
@@ -271,7 +274,17 @@ const App: React.FC = () => {
               </a>
             </li>
             <li>
-              <a href="#" className="nav-item">
+              <a 
+                href="#" 
+                className={`nav-item ${currentPage === 'settings' ? 'active' : ''}`}
+                onClick={(e) => {
+                  e.preventDefault();
+                  setCurrentPage('settings');
+                  if (window.innerWidth <= 768) {
+                    setSidebarActive(false);
+                  }
+                }}
+              >
                 <i className="fas fa-cog"></i>
                 <span>Configurações</span>
               </a>

@@ -2,6 +2,7 @@
     "version": "0.2",
     "language": "en,pt,pt-BR",
     "words": [
+        "bdgs",
         "chartjs",
         "Configurações",
         "Contentful",
@@ -11,6 +12,9 @@
         "fullwidth",
         "janking",
         "kpis",
+        "memoização",
+        "notif",
+        "notifs",
         "powerbi",
         "PowerBI",
         "Receitas",
@@ -22,6 +26,7 @@
         "selic",
         "SELIC",
         "Transações",
+        "txns",
         "ultrawide",
         "Ultrawide",
         "Variáveis"
