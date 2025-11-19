@@ -130,6 +130,30 @@ export interface DashboardLayout {
   updatedAt?: string;
 }
 
+// ===== EXPORT SYSTEM =====
+
+export type ExportFormat = 'csv' | 'excel' | 'json' | 'pdf';
+export type ExportDataType = 'transactions' | 'accounts' | 'budgets' | 'recurring' | 'all';
+
+export interface ExportOptions {
+  format: ExportFormat;
+  dataType: ExportDataType;
+  dateRange?: {
+    start: string;
+    end: string;
+  };
+  includeMetadata?: boolean;
+  fileName?: string;
+}
+
+export interface ExportResult {
+  success: boolean;
+  fileName: string;
+  fileSize?: number;
+  recordCount: number;
+  error?: string;
+}
+
 // ===== CORE TYPES =====
 
 export type TransactionType = 'income' | 'expense';
@@ -386,15 +410,7 @@ export interface ValidationResult {
   }[];
 }
 
-// ===== EXPORT TYPES =====
-
-export interface ExportOptions {
-  format: 'csv' | 'xlsx' | 'pdf';
-  dateRange: DateRange;
-  includeCategories: string[];
-  includeFields: (keyof Transaction)[];
-  groupBy?: 'category' | 'month' | 'type';
-}
+// ===== IMPORT TYPES =====
 
 export interface ImportOptions {
   format: 'csv' | 'xlsx';

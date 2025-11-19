@@ -8,6 +8,8 @@
         "Configurações",
         "Contentful",
         "dashboardv",
+        "exportmodal",
+        "exportservice",
         "financify",
         "Financify",
         "Financy",
@@ -22,8 +24,9 @@
         "mockados",
         "notif",
         "notifs",
-        "personalizável",
+        "Nubank",
         "personalizáveis",
+        "personalizável",
         "powerbi",
         "PowerBI",
         "prefs",
@@ -50,7 +53,8 @@
         "widgetgrid",
         "widgetservice",
         "widgettype",
-        "widgettypes"
+        "widgettypes",
+        "xlsx"
     ],
     "ignorePaths": [
         "node_modules/**",

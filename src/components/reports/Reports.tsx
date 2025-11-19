@@ -1,4 +1,7 @@
 import React from 'react';
+import { useState } from 'react';
+import Button from '../common/Button';
+import ExportModal from '../export/ExportModal';
 
 interface KPICardProps {
   title: string;
@@ -26,6 +29,8 @@ interface ReportsProps {
 }
 
 const Reports: React.FC<ReportsProps> = ({ className }) => {
+  const [showExportModal, setShowExportModal] = useState(false);
+
   return (
     <div className={`reports-module ${className || ''}`}>
       {/* Filter Section */}
@@ -65,13 +70,19 @@ const Reports: React.FC<ReportsProps> = ({ className }) => {
 
       {/* Report Actions */}
       <div className="report-actions">
-        <button className="btn-export">
-          📊 Exportar Excel
-        </button>
+        <Button variant="primary" onClick={() => setShowExportModal(true)}>
+          📥 Exportar Dados
+        </Button>
         <button className="btn-powerbi">
           📈 Abrir no Power BI
         </button>
       </div>
+
+      {/* Export Modal */}
+      <ExportModal 
+        isOpen={showExportModal} 
+        onClose={() => setShowExportModal(false)} 
+      />
 
       {/* KPI Grid */}
       <div className="kpi-grid">
