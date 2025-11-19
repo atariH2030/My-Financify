@@ -195,7 +195,7 @@
 
 .main-content > * {
   width: 100%;
-  max-width: 1400px; /* Largura máxima para telas muito grandes */
+  max-width: none; /* Remove limite para usar todo espaço disponível */
   margin: 0 auto;
   padding: 0;
   box-sizing: border-box;
@@ -214,7 +214,7 @@
 .sidebar.active ~ .main-content > *,
 .main-content.sidebar-active > * {
   width: 100%;
-  max-width: 900px; /* Menor e mais centralizado quando sidebar ativa */
+  max-width: none; /* Usa todo espaço disponível */
   margin: 0 auto;
   padding: 0;
   box-sizing: border-box;
@@ -231,7 +231,7 @@
 .sidebar.collapsed + .main-content > *,
 .main-content.sidebar-collapsed > * {
   width: 100%;
-  max-width: 1400px;
+  max-width: none; /* Usa todo espaço disponível */
   margin: 0 auto;
   padding: 0;
   box-sizing: border-box;

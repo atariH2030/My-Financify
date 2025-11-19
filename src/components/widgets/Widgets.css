@@ -3,8 +3,8 @@
 /* Widget Grid Container */
 .widget-grid-container {
   padding: 1.5rem;
-  max-width: 1400px;
-  margin: 0 auto;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .widget-grid-header {
@@ -26,9 +26,10 @@
 /* Widget Grid */
 .widget-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
   gap: 1.5rem;
   align-items: start;
+  width: 100%;
 }
 
 /* Base Widget */
@@ -57,7 +58,13 @@
 
 .widget-large {
   min-height: 300px;
-  grid-column: span 2;
+}
+
+/* Large widgets ocupam 2 colunas apenas se houver espaço */
+@media (min-width: 768px) {
+  .widget-large {
+    grid-column: span 2;
+  }
 }
 
 .widget-full {
@@ -269,11 +276,13 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 0.75rem;
+  padding: 0.75rem 1rem;
   background: var(--background);
   border-radius: 8px;
   border-left: 3px solid var(--border-color);
   transition: all 0.2s ease;
+  gap: 1rem;
+  min-width: 0; /* Permite shrink */
 }
 
 .recurring-item:hover {
@@ -292,12 +301,18 @@
   display: flex;
   flex-direction: column;
   gap: 0.25rem;
+  flex: 1;
+  min-width: 0;
 }
 
 .recurring-name {
   font-size: 0.875rem;
   font-weight: 500;
   color: var(--text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  flex-shrink: 0;
 }
 
 .recurring-date {
@@ -305,16 +320,22 @@
   color: var(--text-secondary);
 }
 
-.recurring-amount {
+.recurring-amount,
+.recurring-value {
   font-size: 1rem;
   font-weight: 600;
+  white-space: nowrap;
+  flex-shrink: 0;
+  text-align: right;
 }
 
-.recurring-amount.income {
+.recurring-amount.income,
+.recurring-item.income .recurring-value {
   color: var(--success);
 }
 
-.recurring-amount.expense {
+.recurring-amount.expense,
+.recurring-item.expense .recurring-value {
   color: var(--danger);
 }
 
@@ -441,9 +462,19 @@
 }
 
 /* Responsive */
+@media (max-width: 1200px) {
+  .widget-grid {
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  }
+}
+
 @media (max-width: 1024px) {
   .widget-large {
     grid-column: span 1;
+  }
+  
+  .widget-grid {
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
   }
 }
 
@@ -451,6 +482,16 @@
   .widget-grid-container {
     padding: 1rem;
   }
+  
+  .widget-grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+  
+  .widget-large {
+    min-height: 250px;
+  }
+}
 
   .widget-grid {
     grid-template-columns: 1fr;

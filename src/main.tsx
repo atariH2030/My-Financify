@@ -14,6 +14,8 @@ import NotificationCenter from './components/notifications/NotificationCenter';
 import Accounts from './components/accounts/Accounts';
 import RecurringTransactions from './components/recurring/RecurringTransactions';
 import { ErrorBoundary, ToastProvider } from './components/common';
+import { ToastEnhancedProvider } from './components/common';
+import Fase2Example from './components/common/Fase2Example';
 import Logger from './services/logger.service';
 import Seeder from './services/seeder.service';
 import MigrationService from './services/migration.service';
@@ -124,6 +126,8 @@ const App: React.FC = () => {
         return <ReportsAdvanced />;
       case 'settings':
         return <Settings />;
+      case 'fase2-demo':
+        return <Fase2Example />;
       default:
         return <DashboardV2 />;
     }
@@ -329,6 +333,28 @@ const App: React.FC = () => {
                 <span>Configurações</span>
               </a>
             </li>
+            {/* 🆕 Demo Fase 2 */}
+            <li>
+              <a 
+                href="#" 
+                className={`nav-item ${currentPage === 'fase2-demo' ? 'active' : ''}`}
+                onClick={(e) => {
+                  e.preventDefault();
+                  setCurrentPage('fase2-demo');
+                  if (window.innerWidth <= 768) {
+                    setSidebarActive(false);
+                  }
+                }}
+                style={{ 
+                  background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                  color: 'white',
+                  fontWeight: 600
+                }}
+              >
+                <i className="fas fa-flask"></i>
+                <span>🎓 Fase 2 Demo</span>
+              </a>
+            </li>
           </ul>
         </nav>
         
@@ -369,7 +395,9 @@ root.render(
   <React.StrictMode>
     <ErrorBoundary>
       <ToastProvider>
-        <App />
+        <ToastEnhancedProvider position="top-right" maxToasts={5}>
+          <App />
+        </ToastEnhancedProvider>
       </ToastProvider>
     </ErrorBoundary>
   </React.StrictMode>

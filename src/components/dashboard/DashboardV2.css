@@ -5,8 +5,9 @@
 
 .dashboard-v2 {
   padding: var(--spacing-xl);
-  max-width: 1400px;
+  width: 100%;
   margin: 0 auto;
+  box-sizing: border-box;
 }
 
 .dashboard-header {
@@ -55,7 +56,7 @@
 /* KPIs Grid */
 .kpi-grid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
   gap: var(--spacing-lg);
   margin-bottom: var(--spacing-xxxl);
 }
@@ -155,6 +156,12 @@
 }
 
 /* Responsive */
+@media (max-width: 1200px) {
+  .kpi-grid {
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  }
+}
+
 @media (max-width: 1024px) {
   .charts-grid {
     grid-template-columns: 1fr;
@@ -162,6 +169,10 @@
 
   .chart-card.chart-small {
     grid-column: span 1;
+  }
+  
+  .kpi-grid {
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
   }
 }
 
