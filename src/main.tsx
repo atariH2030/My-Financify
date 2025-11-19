@@ -6,6 +6,7 @@ import Dashboard from './components/dashboard/Dashboard';
 import DashboardV2 from './components/dashboard/DashboardV2';
 import Transactions from './components/transactions/Transactions';
 import Reports from './components/reports/Reports';
+import ReportsAdvanced from './components/reports/ReportsAdvanced';
 import Goals from './components/goals/Goals';
 import Budgets from './components/budgets/Budgets';
 import NotificationCenter from './components/notifications/NotificationCenter';
@@ -112,6 +113,8 @@ const App: React.FC = () => {
         return <Budgets />;
       case 'reports':
         return <Reports />;
+      case 'reports-advanced':
+        return <ReportsAdvanced />;
       default:
         return <DashboardV2 />;
     }
@@ -197,6 +200,23 @@ const App: React.FC = () => {
               >
                 <i className="fas fa-chart-bar"></i>
                 <span>Relatórios</span>
+              </a>
+            </li>
+            <li>
+              <a 
+                href="#" 
+                className={`nav-item ${currentPage === 'reports-advanced' ? 'active' : ''}`}
+                onClick={(e) => {
+                  e.preventDefault();
+                  setCurrentPage('reports-advanced');
+                  // Fecha sidebar apenas no mobile
+                  if (window.innerWidth <= 768) {
+                    setSidebarActive(false);
+                  }
+                }}
+              >
+                <i className="fas fa-chart-line"></i>
+                <span>Análise Avançada</span>
               </a>
             </li>
             <li>
