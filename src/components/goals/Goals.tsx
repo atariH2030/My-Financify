@@ -14,6 +14,7 @@ import Modal from '../common/Modal';
 import { useToast } from '../common/Toast';
 import StorageService from '../../services/storage.service';
 import Logger from '../../services/logger.service';
+import { formatCurrency } from '../../utils/currency';
 import type { FinancialGoal } from '../../types/financial.types';
 import './Goals.css';
 
@@ -147,7 +148,7 @@ const Goals: React.FC = () => {
       if (isCompleting) {
         showToast(`🎉 Parabéns! Meta "${goal.title}" concluída!`, 'success');
       } else {
-        showToast(`💰 ${amount.toFixed(2)} adicionado à meta "${goal.title}"`, 'success');
+        showToast(`💰 ${formatCurrency(amount)} adicionado à meta "${goal.title}"`, 'success');
       }
 
       Logger.info('Progresso adicionado', { id: goalId, amount, completed: isCompleting }, 'GOALS');

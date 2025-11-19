@@ -1,11 +1,12 @@
 /**
  * Widget Types - Componentes individuais de widgets
- * v3.9.0 - Dashboard Personalizável
+ * v3.11.1 - Com formatação ABNT correta
  */
 
 import React, { useState, useEffect } from 'react';
 import type { WidgetConfig } from '../../types/financial.types';
 import BaseWidget from './BaseWidget';
+import { formatCurrency, formatNumber } from '../../utils/currency';
 import './Widgets.css';
 
 // ============================================================================
@@ -24,12 +25,11 @@ export const BalanceWidget: React.FC<{ config: WidgetConfig }> = ({ config }) =>
     <BaseWidget config={config}>
       <div className="widget-content balance-widget">
         <div className="balance-main">
-          <span className="currency">R$</span>
-          <span className="amount">{balance.toFixed(2)}</span>
+          <span className="amount">{formatCurrency(balance)}</span>
         </div>
         <div className="balance-trend positive">
           <span className="trend-icon">↑</span>
-          <span className="trend-value">+12.5%</span>
+          <span className="trend-value">+12,5%</span>
           <span className="trend-label">este mês</span>
         </div>
       </div>
@@ -53,8 +53,7 @@ export const ExpensesWidget: React.FC<{ config: WidgetConfig }> = ({ config }) =
     <BaseWidget config={config}>
       <div className="widget-content expenses-widget">
         <div className="stat-main">
-          <span className="currency">R$</span>
-          <span className="amount">{expenses.toFixed(2)}</span>
+          <span className="amount">{formatCurrency(expenses)}</span>
         </div>
         <div className="stat-meta">
           <span className="meta-label">Gastos este mês</span>
@@ -80,8 +79,7 @@ export const IncomeWidget: React.FC<{ config: WidgetConfig }> = ({ config }) => 
     <BaseWidget config={config}>
       <div className="widget-content income-widget">
         <div className="stat-main">
-          <span className="currency">R$</span>
-          <span className="amount">{income.toFixed(2)}</span>
+          <span className="amount">{formatCurrency(income)}</span>
         </div>
         <div className="stat-meta">
           <span className="meta-label">Receita este mês</span>
@@ -105,14 +103,14 @@ export const BudgetWidget: React.FC<{ config: WidgetConfig }> = ({ config }) => 
             <div className="budget-progress">
               <div className="progress-bar" style={{ width: '65%' }}></div>
             </div>
-            <span className="budget-values">R$ 650 / R$ 1.000</span>
+            <span className="budget-values">{formatCurrency(650)} / {formatCurrency(1000)}</span>
           </div>
           <div className="budget-item">
             <span className="budget-label">Transporte</span>
             <div className="budget-progress">
               <div className="progress-bar" style={{ width: '42%' }}></div>
             </div>
-            <span className="budget-values">R$ 210 / R$ 500</span>
+            <span className="budget-values">{formatCurrency(210)} / {formatCurrency(500)}</span>
           </div>
         </div>
       </div>
@@ -134,14 +132,14 @@ export const GoalsWidget: React.FC<{ config: WidgetConfig }> = ({ config }) => {
             <div className="goal-progress">
               <div className="progress-bar" style={{ width: '78%' }}></div>
             </div>
-            <span className="goal-values">R$ 7.800 / R$ 10.000</span>
+            <span className="goal-values">{formatCurrency(7800)} / {formatCurrency(10000)}</span>
           </div>
           <div className="goal-item">
             <span className="goal-name">💻 Notebook Novo</span>
             <div className="goal-progress">
               <div className="progress-bar" style={{ width: '34%' }}></div>
             </div>
-            <span className="goal-values">R$ 1.700 / R$ 5.000</span>
+            <span className="goal-values">{formatCurrency(1700)} / {formatCurrency(5000)}</span>
           </div>
         </div>
       </div>
@@ -160,15 +158,15 @@ export const RecurringWidget: React.FC<{ config: WidgetConfig }> = ({ config }) 
         <div className="recurring-list">
           <div className="recurring-item expense">
             <span className="recurring-name">Netflix</span>
-            <span className="recurring-value">-R$ 45,90</span>
+            <span className="recurring-value">{formatCurrency(-45.90)}</span>
           </div>
           <div className="recurring-item income">
             <span className="recurring-name">Salário</span>
-            <span className="recurring-value">+R$ 5.000,00</span>
+            <span className="recurring-value">{formatCurrency(5000)}</span>
           </div>
           <div className="recurring-item expense">
             <span className="recurring-name">Aluguel</span>
-            <span className="recurring-value">-R$ 1.200,00</span>
+            <span className="recurring-value">{formatCurrency(-1200)}</span>
           </div>
         </div>
       </div>
@@ -190,21 +188,21 @@ export const RecentTransactionsWidget: React.FC<{ config: WidgetConfig }> = ({ c
               <span className="transaction-name">Supermercado</span>
               <span className="transaction-date">Hoje</span>
             </div>
-            <span className="transaction-value">-R$ 234,50</span>
+            <span className="transaction-value">{formatCurrency(-234.50)}</span>
           </div>
           <div className="transaction-item income">
             <div className="transaction-info">
               <span className="transaction-name">Freelance</span>
               <span className="transaction-date">Ontem</span>
             </div>
-            <span className="transaction-value">+R$ 850,00</span>
+            <span className="transaction-value">{formatCurrency(850.00)}</span>
           </div>
           <div className="transaction-item expense">
             <div className="transaction-info">
               <span className="transaction-name">Farmácia</span>
               <span className="transaction-date">2 dias atrás</span>
             </div>
-            <span className="transaction-value">-R$ 67,80</span>
+            <span className="transaction-value">{formatCurrency(-67.80)}</span>
           </div>
         </div>
       </div>
@@ -226,21 +224,21 @@ export const AccountsWidget: React.FC<{ config: WidgetConfig }> = ({ config }) =
               <span className="account-name">🏦 Conta Corrente</span>
               <span className="account-type">Banco Inter</span>
             </div>
-            <span className="account-balance">R$ 4.320,50</span>
+            <span className="account-balance">{formatCurrency(4320.50)}</span>
           </div>
           <div className="account-item">
             <div className="account-info">
               <span className="account-name">💰 Poupança</span>
               <span className="account-type">Nubank</span>
             </div>
-            <span className="account-balance">R$ 8.700,00</span>
+            <span className="account-balance">{formatCurrency(8700.00)}</span>
           </div>
           <div className="account-item">
             <div className="account-info">
               <span className="account-name">📈 Investimentos</span>
               <span className="account-type">XP Investimentos</span>
             </div>
-            <span className="account-balance">R$ 15.432,00</span>
+            <span className="account-balance">{formatCurrency(15432.00)}</span>
           </div>
         </div>
       </div>

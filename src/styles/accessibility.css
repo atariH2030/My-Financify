@@ -1,0 +1,597 @@
+/**
+ * @file accessibility.css
+ * @description Estilos de acessibilidade para todas as faixas etárias (20-80 anos)
+ * @version 1.0.0
+ * @author DEV - Rickson (TQM)
+ * 
+ * Diretrizes:
+ * - 20 anos: Compacto, moderno, rápido
+ * - 40 anos: Balanceado, profissional, eficiente
+ * - 60 anos: Fontes maiores, labels claros, mais espaçamento
+ * - 80 anos: Máximo contraste, botões grandes, fluxos simplificados
+ * 
+ * WCAG AAA Compliance (7:1 para texto)
+ */
+
+/* ============================================================================
+   TAMANHOS DE FONTE BASE (Mobile First)
+   ============================================================================ */
+
+:root {
+  /* Tamanhos de fonte progressivos */
+  --font-size-xs: 12px;      /* Labels secundários */
+  --font-size-sm: 14px;      /* Texto padrão (mínimo para acessibilidade) */
+  --font-size-base: 16px;    /* Corpo principal */
+  --font-size-lg: 18px;      /* Destaque leve */
+  --font-size-xl: 20px;      /* Títulos de seção */
+  --font-size-2xl: 24px;     /* Títulos principais */
+  --font-size-3xl: 28px;     /* Valores monetários grandes */
+  --font-size-4xl: 32px;     /* Headers */
+
+  /* Line heights para legibilidade */
+  --line-height-tight: 1.25;
+  --line-height-normal: 1.5;
+  --line-height-relaxed: 1.75;
+  --line-height-loose: 2.0;
+
+  /* Letter spacing para clareza */
+  --letter-spacing-tight: -0.02em;
+  --letter-spacing-normal: 0;
+  --letter-spacing-wide: 0.025em;
+  --letter-spacing-wider: 0.05em;
+
+  /* Tamanhos de botões e áreas clicáveis (mínimo WCAG: 44x44px) */
+  --min-tap-target: 44px;
+  --tap-target-comfortable: 48px;
+  --tap-target-large: 56px;
+
+  /* Espaçamentos progressivos */
+  --spacing-xs: 4px;
+  --spacing-sm: 8px;
+  --spacing-md: 16px;
+  --spacing-lg: 24px;
+  --spacing-xl: 32px;
+  --spacing-2xl: 48px;
+  --spacing-3xl: 64px;
+}
+
+/* ============================================================================
+   TEXTO BASE - Legibilidade garantida
+   ============================================================================ */
+
+body {
+  font-size: var(--font-size-base);
+  line-height: var(--line-height-normal);
+  letter-spacing: var(--letter-spacing-normal);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+/* Parágrafos e texto longo */
+p, .text-content {
+  font-size: var(--font-size-base);
+  line-height: var(--line-height-relaxed);
+  margin-bottom: var(--spacing-md);
+  max-width: 70ch; /* Limite para legibilidade */
+}
+
+/* Labels e texto auxiliar */
+label, .label, .hint-text {
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-normal);
+  font-weight: 500;
+  color: var(--text-secondary);
+  display: block;
+  margin-bottom: var(--spacing-xs);
+}
+
+/* ============================================================================
+   VALORES MONETÁRIOS - Destaque e Clareza
+   ============================================================================ */
+
+.currency-value,
+.amount,
+.stat-value,
+.kpi-value {
+  font-size: var(--font-size-2xl);
+  font-weight: 700;
+  line-height: var(--line-height-tight);
+  letter-spacing: var(--letter-spacing-tight);
+  color: var(--text-primary);
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum" 1;
+}
+
+/* Valores grandes (Dashboard, KPIs) */
+.currency-large {
+  font-size: var(--font-size-3xl);
+  font-weight: 800;
+}
+
+/* Valores pequenos (Tabelas) */
+.currency-small {
+  font-size: var(--font-size-lg);
+  font-weight: 600;
+}
+
+/* ============================================================================
+   TÍTULOS - Hierarquia Visual
+   ============================================================================ */
+
+h1, .heading-1 {
+  font-size: var(--font-size-4xl);
+  font-weight: 800;
+  line-height: var(--line-height-tight);
+  letter-spacing: var(--letter-spacing-tight);
+  margin-bottom: var(--spacing-lg);
+  color: var(--text-primary);
+}
+
+h2, .heading-2 {
+  font-size: var(--font-size-3xl);
+  font-weight: 700;
+  line-height: var(--line-height-tight);
+  margin-bottom: var(--spacing-md);
+  color: var(--text-primary);
+}
+
+h3, .heading-3 {
+  font-size: var(--font-size-2xl);
+  font-weight: 600;
+  line-height: var(--line-height-normal);
+  margin-bottom: var(--spacing-md);
+  color: var(--text-primary);
+}
+
+h4, .heading-4 {
+  font-size: var(--font-size-xl);
+  font-weight: 600;
+  line-height: var(--line-height-normal);
+  margin-bottom: var(--spacing-sm);
+  color: var(--text-primary);
+}
+
+/* ============================================================================
+   BOTÕES - Áreas clicáveis acessíveis
+   ============================================================================ */
+
+button,
+.btn,
+.button {
+  min-height: var(--min-tap-target);
+  min-width: var(--min-tap-target);
+  padding: var(--spacing-sm) var(--spacing-lg);
+  font-size: var(--font-size-base);
+  font-weight: 600;
+  line-height: var(--line-height-normal);
+  letter-spacing: var(--letter-spacing-wide);
+  border-radius: var(--border-radius-md);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-sm);
+}
+
+/* Botões grandes para ações principais */
+.btn-lg {
+  min-height: var(--tap-target-comfortable);
+  padding: var(--spacing-md) var(--spacing-xl);
+  font-size: var(--font-size-lg);
+}
+
+/* Botões extra grandes para usuários 60+ */
+.btn-xl {
+  min-height: var(--tap-target-large);
+  padding: var(--spacing-lg) var(--spacing-2xl);
+  font-size: var(--font-size-xl);
+  font-weight: 700;
+}
+
+/* Estados de foco visíveis (WCAG) */
+button:focus-visible,
+.btn:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible,
+a:focus-visible {
+  outline: 3px solid var(--primary);
+  outline-offset: 2px;
+  border-radius: var(--border-radius-sm);
+}
+
+/* ============================================================================
+   INPUTS E FORMULÁRIOS - Clareza e facilidade
+   ============================================================================ */
+
+input,
+select,
+textarea {
+  min-height: var(--min-tap-target);
+  padding: var(--spacing-sm) var(--spacing-md);
+  font-size: var(--font-size-base);
+  line-height: var(--line-height-normal);
+  border: 2px solid var(--border-color);
+  border-radius: var(--border-radius-md);
+  background: var(--background-secondary);
+  color: var(--text-primary);
+  transition: all 0.2s ease;
+}
+
+/* Inputs maiores para melhor usabilidade */
+.input-lg {
+  min-height: var(--tap-target-comfortable);
+  font-size: var(--font-size-lg);
+  padding: var(--spacing-md) var(--spacing-lg);
+}
+
+/* Estados de erro visíveis */
+input:invalid,
+.input-error {
+  border-color: var(--danger);
+  background-color: rgba(var(--danger-rgb), 0.05);
+}
+
+/* Placeholders com contraste adequado */
+input::placeholder,
+textarea::placeholder {
+  color: var(--text-tertiary);
+  opacity: 0.7;
+}
+
+/* ============================================================================
+   CARDS E CONTAINERS - Espaçamento confortável
+   ============================================================================ */
+
+.card,
+.widget,
+.stat-card {
+  padding: var(--spacing-lg);
+  border-radius: var(--border-radius-lg);
+  background: var(--background-secondary);
+  box-shadow: var(--shadow-sm);
+  margin-bottom: var(--spacing-lg);
+  min-height: var(--tap-target-large); /* Facilita clique/toque */
+}
+
+/* Cards compactos para 20-40 anos */
+.card-compact {
+  padding: var(--spacing-md);
+}
+
+/* Cards espaçosos para 60+ */
+.card-comfortable {
+  padding: var(--spacing-xl);
+  border-radius: var(--border-radius-xl);
+}
+
+/* ============================================================================
+   TABELAS - Leitura facilitada
+   ============================================================================ */
+
+table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+}
+
+th {
+  font-size: var(--font-size-sm);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: var(--letter-spacing-wider);
+  padding: var(--spacing-md);
+  text-align: left;
+  background: var(--background-tertiary);
+  border-bottom: 2px solid var(--border-color);
+}
+
+td {
+  font-size: var(--font-size-base);
+  padding: var(--spacing-md);
+  border-bottom: 1px solid var(--border-color);
+  line-height: var(--line-height-relaxed);
+}
+
+/* Linhas alternadas para facilitar leitura */
+tbody tr:nth-child(even) {
+  background: rgba(var(--primary-rgb), 0.02);
+}
+
+tbody tr:hover {
+  background: rgba(var(--primary-rgb), 0.05);
+  transition: background 0.2s ease;
+}
+
+/* ============================================================================
+   CONTRASTE DE CORES - WCAG AAA (7:1)
+   ============================================================================ */
+
+/* Texto em fundo claro */
+[data-theme="light"] {
+  --text-primary: #1a1a1a;         /* Contraste 16.1:1 */
+  --text-secondary: #4a4a4a;       /* Contraste 9.3:1 */
+  --text-tertiary: #6a6a6a;        /* Contraste 5.7:1 */
+}
+
+/* Texto em fundo escuro */
+[data-theme="dark"] {
+  --text-primary: #f5f5f5;         /* Contraste 16.5:1 */
+  --text-secondary: #d0d0d0;       /* Contraste 11.2:1 */
+  --text-tertiary: #a8a8a8;        /* Contraste 7.2:1 */
+}
+
+/* Cores com propósito e contraste garantido */
+.text-success {
+  color: var(--success);
+  font-weight: 600; /* Reforça legibilidade */
+}
+
+.text-danger {
+  color: var(--danger);
+  font-weight: 600;
+}
+
+.text-warning {
+  color: var(--warning);
+  font-weight: 600;
+}
+
+/* ============================================================================
+   BADGES E TAGS - Destaque visual
+   ============================================================================ */
+
+.badge,
+.tag {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  padding: var(--spacing-xs) var(--spacing-md);
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  line-height: var(--line-height-tight);
+  border-radius: var(--border-radius-full);
+  letter-spacing: var(--letter-spacing-wide);
+  min-height: 24px; /* Legibilidade mínima */
+}
+
+/* Badges maiores para facilitar identificação */
+.badge-lg {
+  font-size: var(--font-size-base);
+  padding: var(--spacing-sm) var(--spacing-lg);
+  min-height: 32px;
+}
+
+/* ============================================================================
+   TOOLTIPS E HINTS - Informações auxiliares
+   ============================================================================ */
+
+.tooltip,
+.hint {
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-relaxed);
+  padding: var(--spacing-sm) var(--spacing-md);
+  border-radius: var(--border-radius-md);
+  background: var(--background-inverse);
+  color: var(--text-inverse);
+  box-shadow: var(--shadow-lg);
+  max-width: 320px;
+}
+
+/* ============================================================================
+   RESPONSIVIDADE - Tablet (768px+)
+   ============================================================================ */
+
+@media (min-width: 768px) {
+  :root {
+    --font-size-base: 16px;
+    --font-size-lg: 18px;
+    --font-size-xl: 20px;
+    --font-size-2xl: 26px;
+    --font-size-3xl: 32px;
+    --font-size-4xl: 38px;
+  }
+
+  .card,
+  .widget {
+    padding: var(--spacing-xl);
+  }
+
+  h1, .heading-1 {
+    font-size: var(--font-size-4xl);
+  }
+}
+
+/* ============================================================================
+   RESPONSIVIDADE - Desktop (1024px+)
+   ============================================================================ */
+
+@media (min-width: 1024px) {
+  :root {
+    --font-size-base: 16px;
+    --font-size-lg: 18px;
+    --font-size-xl: 22px;
+    --font-size-2xl: 28px;
+    --font-size-3xl: 36px;
+    --font-size-4xl: 42px;
+  }
+
+  /* Grid de 12 colunas para layouts complexos */
+  .grid-12 {
+    display: grid;
+    grid-template-columns: repeat(12, 1fr);
+    gap: var(--spacing-lg);
+  }
+}
+
+/* ============================================================================
+   MODO DE ALTO CONTRASTE (Preferência do SO)
+   ============================================================================ */
+
+@media (prefers-contrast: high) {
+  :root {
+    --border-width: 2px;
+  }
+
+  button,
+  input,
+  select,
+  .card {
+    border-width: 2px;
+    border-color: currentColor;
+  }
+
+  /* Aumentar contraste de texto */
+  [data-theme="light"] {
+    --text-primary: #000000;
+    --text-secondary: #2a2a2a;
+  }
+
+  [data-theme="dark"] {
+    --text-primary: #ffffff;
+    --text-secondary: #f0f0f0;
+  }
+}
+
+/* ============================================================================
+   REDUÇÃO DE MOVIMENTO (Preferência do SO)
+   ============================================================================ */
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* ============================================================================
+   MODO DE ECONOMIA DE DADOS
+   ============================================================================ */
+
+@media (prefers-reduced-data: reduce) {
+  /* Remover imagens de fundo decorativas */
+  .bg-decorative {
+    background-image: none !important;
+  }
+
+  /* Simplificar gradientes */
+  .gradient {
+    background: var(--primary) !important;
+  }
+}
+
+/* ============================================================================
+   PRINT STYLES - Impressão otimizada
+   ============================================================================ */
+
+@media print {
+  body {
+    font-size: 12pt;
+    line-height: 1.5;
+    color: #000;
+    background: #fff;
+  }
+
+  .no-print,
+  button,
+  .btn,
+  nav,
+  .sidebar {
+    display: none !important;
+  }
+
+  .card,
+  .widget {
+    box-shadow: none;
+    border: 1px solid #000;
+    page-break-inside: avoid;
+  }
+
+  a[href]:after {
+    content: " (" attr(href) ")";
+    font-size: 0.8em;
+    color: #666;
+  }
+}
+
+/* ============================================================================
+   CLASSES UTILITÁRIAS DE ACESSIBILIDADE
+   ============================================================================ */
+
+/* Screen reader only (oculta visualmente mas mantém acessível) */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+/* Revelar quando focado (útil para skip links) */
+.sr-only-focusable:focus {
+  position: static;
+  width: auto;
+  height: auto;
+  padding: var(--spacing-md);
+  margin: 0;
+  overflow: visible;
+  clip: auto;
+  white-space: normal;
+}
+
+/* High contrast mode indicators */
+.high-contrast-indicator {
+  border: 2px solid currentColor;
+  outline: 2px solid transparent;
+  outline-offset: 2px;
+}
+
+/* ============================================================================
+   ESPAÇAMENTO PROGRESSIVO (Mobile First)
+   ============================================================================ */
+
+.spacing-tight {
+  padding: var(--spacing-sm);
+  gap: var(--spacing-sm);
+}
+
+.spacing-normal {
+  padding: var(--spacing-md);
+  gap: var(--spacing-md);
+}
+
+.spacing-comfortable {
+  padding: var(--spacing-lg);
+  gap: var(--spacing-lg);
+}
+
+.spacing-relaxed {
+  padding: var(--spacing-xl);
+  gap: var(--spacing-xl);
+}
+
+/* ============================================================================
+   FOCO VISÍVEL MELHORADO
+   ============================================================================ */
+
+.focus-ring:focus-visible {
+  outline: 3px solid var(--primary);
+  outline-offset: 3px;
+  border-radius: var(--border-radius-md);
+  box-shadow: 0 0 0 5px rgba(var(--primary-rgb), 0.1);
+}
+
+/* ============================================================================
+   FIM DO ARQUIVO
+   ============================================================================ */

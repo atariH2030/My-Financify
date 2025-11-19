@@ -1,11 +1,12 @@
 /**
  * Global Styles - Estilos base da aplicação
  * Integração com legacy assets + componentes modernos
- * v2.4 - Animações + PWA + Testes
+ * v2.5 - Acessibilidade + WCAG AAA
  */
 
 /* ===== IMPORT DESIGN SYSTEM ===== */
 @import './legacy-assets.css';
+@import './accessibility.css';
 
 /* ===== IMPORT COMPONENTS CSS ===== */
 @import '../components/common/Button.css';

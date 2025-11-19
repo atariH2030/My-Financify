@@ -3,7 +3,7 @@ import './BudgetsTable.css';
 import Card from '../common/Card';
 import Button from '../common/Button';
 import Tooltip from '../common/Tooltip';
-import { formatCurrency } from '../../utils/performance';
+import { formatCurrency, formatPercentage } from '../../utils/currency';
 import type { Budget } from '../../types/financial.types';
 
 interface BudgetsTableProps {
@@ -130,7 +130,7 @@ const BudgetsTable: React.FC<BudgetsTableProps> = ({ budgets, onEdit, onDelete }
           </div>
           <div className="stat-value">{formatCurrency(statistics.totalSpent)}</div>
           <div className="stat-detail">
-            {statistics.overallPercentage.toFixed(1)}% do orçado
+            {formatPercentage(statistics.overallPercentage)} do orçado
           </div>
         </Card>
 
@@ -278,7 +278,7 @@ const BudgetsTable: React.FC<BudgetsTableProps> = ({ budgets, onEdit, onDelete }
                       className={`progress-bar ${progressInfo.colorClass}`}
                       style={{ width: `${Math.min(progressInfo.percentage, 100)}%` }}
                     >
-                      {progressInfo.percentage >= 10 && `${progressInfo.percentage.toFixed(1)}%`}
+                      {progressInfo.percentage >= 10 && formatPercentage(progressInfo.percentage)}
                     </div>
                   </div>
 
@@ -294,14 +294,14 @@ const BudgetsTable: React.FC<BudgetsTableProps> = ({ budgets, onEdit, onDelete }
                     <div className="detail-item">
                       <span className="detail-label">% Utilizado</span>
                       <span className="detail-value" style={{ color: 'var(--text-primary)' }}>
-                        {progressInfo.percentage.toFixed(1)}%
+                        {formatPercentage(progressInfo.percentage)}
                       </span>
                     </div>
 
                     <div className="detail-item">
                       <span className="detail-label">% Restante</span>
                       <span className="detail-value" style={{ color: 'var(--text-primary)' }}>
-                        {(100 - progressInfo.percentage).toFixed(1)}%
+                        {formatPercentage(100 - progressInfo.percentage)}
                       </span>
                     </div>
                   </div>

@@ -5,7 +5,7 @@ import { Bar, Line, Doughnut } from 'react-chartjs-2';
 import Card from '../common/Card';
 import Button from '../common/Button';
 import StorageService from '../../services/storage.service';
-import { formatCurrency } from '../../utils/performance';
+import { formatCurrency, formatPercentage } from '../../utils/currency';
 import type { Transaction, Budget, FinancialGoal } from '../../types/financial.types';
 import './ReportsAdvanced.css';
 
@@ -301,7 +301,7 @@ const ReportsAdvanced: React.FC = () => {
           <div className="summary-icon performance"><i className="fas fa-gauge-high"></i></div>
           <div className="summary-content">
             <h4>Performance Orçamentos</h4>
-            <p className="summary-value">{budgetPerf.performance.toFixed(1)}%</p>
+            <p className="summary-value">{formatPercentage(budgetPerf.performance)}</p>
             <span className="summary-label">{budgetPerf.withinBudget}/{budgetPerf.totalBudgets} dentro do limite</span>
           </div>
         </Card>
@@ -414,7 +414,7 @@ const ReportsAdvanced: React.FC = () => {
             </div>
             <div className="stat-item">
               <span className="stat-label">Progresso Médio</span>
-              <span className="stat-value">{goalsProgress.avgProgress.toFixed(1)}%</span>
+              <span className="stat-value">{formatPercentage(goalsProgress.avgProgress)}</span>
             </div>
           </div>
           <div className="goals-summary">

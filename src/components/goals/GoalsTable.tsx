@@ -11,7 +11,7 @@ import Button from '../common/Button';
 import Card from '../common/Card';
 import { Tooltip } from '../common';
 import type { FinancialGoal, GoalType } from '../../types/financial.types';
-import { formatCurrency } from '../../utils/performance';
+import { formatCurrency, formatPercentage } from '../../utils/currency';
 import { formatDate } from '../../utils/date';
 import './GoalsTable.css';
 
@@ -184,7 +184,7 @@ export const GoalsTable: React.FC<GoalsTableProps> = ({
                   style={{ width: `${stats.progress}%` }}
                 />
               </div>
-              <span className="stat-percentage">{stats.progress.toFixed(1)}%</span>
+              <span className="stat-percentage">{formatPercentage(stats.progress)}</span>
             </div>
           </div>
         </Card>
@@ -289,7 +289,7 @@ export const GoalsTable: React.FC<GoalsTableProps> = ({
                     <div className="goal-progress-header">
                       <span className="goal-progress-label">Progresso</span>
                       <span className="goal-progress-percentage">
-                        {progress.toFixed(1)}%
+                        {formatPercentage(progress)}
                       </span>
                     </div>
                     <div className="goal-progress-bar">
