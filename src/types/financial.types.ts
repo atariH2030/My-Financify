@@ -27,6 +27,31 @@ export interface SectionConfig {
   categories: CategoryConfig[];
 }
 
+// ===== ACCOUNTS / WALLETS =====
+
+export type AccountType = 'checking' | 'savings' | 'credit' | 'debit' | 'cash' | 'investment' | 'other';
+export type CardBrand = 'visa' | 'mastercard' | 'elo' | 'amex' | 'hipercard' | 'diners' | 'discover' | 'other' | 'none';
+
+export interface Account {
+  id: string;
+  name: string;
+  type: AccountType;
+  institution?: string;    // Banco/Instituição
+  lastFourDigits?: string; // Últimos 4 dígitos do cartão
+  lastDigits?: string;     // Alias para lastFourDigits
+  brand?: CardBrand;       // Bandeira do cartão
+  cardBrand?: CardBrand;   // Alias para brand
+  color: string;           // Cor para identificação visual
+  icon: string;            // Ícone para identificação
+  creditLimit?: number;    // Limite (apenas para crédito)
+  initialBalance?: number; // Saldo inicial
+  closingDay?: number;     // Dia fechamento fatura (1-31)
+  dueDay?: number;         // Dia vencimento (1-31)
+  isActive: boolean;
+  createdAt: string;
+  updatedAt?: string;
+}
+
 // ===== CORE TYPES =====
 
 export type TransactionType = 'income' | 'expense';
@@ -47,6 +72,9 @@ export interface Transaction {
   
   // Tipo de despesa (apenas para expenses)
   expenseType?: ExpenseType; // 'fixed' | 'variable'
+  
+  // Conta/Carteira associada
+  accountId?: string;
   
   date: Date;
   tags?: string[];

@@ -11,6 +11,7 @@ import Goals from './components/goals/Goals';
 import Budgets from './components/budgets/Budgets';
 import Settings from './components/settings/Settings';
 import NotificationCenter from './components/notifications/NotificationCenter';
+import Accounts from './components/accounts/Accounts';
 import { ErrorBoundary, ToastProvider } from './components/common';
 import Logger from './services/logger.service';
 import Seeder from './services/seeder.service';
@@ -108,6 +109,8 @@ const App: React.FC = () => {
         return <DashboardV2 />;
       case 'transactions':
         return <Transactions />;
+      case 'accounts':
+        return <Accounts />;
       case 'goals':
         return <Goals />;
       case 'budgets':
@@ -237,6 +240,23 @@ const App: React.FC = () => {
               >
                 <i className="fas fa-wallet"></i>
                 <span>Receitas e Despesas</span>
+              </a>
+            </li>
+            <li>
+              <a 
+                href="#" 
+                className={`nav-item ${currentPage === 'accounts' ? 'active' : ''}`}
+                onClick={(e) => {
+                  e.preventDefault();
+                  setCurrentPage('accounts');
+                  // Fecha sidebar apenas no mobile
+                  if (window.innerWidth <= 768) {
+                    setSidebarActive(false);
+                  }
+                }}
+              >
+                <i className="fas fa-credit-card"></i>
+                <span>Minhas Contas</span>
               </a>
             </li>
             <li>
