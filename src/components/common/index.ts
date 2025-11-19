@@ -17,3 +17,9 @@ export { AnimationsDemo } from './AnimationsDemo';
 export type { Toast, ToastType } from './Toast';
 export type { ViewMode } from './ViewModeToggle';
 
+// 🆕 Fase 2 - Novos componentes UX
+export { default as ConfirmDialog } from './ConfirmDialog';
+export { default as EmptyState } from './EmptyState';
+export { default as ToastEnhancedProvider, useToastEnhanced } from './ToastEnhanced';
+export type { ToastEnhanced, ToastAction } from './ToastEnhanced';
+

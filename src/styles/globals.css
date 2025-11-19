@@ -19,6 +19,10 @@
 @import '../components/common/SkeletonLoader.css';
 @import '../components/common/AnimationsDemo.css';
 @import '../components/common/ViewModeToggle.css';
+/* 🆕 Fase 2 - Novos componentes UX */
+@import '../components/common/ConfirmDialog.css';
+@import '../components/common/EmptyState.css';
+@import '../components/common/ToastEnhanced.css';
 
 /* ===== IMPORT MODULES ===== */
 @import './sidebar.css';
