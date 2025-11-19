@@ -5,10 +5,10 @@
  */
 
 import React, { useState } from 'react';
-import { ConfirmDialog } from './ConfirmDialog';
-import { EmptyState } from './EmptyState';
+import ConfirmDialog from './ConfirmDialog';
+import EmptyState from './EmptyState';
 import { useToastEnhanced } from './ToastEnhanced';
-import { Button } from './Button';
+import Button from './Button';
 import './Card.css';
 
 export const Fase2Example: React.FC = () => {

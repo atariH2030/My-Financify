@@ -109,7 +109,7 @@ export const ToastEnhancedProvider: React.FC<ToastEnhancedProviderProps> = ({
     });
 
     // Auto-dismiss
-    if (newToast.duration > 0) {
+    if (newToast.duration && newToast.duration > 0) {
       setTimeout(() => removeToast(id), newToast.duration);
     }
   }, [maxToasts, removeToast]);
@@ -214,7 +214,7 @@ const ToastItem: React.FC<ToastItemProps> = ({ toast, onDismiss }) => {
       )}
 
       {/* Barra de progresso */}
-      {toast.duration > 0 && (
+      {toast.duration && toast.duration > 0 && (
         <motion.div
           className="toast-progress"
           initial={{ scaleX: 1 }}
