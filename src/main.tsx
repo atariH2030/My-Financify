@@ -119,6 +119,9 @@ const App: React.FC = () => {
 
   return (
     <>
+      {/* Notification Center - Fixo no canto superior direito */}
+      <NotificationCenter />
+
       {/* Botão flutuante para abrir sidebar quando fechado */}
       {!sidebarActive && (
         <button 
@@ -154,7 +157,6 @@ const App: React.FC = () => {
             <button className="sidebar-toggle" onClick={toggleSidebar} title="Alternar sidebar">
               <i className="fas fa-chevron-left"></i>
             </button>
-            <NotificationCenter />
             <button className="theme-toggle" onClick={toggleTheme} title="Alternar tema">
               <i className={theme === 'dark' ? 'fas fa-sun' : 'fas fa-moon'}></i>
             </button>
