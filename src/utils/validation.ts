@@ -148,6 +148,65 @@ export const budgetSchema = z.object({
   }),
   startDate: z.string().min(1, 'Data de início é obrigatória'),
   alertThreshold: z.number().min(50).max(100).default(80),
+});
+
+/**
+ * Schema para validação de transações recorrentes (v3.8)
+ */
+export const recurringTransactionSchema = z.object({
+  name: z
+    .string()
+    .min(2, 'Nome deve ter no mínimo 2 caracteres')
+    .max(100, 'Nome muito longo'),
+  type: z.enum(['income', 'expense'], {
+    message: 'Tipo inválido',
+  }),
+  amount: currencySchema,
+  section: z.string().optional(),
+  category: z
+    .string()
+    .min(2, 'Categoria é obrigatória'),
+  subcategory: z.string().optional(),
+  frequency: z.enum(['daily', 'weekly', 'biweekly', 'monthly', 'bimonthly', 'quarterly', 'semiannual', 'yearly'], {
+    message: 'Frequência inválida',
+  }),
+  dayOfMonth: z.number().min(1).max(31).optional(),
+  dayOfWeek: z.number().min(0).max(6).optional(),
+  startDate: z.string().min(1, 'Data de início é obrigatória'),
+  endDate: z.string().optional(),
+  accountId: z.string().optional(),
+  paymentMethod: z.enum(['cash', 'debit', 'credit', 'transfer', 'pix', 'other']).optional(),
+  autoGenerate: z.boolean().default(true),
+  notifyBefore: z.number().min(0).max(30).optional(),
+  status: z.enum(['active', 'paused', 'completed', 'cancelled']).default('active'),
+  isActive: z.boolean().default(true),
+  notes: z.string().max(500).optional(),
+});
+
+/**
+ * Schema para validação de contas/carteiras (v3.7)
+ */
+export const accountSchema = z.object({
+  name: z
+    .string()
+    .min(2, 'Nome deve ter no mínimo 2 caracteres')
+    .max(100, 'Nome muito longo'),
+  type: z.enum(['checking', 'savings', 'credit', 'debit', 'cash', 'investment', 'other'], {
+    message: 'Tipo de conta inválido',
+  }),
+  institution: z.string().max(100).optional(),
+  lastFourDigits: z.string().length(4, 'Deve ter exatamente 4 dígitos').optional(),
+  lastDigits: z.string().length(4, 'Deve ter exatamente 4 dígitos').optional(),
+  brand: z.enum(['visa', 'mastercard', 'elo', 'amex', 'hipercard', 'diners', 'discover', 'other', 'none']).optional(),
+  cardBrand: z.enum(['visa', 'mastercard', 'elo', 'amex', 'hipercard', 'diners', 'discover', 'other', 'none']).optional(),
+  color: z.string().min(4, 'Cor é obrigatória'),
+  icon: z.string().min(2, 'Ícone é obrigatório'),
+  creditLimit: z.number().min(0).optional(),
+  initialBalance: z.number().optional(),
+  closingDay: z.number().min(1).max(31).optional(),
+  dueDay: z.number().min(1).max(31).optional(),
+  isActive: z.boolean().default(true),
+});
   status: z.enum(['active', 'paused', 'completed'], {
     message: 'Status inválido',
   }),
@@ -299,6 +358,8 @@ export function getFieldErrors(
 export const validateTransaction = (data: unknown) => transactionSchema.safeParse(data);
 export const validateGoal = (data: unknown) => goalSchema.safeParse(data);
 export const validateBudget = (data: unknown) => budgetSchema.safeParse(data);
+export const validateRecurring = (data: unknown) => recurringTransactionSchema.safeParse(data);
+export const validateAccount = (data: unknown) => accountSchema.safeParse(data);
 
 /**
  * Export ValidationError type from Zod

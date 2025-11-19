@@ -52,6 +52,49 @@ export interface Account {
   updatedAt?: string;
 }
 
+// ===== RECURRING TRANSACTIONS =====
+
+export type RecurringFrequency = 'daily' | 'weekly' | 'biweekly' | 'monthly' | 'bimonthly' | 'quarterly' | 'semiannual' | 'yearly';
+export type RecurringStatus = 'active' | 'paused' | 'completed' | 'cancelled';
+
+export interface RecurringTransaction {
+  id: string;
+  name: string;                    // "Netflix", "Salário"
+  type: TransactionType;           // 'income' | 'expense'
+  amount: number;
+  
+  // Categorização
+  section: string;
+  category: string;
+  subcategory?: string;
+  
+  // Recorrência
+  frequency: RecurringFrequency;   // Frequência de repetição
+  dayOfMonth?: number;             // Dia do mês (1-31) para mensais
+  dayOfWeek?: number;              // Dia da semana (0-6) para semanais
+  startDate: string;               // Data de início
+  endDate?: string;                // Data final (opcional)
+  nextOccurrence: string;          // Próxima ocorrência calculada
+  
+  // Configurações
+  accountId?: string;              // Conta vinculada
+  paymentMethod?: PaymentMethod;
+  autoGenerate: boolean;           // Gerar transação automaticamente?
+  notifyBefore?: number;           // Notificar X dias antes
+  
+  // Status e controle
+  status: RecurringStatus;
+  isActive: boolean;
+  lastGenerated?: string;          // Última transação gerada
+  generatedCount: number;          // Quantas transações já foram geradas
+  
+  // Metadados
+  notes?: string;
+  tags?: string[];
+  createdAt: string;
+  updatedAt?: string;
+}
+
 // ===== CORE TYPES =====
 
 export type TransactionType = 'income' | 'expense';

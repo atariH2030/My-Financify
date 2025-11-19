@@ -12,6 +12,7 @@ import Budgets from './components/budgets/Budgets';
 import Settings from './components/settings/Settings';
 import NotificationCenter from './components/notifications/NotificationCenter';
 import Accounts from './components/accounts/Accounts';
+import RecurringTransactions from './components/recurring/RecurringTransactions';
 import { ErrorBoundary, ToastProvider } from './components/common';
 import Logger from './services/logger.service';
 import Seeder from './services/seeder.service';
@@ -111,6 +112,8 @@ const App: React.FC = () => {
         return <Transactions />;
       case 'accounts':
         return <Accounts />;
+      case 'recurring':
+        return <RecurringTransactions />;
       case 'goals':
         return <Goals />;
       case 'budgets':
@@ -257,6 +260,23 @@ const App: React.FC = () => {
               >
                 <i className="fas fa-credit-card"></i>
                 <span>Minhas Contas</span>
+              </a>
+            </li>
+            <li>
+              <a 
+                href="#" 
+                className={`nav-item ${currentPage === 'recurring' ? 'active' : ''}`}
+                onClick={(e) => {
+                  e.preventDefault();
+                  setCurrentPage('recurring');
+                  // Fecha sidebar apenas no mobile
+                  if (window.innerWidth <= 768) {
+                    setSidebarActive(false);
+                  }
+                }}
+              >
+                <i className="fas fa-sync-alt"></i>
+                <span>Contas Recorrentes</span>
               </a>
             </li>
             <li>
