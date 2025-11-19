@@ -1,12 +1,13 @@
 /**
  * Global Styles - Estilos base da aplicação
  * Integração com legacy assets + componentes modernos
- * v2.5 - Acessibilidade + WCAG AAA
+ * v2.6 - Acessibilidade + Cores Acessíveis + WCAG AAA
  */
 
 /* ===== IMPORT DESIGN SYSTEM ===== */
 @import './legacy-assets.css';
 @import './accessibility.css';
+@import './accessible-colors.css';
 
 /* ===== IMPORT COMPONENTS CSS ===== */
 @import '../components/common/Button.css';
@@ -17,6 +18,7 @@
 @import '../components/common/Toast.css';
 @import '../components/common/SkeletonLoader.css';
 @import '../components/common/AnimationsDemo.css';
+@import '../components/common/ViewModeToggle.css';
 
 /* ===== IMPORT MODULES ===== */
 @import './sidebar.css';
