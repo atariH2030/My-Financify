@@ -95,6 +95,41 @@ export interface RecurringTransaction {
   updatedAt?: string;
 }
 
+// ===== DASHBOARD WIDGETS =====
+
+export type WidgetType = 
+  | 'balance' 
+  | 'expenses' 
+  | 'income' 
+  | 'budget' 
+  | 'goals' 
+  | 'recurring' 
+  | 'accounts' 
+  | 'chart' 
+  | 'recent-transactions'
+  | 'quick-actions';
+
+export type WidgetSize = 'small' | 'medium' | 'large' | 'full';
+
+export interface WidgetConfig {
+  id: string;
+  type: WidgetType;
+  title: string;
+  size: WidgetSize;
+  position: number;          // Ordem na grid
+  isVisible: boolean;
+  settings?: Record<string, any>; // Configurações específicas do widget
+}
+
+export interface DashboardLayout {
+  id: string;
+  name: string;              // "Padrão", "Investidor", "Minimalista"
+  widgets: WidgetConfig[];
+  isDefault: boolean;
+  createdAt: string;
+  updatedAt?: string;
+}
+
 // ===== CORE TYPES =====
 
 export type TransactionType = 'income' | 'expense';

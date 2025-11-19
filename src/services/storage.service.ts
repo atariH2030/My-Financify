@@ -214,6 +214,49 @@ class StorageService {
   }
 
   /**
+   * Salva dados síncronamente (sem validação/backup)
+   * Use apenas quando async não for possível
+   */
+  saveSync<T>(key: string, data: T): boolean {
+    try {
+      const storageData: StorageData<T> = {
+        data,
+        timestamp: new Date().toISOString(),
+        version: this.version,
+        checksum: this.generateChecksum(data)
+      };
+
+      const serialized = JSON.stringify(storageData);
+      localStorage.setItem(`${this.storageKey}-${key}`, serialized);
+      
+      return true;
+    } catch (error) {
+      Logger.error(`Falha ao salvar dados (sync)`, error as Error, 'STORAGE');
+      return false;
+    }
+  }
+
+  /**
+   * Carrega dados síncronamente (sem validação/recovery)
+   * Use apenas quando async não for possível
+   */
+  loadSync<T>(key: string): T | null {
+    try {
+      const stored = localStorage.getItem(`${this.storageKey}-${key}`);
+      
+      if (!stored) {
+        return null;
+      }
+
+      const storageData: StorageData<T> = JSON.parse(stored);
+      return storageData.data;
+    } catch (error) {
+      Logger.error(`Falha ao carregar dados (sync)`, error as Error, 'STORAGE');
+      return null;
+    }
+  }
+
+  /**
    * Informações de uso do storage
    */
   getStorageInfo(): { used: number; available: number; keys: string[] } {

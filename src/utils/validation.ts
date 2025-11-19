@@ -207,11 +207,6 @@ export const accountSchema = z.object({
   dueDay: z.number().min(1).max(31).optional(),
   isActive: z.boolean().default(true),
 });
-  status: z.enum(['active', 'paused', 'completed'], {
-    message: 'Status inválido',
-  }),
-  currentSpent: z.number().min(0).optional().default(0),
-});
 
 /**
  * Schema para validação de meta financeira (v3.0 - com lista de desejos)
