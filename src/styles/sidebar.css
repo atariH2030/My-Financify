@@ -58,6 +58,38 @@
   box-shadow: var(--shadow-xl);
 }
 
+/* Keyboard Shortcuts Button - Fixo ao lado do NotificationCenter */
+.keyboard-shortcuts-btn {
+  position: fixed;
+  top: 1rem;
+  right: 5rem; /* 4rem (NotificationCenter) + 1rem de espaço */
+  z-index: 1003;
+  background: var(--primary-color);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  width: 44px;
+  height: 44px;
+  font-size: 1.2rem;
+  cursor: pointer;
+  box-shadow: var(--shadow-lg);
+  transition: all 0.2s cubic-bezier(0.25, 0.8, 0.25, 1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  will-change: transform, background-color;
+}
+
+.keyboard-shortcuts-btn:hover {
+  transform: scale(1.05);
+  background: var(--accent-color);
+  box-shadow: var(--shadow-xl);
+}
+
+.keyboard-shortcuts-btn:active {
+  transform: scale(0.95);
+}
+
 /* Sidebar Toggle Button - integrado no header */
 .sidebar-toggle {
   background: rgba(255, 255, 255, 0.2);
@@ -654,6 +686,14 @@
   /* Mobile: Sistema de overlay */
   .floating-toggle-btn {
     display: none;
+  }
+  
+  .keyboard-shortcuts-btn {
+    right: 1rem;
+    top: 4.5rem; /* Abaixo do NotificationCenter */
+    width: 40px;
+    height: 40px;
+    font-size: 1rem;
   }
   
   .mobile-sidebar-toggle {

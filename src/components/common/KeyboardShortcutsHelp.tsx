@@ -108,7 +108,7 @@ export const KeyboardShortcutsHelp: React.FC<KeyboardShortcutsHelpProps> = ({
           {/* Footer */}
           <div className="keyboard-shortcuts-footer">
             <p>
-              💡 Pressione <kbd>?</kbd> a qualquer momento para ver esta ajuda
+              💡 Pressione <kbd>Ctrl + H</kbd> ou <kbd>Ctrl + /</kbd> para abrir esta ajuda
             </p>
           </div>
         </motion.div>

@@ -167,8 +167,16 @@ const App: React.FC = () => {
     },
     // Geral
     {
-      key: '?',
+      key: '/',
+      ctrl: true,
       description: 'Mostrar Atalhos de Teclado',
+      action: () => setShowShortcutsHelp(true),
+      category: 'general',
+    },
+    {
+      key: 'h',
+      ctrl: true,
+      description: 'Ajuda - Atalhos de Teclado',
       action: () => setShowShortcutsHelp(true),
       category: 'general',
     },
@@ -221,6 +229,15 @@ const App: React.FC = () => {
     <>
       {/* Notification Center - Fixo no canto superior direito */}
       <NotificationCenter />
+
+      {/* Keyboard Shortcuts Button - Fixo ao lado do NotificationCenter */}
+      <button 
+        className="keyboard-shortcuts-btn"
+        onClick={() => setShowShortcutsHelp(true)}
+        title="Atalhos de Teclado (Ctrl+H)"
+      >
+        <i className="fas fa-keyboard"></i>
+      </button>
 
       {/* Botão flutuante para abrir sidebar quando fechado */}
       {!sidebarActive && (
