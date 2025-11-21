@@ -15,6 +15,7 @@ import Accounts from './components/accounts/Accounts';
 import RecurringTransactions from './components/recurring/RecurringTransactions';
 import { ErrorBoundary, ToastProvider } from './components/common';
 import { ToastEnhancedProvider } from './components/common';
+import { useKeyboardShortcuts, KeyboardShortcutsHelp, type KeyboardShortcut } from './components/common';
 import Fase2Example from './components/common/Fase2Example';
 import Logger from './services/logger.service';
 import Seeder from './services/seeder.service';
@@ -44,6 +45,7 @@ if (process.env.NODE_ENV === 'development') {
 // Componente App principal com sidebar
 const App: React.FC = () => {
   const [currentPage, setCurrentPage] = React.useState('dashboard');
+  const [showShortcutsHelp, setShowShortcutsHelp] = React.useState(false);
   const [theme, setTheme] = React.useState(() => {
     return localStorage.getItem('theme') || 'light';
   });
@@ -98,6 +100,88 @@ const App: React.FC = () => {
   const toggleSidebar = () => {
     setSidebarActive(!sidebarActive);
   };
+
+  // ============================================================================
+  // KEYBOARD SHORTCUTS - Atalhos de teclado globais
+  // ============================================================================
+  
+  const shortcuts: KeyboardShortcut[] = [
+    // Navegação
+    {
+      key: 'd',
+      ctrl: true,
+      description: 'Ir para Dashboard',
+      action: () => setCurrentPage('dashboard'),
+      category: 'navigation',
+    },
+    {
+      key: 't',
+      ctrl: true,
+      description: 'Ir para Transações',
+      action: () => setCurrentPage('transactions'),
+      category: 'navigation',
+    },
+    {
+      key: 'g',
+      ctrl: true,
+      description: 'Ir para Metas',
+      action: () => setCurrentPage('goals'),
+      category: 'navigation',
+    },
+    {
+      key: 'r',
+      ctrl: true,
+      description: 'Ir para Relatórios',
+      action: () => setCurrentPage('reports'),
+      category: 'navigation',
+    },
+    {
+      key: 'b',
+      ctrl: true,
+      description: 'Ir para Orçamentos',
+      action: () => setCurrentPage('budgets'),
+      category: 'navigation',
+    },
+    {
+      key: ',',
+      ctrl: true,
+      description: 'Ir para Configurações',
+      action: () => setCurrentPage('settings'),
+      category: 'navigation',
+    },
+    // Ações Rápidas
+    {
+      key: 'b',
+      ctrl: true,
+      shift: true,
+      description: 'Abrir/Fechar Sidebar',
+      action: toggleSidebar,
+      category: 'actions',
+    },
+    {
+      key: 'l',
+      ctrl: true,
+      description: 'Alternar Tema (Light/Dark)',
+      action: toggleTheme,
+      category: 'actions',
+    },
+    // Geral
+    {
+      key: '?',
+      description: 'Mostrar Atalhos de Teclado',
+      action: () => setShowShortcutsHelp(true),
+      category: 'general',
+    },
+    {
+      key: 'Escape',
+      description: 'Fechar Modal/Diálogos',
+      action: () => setShowShortcutsHelp(false),
+      category: 'general',
+    },
+  ];
+
+  // Registrar atalhos
+  useKeyboardShortcuts({ shortcuts });
 
   const logout = () => {
     if (window.confirm('Deseja realmente sair?')) {
@@ -380,6 +464,13 @@ const App: React.FC = () => {
       }`}>
         {renderPage()}
       </div>
+
+      {/* Keyboard Shortcuts Help Modal */}
+      <KeyboardShortcutsHelp
+        isOpen={showShortcutsHelp}
+        shortcuts={shortcuts}
+        onClose={() => setShowShortcutsHelp(false)}
+      />
     </>
   );
 };

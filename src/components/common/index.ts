@@ -23,3 +23,9 @@ export { default as EmptyState } from './EmptyState';
 export { default as ToastEnhancedProvider, useToastEnhanced } from './ToastEnhanced';
 export type { ToastEnhanced, ToastAction } from './ToastEnhanced';
 
+// 🆕 Fase 3 - Produtividade
+export { default as KeyboardShortcutsHelp } from './KeyboardShortcutsHelp';
+export { default as ShortcutBadge } from './ShortcutBadge';
+export { useKeyboardShortcuts, formatShortcut, groupShortcutsByCategory } from '../../hooks/useKeyboardShortcuts';
+export type { KeyboardShortcut } from '../../hooks/useKeyboardShortcuts';
+

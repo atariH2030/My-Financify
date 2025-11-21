@@ -23,6 +23,9 @@
 @import '../components/common/ConfirmDialog.css';
 @import '../components/common/EmptyState.css';
 @import '../components/common/ToastEnhanced.css';
+/* 🆕 Fase 3 - Produtividade */
+@import '../components/common/KeyboardShortcutsHelp.css';
+@import '../components/common/ShortcutBadge.css';
 
 /* ===== IMPORT MODULES ===== */
 @import './sidebar.css';

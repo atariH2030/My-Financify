@@ -70,7 +70,11 @@
         "topcenter",
         "bottomcenter",
         "labelledby",
-        "describedby"
+        "describedby",
+        "shortcut",
+        "shortcuts",
+        "keydown",
+        "keyup"
     ],
     "ignorePaths": [
         "node_modules/**",
