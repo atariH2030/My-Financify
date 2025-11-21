@@ -161,7 +161,23 @@ const WidgetGrid: React.FC<WidgetGridProps> = ({ onCustomize }) => {
       <div 
         key={`${layoutMode}-${updateKey}`}
         className={`widget-grid widget-grid-${layoutMode}`}
+        style={{ 
+          border: '2px solid red',
+          display: 'grid',
+          gap: '1.5rem'
+        }}
       >
+        <div style={{
+          position: 'fixed',
+          top: '80px',
+          right: '20px',
+          background: 'yellow',
+          padding: '10px',
+          zIndex: 9999,
+          border: '2px solid black'
+        }}>
+          DEBUG: Layout = {layoutMode} | Widgets = {widgets.length}
+        </div>
         {widgets.length === 0 ? (
           <div className="empty-state">
             <i className="fas fa-th-large"></i>

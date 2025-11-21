@@ -636,13 +636,18 @@
   margin-bottom: 1.5rem;
 }
 
-/* Responsive - Mobile sempre 1 coluna, tablet ajusta */
+/* ===== RESPONSIVE DESIGN ===== */
+
+/* Desktop Large (>1200px) - Mantém configurações originais */
+
+/* Desktop (900px - 1200px) */
 @media (max-width: 1200px) {
   .widget-grid-grid-large {
     grid-template-columns: repeat(2, 1fr);
   }
 }
 
+/* Tablet (768px - 900px) */
 @media (max-width: 900px) {
   .widget-grid-grid-medium {
     grid-template-columns: repeat(2, 1fr);
@@ -653,72 +658,20 @@
   }
 }
 
-@media (max-width: 768px) {
-  .widget-grid-grid-large,
-  .widget-grid-grid-medium {
-    grid-template-columns: 1fr;
-  }
-  
-  .widget-grid-grid-small {
-    grid-template-columns: repeat(2, 1fr);
-  }
-}
-
-@media (max-width: 480px) {
-  .widget-grid {
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  }
-}
-
-@media (max-width: 1024px) {
-  .widget-large {
-    grid-column: span 1;
-  }
-  
-  .widget-grid {
-    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-  }
-}
-
+/* Mobile (< 768px) - Todos viram 1-2 colunas */
 @media (max-width: 768px) {
   .widget-grid-container {
     padding: 1rem;
   }
   
-  /* Em mobile, todos os layouts viram 1 coluna */
-  .widget-grid,
   .widget-grid-grid-large,
   .widget-grid-grid-medium,
-  .widget-grid-grid-small,
   .widget-grid-list {
     grid-template-columns: 1fr;
-    gap: 1rem;
-  }
-  
-  .widget-large {
-    min-height: 250px;
-  }
-}
-
-/* Tablet - ajustar layouts intermediários */
-@media (min-width: 769px) and (max-width: 1024px) {
-  .widget-grid-grid-large {
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
   }
   
   .widget-grid-grid-small {
-    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  }
-}
-
-  .widget-grid {
-    grid-template-columns: 1fr;
-    gap: 1rem;
-  }
-
-  .widget-large,
-  .widget-full {
-    grid-column: span 1;
+    grid-template-columns: repeat(2, 1fr);
   }
 
   .widget-grid-header {
@@ -729,5 +682,17 @@
 
   .widget-grid-header h2 {
     font-size: 1.5rem;
+  }
+}
+
+/* Mobile Small (< 480px) - Tudo vira 1 coluna */
+@media (max-width: 480px) {
+  .widget-grid,
+  .widget-grid-grid-large,
+  .widget-grid-grid-medium,
+  .widget-grid-grid-small,
+  .widget-grid-list {
+    grid-template-columns: 1fr;
+    gap: 1rem;
   }
 }
