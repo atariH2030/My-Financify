@@ -52,26 +52,84 @@
 }
 
 /* Layout Modes - Diferentes visualizações */
-/* Grid Grande: 2 colunas fixas - widgets espaçosos */
+/* Grid Grande: 2 colunas FIXAS - widgets espaçosos */
 .widget-grid-grid-large {
-  grid-template-columns: repeat(auto-fit, minmax(450px, 1fr));
+  grid-template-columns: repeat(2, 1fr);
 }
 
-/* Grid Médio: 3 colunas - tamanho balanceado */
+/* Grid Médio: 3 colunas FIXAS - tamanho balanceado */
 .widget-grid-grid-medium {
-  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  grid-template-columns: repeat(3, 1fr);
 }
 
-/* Grid Pequeno: 4+ colunas - widgets compactos */
+/* Grid Pequeno: 4 colunas FIXAS - widgets compactos */
 .widget-grid-grid-small {
-  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  grid-template-columns: repeat(4, 1fr);
 }
 
 /* Lista: 1 coluna larga */
 .widget-grid-list {
   grid-template-columns: 1fr;
-  max-width: 900px;
+  max-width: 1200px;
   margin: 0 auto;
+}
+
+/* Widget em modo lista */
+.widget-list-mode {
+  display: flex;
+  flex-direction: column;
+}
+
+.widget-list-mode .widget-header {
+  cursor: pointer;
+  user-select: none;
+  transition: background 0.2s ease;
+}
+
+.widget-list-mode .widget-header:hover {
+  background: var(--background);
+}
+
+.widget-expand-btn {
+  width: 32px;
+  height: 32px;
+  border: none;
+  background: transparent;
+  color: var(--text-secondary);
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.widget-expand-btn:hover {
+  background: var(--background);
+  color: var(--primary);
+}
+
+.widget-expand-btn i {
+  font-size: 0.875rem;
+  transition: transform 0.3s ease;
+}
+
+/* Animação de conteúdo expandido */
+.widget-content {
+  animation: slideDown 0.3s ease;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    max-height: 0;
+    overflow: hidden;
+  }
+  to {
+    opacity: 1;
+    max-height: 1000px;
+  }
 }
 
 /* Base Widget */
@@ -212,42 +270,70 @@
 
 /* Layout LISTA - Horizontal e largo */
 .widget-grid-list .widget {
-  min-height: 120px;
-  max-height: 150px;
+  min-height: auto;
 }
 
 .widget-grid-list .widget-header {
   padding: 1rem 1.5rem;
+  border-bottom: 1px solid var(--border-color);
 }
 
 .widget-grid-list .widget-header h3 {
   font-size: 1.125rem;
+  font-weight: 600;
 }
 
 .widget-grid-list .widget-content {
-  padding: 1rem 1.5rem;
-  font-size: 0.9375rem;
-  display: flex;
-  align-items: center;
-  gap: 2rem;
+  padding: 1.25rem 1.5rem;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1.5rem;
+  align-items: start;
 }
 
+/* Layout lista - valores principais em destaque */
 .widget-grid-list .amount {
-  font-size: 1.75rem !important;
+  font-size: 1.875rem !important;
+  font-weight: 700;
 }
 
 .widget-grid-list .meta-label,
-.widget-grid-list .trend-label,
+.widget-grid-list .trend-label {
+  font-size: 0.875rem !important;
+  color: var(--text-secondary);
+}
+
+/* Lista - itens em grid horizontal */
+.widget-grid-list .budget-list,
+.widget-grid-list .goals-list,
+.widget-grid-list .recurring-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 1rem;
+}
+
+.widget-grid-list .budget-item,
+.widget-grid-list .goal-item,
+.widget-grid-list .recurring-item {
+  padding: 0.75rem;
+  background: var(--background);
+  border-radius: 8px;
+  border: 1px solid var(--border-color);
+}
+
 .widget-grid-list .budget-label,
 .widget-grid-list .goal-name,
 .widget-grid-list .recurring-name {
   font-size: 0.875rem !important;
+  font-weight: 500;
+  margin-bottom: 0.5rem;
 }
 
 .widget-grid-list .budget-values,
 .widget-grid-list .goal-values,
 .widget-grid-list .recurring-value {
-  font-size: 0.9375rem !important;
+  font-size: 0.8125rem !important;
+  color: var(--text-secondary);
 }
 
 .widget-grid-list .widget-label {

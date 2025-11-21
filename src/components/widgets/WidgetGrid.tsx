@@ -26,6 +26,8 @@ const WidgetGrid: React.FC<WidgetGridProps> = ({ onCustomize }) => {
   const [widgets, setWidgets] = React.useState<WidgetConfig[]>([]);
   const [layoutMode, setLayoutMode] = React.useState<string>('grid-medium');
   const [updateKey, setUpdateKey] = React.useState<number>(0);
+  const [expandedWidgets, setExpandedWidgets] = React.useState<Set<string>>(new Set());
+  const [listViewMode, setListViewMode] = React.useState<'collapsed' | 'expanded' | 'all'>('collapsed');
 
   React.useEffect(() => {
     loadWidgets();
@@ -117,10 +119,39 @@ const WidgetGrid: React.FC<WidgetGridProps> = ({ onCustomize }) => {
     }
   };
 
+  const toggleWidgetExpansion = (widgetId: string) => {
+    setExpandedWidgets(prev => {
+      const next = new Set(prev);
+      if (next.has(widgetId)) {
+        next.delete(widgetId);
+      } else {
+        next.add(widgetId);
+      }
+      return next;
+    });
+  };
+
+  const toggleAllWidgets = () => {
+    if (listViewMode === 'all') {
+      setListViewMode('collapsed');
+      setExpandedWidgets(new Set());
+    } else {
+      setListViewMode('all');
+      setExpandedWidgets(new Set(widgets.map(w => w.id)));
+    }
+  };
+
   const renderWidget = (config: WidgetConfig) => {
+    const isExpanded = layoutMode === 'list' ? 
+      (listViewMode === 'all' || expandedWidgets.has(config.id)) : 
+      true;
+    
     const props = {
       config,
       onRemove: () => handleRemoveWidget(config.id),
+      isListView: layoutMode === 'list',
+      isExpanded,
+      onToggleExpand: () => toggleWidgetExpansion(config.id),
     };
 
     switch (config.type) {
@@ -151,36 +182,29 @@ const WidgetGrid: React.FC<WidgetGridProps> = ({ onCustomize }) => {
         <h2>
           <i className="fas fa-th"></i> Dashboard
         </h2>
-        {onCustomize && (
-          <button className="btn btn-primary" onClick={onCustomize}>
-            <i className="fas fa-cog"></i> Personalizar
-          </button>
-        )}
+        <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'center' }}>
+          {layoutMode === 'list' && (
+            <button 
+              className="btn btn-secondary"
+              onClick={toggleAllWidgets}
+              title={listViewMode === 'all' ? 'Recolher todos' : 'Expandir todos'}
+            >
+              <i className={`fas fa-${listViewMode === 'all' ? 'compress' : 'expand'}-alt`}></i>
+              {listViewMode === 'all' ? 'Recolher Todos' : 'Expandir Todos'}
+            </button>
+          )}
+          {onCustomize && (
+            <button className="btn btn-primary" onClick={onCustomize}>
+              <i className="fas fa-cog"></i> Personalizar
+            </button>
+          )}
+        </div>
       </div>
       
       <div 
         key={`${layoutMode}-${updateKey}`}
         className={`widget-grid widget-grid-${layoutMode}`}
       >
-        <div style={{
-          position: 'fixed',
-          top: '80px',
-          right: '20px',
-          background: '#000',
-          color: '#0f0',
-          padding: '15px',
-          zIndex: 9999,
-          border: '3px solid #0f0',
-          fontFamily: 'monospace',
-          fontSize: '14px',
-          fontWeight: 'bold',
-          borderRadius: '8px'
-        }}>
-          <div>DEBUG INFO:</div>
-          <div>Layout: <span style={{color: '#ff0'}}>{layoutMode}</span></div>
-          <div>Widgets: <span style={{color: '#ff0'}}>{widgets.length}</span></div>
-          <div>Update: <span style={{color: '#ff0'}}>{updateKey}</span></div>
-        </div>
         {widgets.length === 0 ? (
           <div className="empty-state">
             <i className="fas fa-th-large"></i>
