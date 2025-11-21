@@ -7,6 +7,7 @@
 
 import React, { useState } from 'react';
 import WidgetGrid from '../widgets/WidgetGrid';
+import DashboardCustomizer from './DashboardCustomizer';
 import './DashboardV2.css';
 
 export const DashboardV2: React.FC = () => {
@@ -15,6 +16,11 @@ export const DashboardV2: React.FC = () => {
   return (
     <div className="dashboard-v2-container">
       <WidgetGrid onCustomize={() => setShowCustomizer(true)} />
+      
+      <DashboardCustomizer
+        isOpen={showCustomizer}
+        onClose={() => setShowCustomizer(false)}
+      />
     </div>
   );
 };

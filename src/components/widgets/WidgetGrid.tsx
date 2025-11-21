@@ -24,14 +24,72 @@ interface WidgetGridProps {
 
 const WidgetGrid: React.FC<WidgetGridProps> = ({ onCustomize }) => {
   const [widgets, setWidgets] = React.useState<WidgetConfig[]>([]);
+  const [layoutMode, setLayoutMode] = React.useState<string>('grid-medium');
 
   React.useEffect(() => {
     loadWidgets();
+    loadLayoutSettings();
   }, []);
 
+  const loadLayoutSettings = () => {
+    const saved = localStorage.getItem('dashboardSettings');
+    if (saved) {
+      try {
+        const settings = JSON.parse(saved);
+        setLayoutMode(settings.layoutMode || 'grid-medium');
+      } catch (error) {
+        console.error('Error loading layout settings:', error);
+      }
+    }
+  };
+
   const loadWidgets = () => {
+    const saved = localStorage.getItem('dashboardSettings');
+    if (saved) {
+      try {
+        const settings = JSON.parse(saved);
+        if (settings.widgets) {
+          // Usar widgets personalizados se existirem
+          const enabledWidgets = settings.widgets
+            .filter((w: any) => w.enabled)
+            .sort((a: any, b: any) => a.order - b.order);
+          
+          // Converter para WidgetConfig
+          const widgetConfigs: WidgetConfig[] = enabledWidgets.map((w: any, index: number) => ({
+            id: w.id,
+            type: mapWidgetIdToType(w.id),
+            title: w.name,
+            isVisible: true,
+            position: index,
+            size: 'medium'
+          }));
+          
+          setWidgets(widgetConfigs);
+          return;
+        }
+      } catch (error) {
+        console.error('Error loading custom widgets:', error);
+      }
+    }
+    
+    // Fallback para widgets padrão
     const layout = WidgetService.getActiveLayout();
     setWidgets(layout.widgets.filter(w => w.isVisible).sort((a, b) => a.position - b.position));
+  };
+
+  const mapWidgetIdToType = (id: string): WidgetType => {
+    const typeMap: Record<string, WidgetType> = {
+      'balance': 'balance',
+      'expenses': 'expenses',
+      'income': 'income',
+      'goals': 'goals',
+      'budgets': 'budget',
+      'recurring': 'recurring',
+      'recent': 'recent-transactions',
+      'accounts': 'accounts',
+      'categories': 'budget', // Fallback
+    };
+    return typeMap[id] || 'balance';
   };
 
   const handleRemoveWidget = (widgetId: string) => {
@@ -82,7 +140,7 @@ const WidgetGrid: React.FC<WidgetGridProps> = ({ onCustomize }) => {
         )}
       </div>
       
-      <div className="widget-grid">
+      <div className={`widget-grid widget-grid-${layoutMode}`}>
         {widgets.length === 0 ? (
           <div className="empty-state">
             <i className="fas fa-th-large"></i>

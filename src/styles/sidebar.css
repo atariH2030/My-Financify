@@ -61,33 +61,35 @@
 /* Keyboard Shortcuts Button - Fixo ao lado do NotificationCenter */
 .keyboard-shortcuts-btn {
   position: fixed;
-  top: 1rem;
-  right: 5rem; /* 4rem (NotificationCenter) + 1rem de espaço */
-  z-index: 1003;
+  top: 20px; /* Alinhado com NotificationCenter */
+  right: 70px; /* NotificationCenter + espaçamento */
+  z-index: 1001;
   background: var(--primary-color);
   color: white;
   border: none;
   border-radius: 8px;
-  width: 44px;
-  height: 44px;
-  font-size: 1.2rem;
+  width: 36px;
+  height: 36px;
+  font-size: 1.1rem;
   cursor: pointer;
-  box-shadow: var(--shadow-lg);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   transition: all 0.2s cubic-bezier(0.25, 0.8, 0.25, 1);
   display: flex;
   align-items: center;
   justify-content: center;
   will-change: transform, background-color;
+  opacity: 0.95;
 }
 
 .keyboard-shortcuts-btn:hover {
-  transform: scale(1.05);
+  transform: translateY(-2px);
   background: var(--accent-color);
-  box-shadow: var(--shadow-xl);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  opacity: 1;
 }
 
 .keyboard-shortcuts-btn:active {
-  transform: scale(0.95);
+  transform: translateY(0);
 }
 
 /* Sidebar Toggle Button - integrado no header */

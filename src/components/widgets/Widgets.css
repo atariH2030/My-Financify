@@ -26,10 +26,32 @@
 /* Widget Grid */
 .widget-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
   gap: 1.5rem;
   align-items: start;
   width: 100%;
+}
+
+/* Layout Modes - Diferentes visualizações */
+/* Grid Grande: 2 colunas */
+.widget-grid-grid-large {
+  grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+}
+
+/* Grid Médio: 3 colunas (padrão) */
+.widget-grid-grid-medium {
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+}
+
+/* Grid Pequeno: 4 colunas */
+.widget-grid-grid-small {
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+}
+
+/* Lista: 1 coluna */
+.widget-grid-list {
+  grid-template-columns: 1fr;
+  max-width: 900px;
+  margin: 0 auto;
 }
 
 /* Base Widget */
@@ -483,13 +505,29 @@
     padding: 1rem;
   }
   
-  .widget-grid {
+  /* Em mobile, todos os layouts viram 1 coluna */
+  .widget-grid,
+  .widget-grid-grid-large,
+  .widget-grid-grid-medium,
+  .widget-grid-grid-small,
+  .widget-grid-list {
     grid-template-columns: 1fr;
     gap: 1rem;
   }
   
   .widget-large {
     min-height: 250px;
+  }
+}
+
+/* Tablet - ajustar layouts intermediários */
+@media (min-width: 769px) and (max-width: 1024px) {
+  .widget-grid-grid-large {
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  }
+  
+  .widget-grid-grid-small {
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
   }
 }
 

@@ -32,6 +32,7 @@
 @import './sidebar.css';
 @import './reports.css';
 @import '../components/dashboard/DashboardV2.css';
+@import '../components/dashboard/DashboardCustomizer.css';
 @import '../components/transactions/TransactionForm.css';
 @import '../components/transactions/TransactionList.css';
 @import '../components/transactions/Transactions.css';
