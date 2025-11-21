@@ -161,22 +161,25 @@ const WidgetGrid: React.FC<WidgetGridProps> = ({ onCustomize }) => {
       <div 
         key={`${layoutMode}-${updateKey}`}
         className={`widget-grid widget-grid-${layoutMode}`}
-        style={{ 
-          border: '2px solid red',
-          display: 'grid',
-          gap: '1.5rem'
-        }}
       >
         <div style={{
           position: 'fixed',
           top: '80px',
           right: '20px',
-          background: 'yellow',
-          padding: '10px',
+          background: '#000',
+          color: '#0f0',
+          padding: '15px',
           zIndex: 9999,
-          border: '2px solid black'
+          border: '3px solid #0f0',
+          fontFamily: 'monospace',
+          fontSize: '14px',
+          fontWeight: 'bold',
+          borderRadius: '8px'
         }}>
-          DEBUG: Layout = {layoutMode} | Widgets = {widgets.length}
+          <div>DEBUG INFO:</div>
+          <div>Layout: <span style={{color: '#ff0'}}>{layoutMode}</span></div>
+          <div>Widgets: <span style={{color: '#ff0'}}>{widgets.length}</span></div>
+          <div>Update: <span style={{color: '#ff0'}}>{updateKey}</span></div>
         </div>
         {widgets.length === 0 ? (
           <div className="empty-state">
