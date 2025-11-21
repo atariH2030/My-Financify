@@ -25,10 +25,24 @@ interface WidgetGridProps {
 const WidgetGrid: React.FC<WidgetGridProps> = ({ onCustomize }) => {
   const [widgets, setWidgets] = React.useState<WidgetConfig[]>([]);
   const [layoutMode, setLayoutMode] = React.useState<string>('grid-medium');
+  const [updateKey, setUpdateKey] = React.useState<number>(0);
 
   React.useEffect(() => {
     loadWidgets();
     loadLayoutSettings();
+    
+    // Listener para detectar mudanças no localStorage
+    const handleStorageChange = () => {
+      loadWidgets();
+      loadLayoutSettings();
+      setUpdateKey(prev => prev + 1);
+    };
+    
+    window.addEventListener('storage', handleStorageChange);
+    
+    return () => {
+      window.removeEventListener('storage', handleStorageChange);
+    };
   }, []);
 
   const loadLayoutSettings = () => {
@@ -36,10 +50,14 @@ const WidgetGrid: React.FC<WidgetGridProps> = ({ onCustomize }) => {
     if (saved) {
       try {
         const settings = JSON.parse(saved);
-        setLayoutMode(settings.layoutMode || 'grid-medium');
+        const mode = settings.layoutMode || 'grid-medium';
+        console.log('Layout mode carregado:', mode);
+        setLayoutMode(mode);
       } catch (error) {
         console.error('Error loading layout settings:', error);
       }
+    } else {
+      console.log('Nenhuma configuração salva, usando padrão: grid-medium');
     }
   };
 
@@ -140,7 +158,10 @@ const WidgetGrid: React.FC<WidgetGridProps> = ({ onCustomize }) => {
         )}
       </div>
       
-      <div className={`widget-grid widget-grid-${layoutMode}`}>
+      <div 
+        key={`${layoutMode}-${updateKey}`}
+        className={`widget-grid widget-grid-${layoutMode}`}
+      >
         {widgets.length === 0 ? (
           <div className="empty-state">
             <i className="fas fa-th-large"></i>

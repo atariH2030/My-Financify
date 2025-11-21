@@ -12,6 +12,8 @@
   justify-content: space-between;
   align-items: center;
   margin-bottom: 2rem;
+  flex-wrap: wrap;
+  gap: 1rem;
 }
 
 .widget-grid-header h2 {
@@ -23,6 +25,24 @@
   gap: 0.75rem;
 }
 
+.widget-grid-header .btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.625rem 1.25rem;
+  font-size: 0.9375rem;
+  font-weight: 500;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.widget-grid-header .btn i {
+  font-size: 1rem;
+}
+
 /* Widget Grid */
 .widget-grid {
   display: grid;
@@ -32,19 +52,19 @@
 }
 
 /* Layout Modes - Diferentes visualizações */
-/* Grid Grande: 2 colunas */
+/* Grid Grande: 2 colunas - widgets maiores */
 .widget-grid-grid-large {
-  grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+  grid-template-columns: repeat(2, 1fr);
 }
 
-/* Grid Médio: 3 colunas (padrão) */
+/* Grid Médio: 3 colunas - tamanho padrão */
 .widget-grid-grid-medium {
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
 }
 
-/* Grid Pequeno: 4 colunas */
+/* Grid Pequeno: 4 colunas - widgets compactos */
 .widget-grid-grid-small {
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
 }
 
 /* Lista: 1 coluna */
@@ -69,29 +89,118 @@
   transform: translateY(-2px);
 }
 
-/* Widget Sizes */
-.widget-small {
-  min-height: 150px;
+/* ===== ESTILOS BASEADOS NO LAYOUT ===== */
+
+/* Layout GRANDE - Widgets maiores com mais detalhes */
+.widget-grid-grid-large .widget {
+  min-height: 240px;
 }
 
-.widget-medium {
+.widget-grid-grid-large .widget-header {
+  padding: 1.25rem 1.5rem;
+}
+
+.widget-grid-grid-large .widget-header h3 {
+  font-size: 1.25rem;
+}
+
+.widget-grid-grid-large .widget-content {
+  padding: 1.25rem 1.5rem;
+  font-size: 1rem;
+}
+
+.widget-grid-grid-large .widget-value {
+  font-size: 2.25rem !important;
+}
+
+.widget-grid-grid-large .widget-label {
+  font-size: 0.9375rem !important;
+}
+
+/* Layout MÉDIO - Tamanho padrão (3 colunas) */
+.widget-grid-grid-medium .widget {
   min-height: 200px;
 }
 
-.widget-large {
-  min-height: 300px;
+.widget-grid-grid-medium .widget-header {
+  padding: 1rem 1.25rem;
 }
 
-/* Large widgets ocupam 2 colunas apenas se houver espaço */
-@media (min-width: 768px) {
-  .widget-large {
-    grid-column: span 2;
-  }
+.widget-grid-grid-medium .widget-header h3 {
+  font-size: 1.125rem;
 }
 
-.widget-full {
-  grid-column: 1 / -1;
-  min-height: 250px;
+.widget-grid-grid-medium .widget-content {
+  padding: 1rem 1.25rem;
+  font-size: 0.9375rem;
+}
+
+.widget-grid-grid-medium .widget-value {
+  font-size: 1.875rem !important;
+}
+
+.widget-grid-grid-medium .widget-label {
+  font-size: 0.8125rem !important;
+}
+
+/* Layout PEQUENO - Widgets compactos (4 colunas) */
+.widget-grid-grid-small .widget {
+  min-height: 160px;
+}
+
+.widget-grid-grid-small .widget-header {
+  padding: 0.75rem 1rem;
+}
+
+.widget-grid-grid-small .widget-header h3 {
+  font-size: 0.9375rem;
+}
+
+.widget-grid-grid-small .widget-content {
+  padding: 0.75rem 1rem;
+  font-size: 0.8125rem;
+}
+
+.widget-grid-grid-small .widget-value {
+  font-size: 1.375rem !important;
+}
+
+.widget-grid-grid-small .widget-label {
+  font-size: 0.6875rem !important;
+}
+
+.widget-grid-grid-small .widget-icon {
+  font-size: 1.125rem !important;
+}
+
+/* Layout LISTA - Horizontal e largo */
+.widget-grid-list .widget {
+  min-height: 120px;
+  max-height: 150px;
+}
+
+.widget-grid-list .widget-header {
+  padding: 1rem 1.5rem;
+}
+
+.widget-grid-list .widget-header h3 {
+  font-size: 1.125rem;
+}
+
+.widget-grid-list .widget-content {
+  padding: 1rem 1.5rem;
+  font-size: 0.9375rem;
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+}
+
+.widget-grid-list .widget-value {
+  font-size: 1.75rem !important;
+}
+
+.widget-grid-list .widget-label {
+  font-size: 0.875rem !important;
 }
 
 /* Widget Header */
@@ -483,8 +592,35 @@
   margin-bottom: 1.5rem;
 }
 
-/* Responsive */
+/* Responsive - Mobile sempre 1 coluna, tablet ajusta */
 @media (max-width: 1200px) {
+  .widget-grid-grid-large {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 900px) {
+  .widget-grid-grid-medium {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  .widget-grid-grid-small {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  .widget-grid-grid-large,
+  .widget-grid-grid-medium {
+    grid-template-columns: 1fr;
+  }
+  
+  .widget-grid-grid-small {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 480px) {
   .widget-grid {
     grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
   }
