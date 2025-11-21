@@ -16,6 +16,7 @@ import RecurringTransactions from './components/recurring/RecurringTransactions'
 import { ErrorBoundary, ToastProvider } from './components/common';
 import { ToastEnhancedProvider } from './components/common';
 import { useKeyboardShortcuts, KeyboardShortcutsHelp, type KeyboardShortcut } from './components/common';
+import CommandPalette from './components/common/CommandPalette';
 import Fase2Example from './components/common/Fase2Example';
 import Logger from './services/logger.service';
 import Seeder from './services/seeder.service';
@@ -46,6 +47,7 @@ if (process.env.NODE_ENV === 'development') {
 const App: React.FC = () => {
   const [currentPage, setCurrentPage] = React.useState('dashboard');
   const [showShortcutsHelp, setShowShortcutsHelp] = React.useState(false);
+  const [showCommandPalette, setShowCommandPalette] = React.useState(false);
   const [theme, setTheme] = React.useState(() => {
     return localStorage.getItem('theme') || 'light';
   });
@@ -150,6 +152,13 @@ const App: React.FC = () => {
       category: 'navigation',
     },
     // Ações Rápidas
+    {
+      key: 'k',
+      ctrl: true,
+      description: 'Abrir Busca Global (Command Palette)',
+      action: () => setShowCommandPalette(true),
+      category: 'actions',
+    },
     {
       key: 'b',
       ctrl: true,
@@ -487,6 +496,16 @@ const App: React.FC = () => {
         isOpen={showShortcutsHelp}
         shortcuts={shortcuts}
         onClose={() => setShowShortcutsHelp(false)}
+      />
+
+      {/* Command Palette - Busca Global */}
+      <CommandPalette
+        isOpen={showCommandPalette}
+        onClose={() => setShowCommandPalette(false)}
+        onNavigate={(page) => {
+          setCurrentPage(page);
+          setShowCommandPalette(false);
+        }}
       />
     </>
   );

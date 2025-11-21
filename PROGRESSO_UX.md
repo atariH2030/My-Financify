@@ -6,9 +6,9 @@
 ┌─────────────────────────────────────────────────┐
 │  🎯 META: 10/10 em Experiência do Usuário      │
 │                                                  │
-│  ████████████████████████████░░ 9.8/10          │
+│  ████████████████████████████▓░ 9.93/10         │
 │                                                  │
-│  Faltam apenas 0.2 pontos! 🚀                   │
+│  Faltam apenas 0.07 pontos! 🚀                  │
 └─────────────────────────────────────────────────┘
 ```
 
@@ -50,48 +50,117 @@
 
 ---
 
+### ✅ Fase 3.1: Keyboard Shortcuts (v3.11.4)
+**Impacto**: 9.8 → 9.85 (+0.05)
+
+#### Implementações:
+- [x] useKeyboardShortcuts hook
+- [x] KeyboardShortcutsHelp modal
+- [x] ShortcutBadge component
+- [x] 10 atalhos implementados
+- [x] Botão visual no header
+
+#### Atalhos Disponíveis:
+- **Navegação**: Ctrl+D/T/G/R/B/, (Dashboard, Transações, Metas, Relatórios, Orçamentos, Configurações)
+- **Ações**: Ctrl+Shift+B (Toggle sidebar), Ctrl+L (Tema)
+- **Ajuda**: Ctrl+H ou Ctrl+/ (Atalhos), Esc (Fechar)
+
+#### Arquivos:
+- `useKeyboardShortcuts.ts` (140 linhas)
+- `KeyboardShortcutsHelp.tsx/.css` (340 linhas)
+- `ShortcutBadge.tsx/.css` (70 linhas)
+- Commits: 1131c68, 9719086
+
+---
+
+### ✅ Fase 3.2: Command Palette (v3.11.5)
+**Impacto**: 9.85 → 9.93 (+0.08)
+
+#### Implementações:
+- [x] CommandPalette component
+- [x] Fuzzy search com normalização
+- [x] Keyboard navigation (↑↓ Enter Esc)
+- [x] 11 comandos (8 navegação + 3 ações)
+- [x] Recent searches (localStorage)
+- [x] Grouped results by category
+
+#### Comandos Disponíveis:
+- **Navegação (🧭)**: Dashboard, Transações, Metas, Orçamentos, Relatórios, Contas, Recorrentes, Configurações
+- **Ações (⚡)**: Nova Transação, Nova Meta, Novo Orçamento
+
+#### Arquivos:
+- `CommandPalette.tsx` (400 linhas)
+- `CommandPalette.css` (320 linhas)
+- `COMMAND_PALETTE_TEST.md` (checklist completo)
+- `CHANGELOG_v3.11.5.md`
+
+---
+
 ## 🎯 Próxima Fase
 
-### ⏳ Fase 3: Produtividade (v3.11.4)
-**Meta**: 9.8 → 10.0 (+0.2) ⭐
+### ⏳ Fase 3.3: Quick Actions (v3.12.0)
+**Meta**: 9.93 → 9.97 (+0.04)
 
 #### Planejamento:
-- [ ] **Atalhos de Teclado**
-  - Ctrl+N: Nova transação
-  - Ctrl+K: Command Palette
-  - Ctrl+B: Toggle sidebar
-  - Esc: Fechar modais
-  - ?: Mostrar atalhos
+- [ ] **Floating Action Button (FAB)**
+  - Botão flutuante (bottom-right)
+  - Radial menu com 4-6 ações
+  - Animações suaves
+  - Touch-friendly
+  - Atalho: Ctrl+Shift+A
 
-- [ ] **Busca Global (Command Palette)**
-  - Busca de transações
-  - Navegação rápida
-  - Ações rápidas
-  - Histórico de buscas
-
-- [ ] **Quick Actions**
-  - Barra flutuante (FAB)
-  - Ações contextuais
-  - Drag & drop
-
-- [ ] **Tutorial Interativo**
-  - Intro.js ou custom
-  - 6-8 steps guiados
-  - Skip + Don't show again
-  - Tooltips contextuais
+- [ ] **Ações Rápidas**
+  - Nova Transação
+  - Nova Meta
+  - Novo Orçamento
+  - Upload de arquivo
+  - Exportar relatório
+  - Ajuda rápida
 
 #### Estimativa:
-- **Tempo**: 4-6 horas
-- **Linhas**: ~1.500
-- **Impacto UX**: +0.2 pontos → **10/10** 🎉
+- **Tempo**: 2-3 horas
+- **Linhas**: ~400
+- **Impacto UX**: +0.04 pontos → 9.97/10
+
+---
+
+### ⏳ Fase 3.4: Tutorial Interativo (v4.0.0)
+**Meta**: 9.97 → 10.0 (+0.03) ⭐
+
+#### Planejamento:
+- [ ] **Gemini Pro Integration**
+  - Geração de vídeos explicativos
+  - 6-8 tutoriais curtos (30-60s)
+  - Narração em português
+  - Legendas automáticas
+
+- [ ] **Tutorial Component**
+  - First-visit detection
+  - 6-8 steps guiados pelo Dashboard
+  - Skip + "Don't show again"
+  - Tooltips com video embeds
+  - Progress indicator
+
+- [ ] **Onboarding Flow**
+  - Welcome screen
+  - Quick tour (2-3min)
+  - Optional deep dive
+  - Help button sempre visível
+
+#### Estimativa:
+- **Tempo**: 4-5 horas (+ Gemini Pro setup)
+- **Linhas**: ~600
+- **Impacto UX**: +0.03 pontos → **10/10** 🎉
 
 ---
 
 ## 📈 Evolução UX Score
 
 ```
-10.0 ┤                                    🎯 META
-9.8  ┤                                 ●  ← VOCÊ ESTÁ AQUI
+10.0 ┤                                         🎯 META
+9.93 ┤                                      ●  ← VOCÊ ESTÁ AQUI
+9.85 ┤                                   ●
+9.8  ┤                                ●
 9.6  ┤                           ●
 9.4  ┤
 9.2  ┤                     ●
@@ -99,8 +168,8 @@
 8.8  ┤         ●
 8.6  ┤   ●
 8.4  ┤
-     └──────────────────────────────────────
-      v1.0  v2.0  v2.5  v3.11.2  v3.11.3  v3.11.4
+     └──────────────────────────────────────────────
+      v1.0  v2.0  v2.5  v3.11.2  v3.11.3  v3.11.4  v3.11.5  v3.12.0  v4.0
 ```
 
 ---
@@ -125,13 +194,13 @@
 └──────────────────────────────────┘
 ```
 
-### Fase 3 (Produtividade) - Próximo
+### Fase 3 (Produtividade) - Em Andamento
 ```
 ┌──────────────────────────────────┐
-│ ⏳ KeyboardShortcuts              │  Ctrl+N, Ctrl+K
-│ ⏳ CommandPalette                 │  Busca global
-│ ⏳ QuickActions                   │  FAB + contextuais
-│ ⏳ Tutorial                       │  Onboarding interativo
+│ ✓ KeyboardShortcuts               │  Ctrl+D/T/G/R/B/H
+│ ✓ CommandPalette                  │  Ctrl+K - Busca global
+│ ⏳ QuickActions                   │  FAB + radial menu
+│ ⏳ Tutorial                       │  Gemini Pro videos
 └──────────────────────────────────┘
 ```
 

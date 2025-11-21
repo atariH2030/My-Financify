@@ -26,6 +26,7 @@
 /* 🆕 Fase 3 - Produtividade */
 @import '../components/common/KeyboardShortcutsHelp.css';
 @import '../components/common/ShortcutBadge.css';
+@import '../components/common/CommandPalette.css';
 
 /* ===== IMPORT MODULES ===== */
 @import './sidebar.css';

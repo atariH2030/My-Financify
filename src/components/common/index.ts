@@ -26,6 +26,7 @@ export type { ToastEnhanced, ToastAction } from './ToastEnhanced';
 // 🆕 Fase 3 - Produtividade
 export { default as KeyboardShortcutsHelp } from './KeyboardShortcutsHelp';
 export { default as ShortcutBadge } from './ShortcutBadge';
+export { default as CommandPalette } from './CommandPalette';
 export { useKeyboardShortcuts, formatShortcut, groupShortcutsByCategory } from '../../hooks/useKeyboardShortcuts';
 export type { KeyboardShortcut } from '../../hooks/useKeyboardShortcuts';
 
