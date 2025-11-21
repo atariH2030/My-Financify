@@ -109,12 +109,22 @@
   font-size: 1rem;
 }
 
-.widget-grid-grid-large .widget-value {
+.widget-grid-grid-large .amount {
   font-size: 2.25rem !important;
 }
 
-.widget-grid-grid-large .widget-label {
+.widget-grid-grid-large .meta-label,
+.widget-grid-grid-large .trend-label,
+.widget-grid-grid-large .budget-label,
+.widget-grid-grid-large .goal-name,
+.widget-grid-grid-large .recurring-name {
   font-size: 0.9375rem !important;
+}
+
+.widget-grid-grid-large .budget-values,
+.widget-grid-grid-large .goal-values,
+.widget-grid-grid-large .recurring-value {
+  font-size: 1rem !important;
 }
 
 /* Layout MÉDIO - Tamanho padrão (3 colunas) */
@@ -135,12 +145,22 @@
   font-size: 0.9375rem;
 }
 
-.widget-grid-grid-medium .widget-value {
+.widget-grid-grid-medium .amount {
   font-size: 1.875rem !important;
 }
 
-.widget-grid-grid-medium .widget-label {
+.widget-grid-grid-medium .meta-label,
+.widget-grid-grid-medium .trend-label,
+.widget-grid-grid-medium .budget-label,
+.widget-grid-grid-medium .goal-name,
+.widget-grid-grid-medium .recurring-name {
   font-size: 0.8125rem !important;
+}
+
+.widget-grid-grid-medium .budget-values,
+.widget-grid-grid-medium .goal-values,
+.widget-grid-grid-medium .recurring-value {
+  font-size: 0.875rem !important;
 }
 
 /* Layout PEQUENO - Widgets compactos (4 colunas) */
@@ -161,12 +181,22 @@
   font-size: 0.8125rem;
 }
 
-.widget-grid-grid-small .widget-value {
+.widget-grid-grid-small .amount {
   font-size: 1.375rem !important;
 }
 
-.widget-grid-grid-small .widget-label {
+.widget-grid-grid-small .meta-label,
+.widget-grid-grid-small .trend-label,
+.widget-grid-grid-small .budget-label,
+.widget-grid-grid-small .goal-name,
+.widget-grid-grid-small .recurring-name {
   font-size: 0.6875rem !important;
+}
+
+.widget-grid-grid-small .budget-values,
+.widget-grid-grid-small .goal-values,
+.widget-grid-grid-small .recurring-value {
+  font-size: 0.75rem !important;
 }
 
 .widget-grid-grid-small .widget-icon {
@@ -195,8 +225,22 @@
   gap: 2rem;
 }
 
-.widget-grid-list .widget-value {
+.widget-grid-list .amount {
   font-size: 1.75rem !important;
+}
+
+.widget-grid-list .meta-label,
+.widget-grid-list .trend-label,
+.widget-grid-list .budget-label,
+.widget-grid-list .goal-name,
+.widget-grid-list .recurring-name {
+  font-size: 0.875rem !important;
+}
+
+.widget-grid-list .budget-values,
+.widget-grid-list .goal-values,
+.widget-grid-list .recurring-value {
+  font-size: 0.9375rem !important;
 }
 
 .widget-grid-list .widget-label {
