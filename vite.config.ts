@@ -88,6 +88,7 @@ export default defineConfig({
     }),
   ],
   root: 'src',
+  envDir: '../',  // Carrega .env da raiz do projeto
   build: {
     outDir: '../dist',
     emptyOutDir: true,

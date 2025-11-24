@@ -21,6 +21,8 @@ import Fase2Example from './components/common/Fase2Example';
 import Logger from './services/logger.service';
 import Seeder from './services/seeder.service';
 import MigrationService from './services/migration.service';
+// Inicializa Supabase
+import './config/supabase.config';
 
 // Executa migrações antes do seeder
 MigrationService.runMigrations()
