@@ -2,6 +2,13 @@ import React from 'react';
 import { createRoot } from 'react-dom/client';
 import './styles/globals.css';
 import './styles/smooth-transitions.css';
+
+// 🧪 MODO TESTE DE AUTENTICAÇÃO
+// Descomente a linha abaixo para voltar ao app normal
+import AuthDemo from './components/auth/AuthDemo';
+
+/* 
+// App normal (comentado temporariamente)
 import Dashboard from './components/dashboard/Dashboard';
 import DashboardV2 from './components/dashboard/DashboardV2';
 import Transactions from './components/transactions/Transactions';
@@ -18,6 +25,8 @@ import { ToastEnhancedProvider } from './components/common';
 import { useKeyboardShortcuts, KeyboardShortcutsHelp, type KeyboardShortcut } from './components/common';
 import CommandPalette from './components/common/CommandPalette';
 import Fase2Example from './components/common/Fase2Example';
+*/
+
 import Logger from './services/logger.service';
 import Seeder from './services/seeder.service';
 import MigrationService from './services/migration.service';
@@ -520,6 +529,15 @@ if (!container) {
 }
 
 const root = createRoot(container);
+// 🧪 RENDER - Modo Teste de Autenticação
+root.render(
+  <React.StrictMode>
+    <AuthDemo />
+  </React.StrictMode>
+);
+
+/* 
+// App normal (temporariamente desativado para teste)
 root.render(
   <React.StrictMode>
     <ErrorBoundary>
@@ -531,6 +549,7 @@ root.render(
     </ErrorBoundary>
   </React.StrictMode>
 );
+*/
 
 // Função para esconder loading screen de forma robusta
 const hideLoadingScreen = () => {

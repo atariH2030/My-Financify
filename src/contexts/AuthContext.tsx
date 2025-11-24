@@ -1,11 +1,13 @@
 /**
  * Auth Context
  * Gerencia o estado global de autenticação
+ * VERSÃO RESILIENTE: Usa SafeAuth para garantir que nunca derruba o app
  */
 
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import type { User, Session } from '@supabase/supabase-js';
 import AuthService from '../services/auth.service';
+import SafeAuth from '../services/safe-auth.service';
 import Logger from '../services/logger.service';
 
 interface AuthContextType {
@@ -48,9 +50,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const loadSession = async () => {
     try {
-      const { session } = await AuthService.getSession();
-      setSession(session);
+      // Usar SafeAuth que NUNCA falha
+      const { data: session } = await SafeAuth.getSession();
+      setSession(session ?? null);
       setUser(session?.user ?? null);
+      
+      Logger.info('Sessão carregada', { userId: session?.user?.id }, 'AUTH_CONTEXT');
     } catch (error) {
       Logger.error('Erro ao carregar sessão', error as Error, 'AUTH_CONTEXT');
     } finally {
