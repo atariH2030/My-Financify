@@ -22,6 +22,8 @@ interface CropState {
 const AvatarUpload: React.FC<AvatarUploadProps> = ({ onClose, onSave, currentAvatar }) => {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string>(currentAvatar || '');
+  const [croppedImageUrl, setCroppedImageUrl] = useState<string>('');
+  const [step, setStep] = useState<'select' | 'crop' | 'preview'>('select');
   const [crop, setCrop] = useState<CropState>({ x: 0, y: 0, scale: 1 });
   const [isDragging, setIsDragging] = useState(false);
   const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
@@ -79,6 +81,7 @@ const AvatarUpload: React.FC<AvatarUploadProps> = ({ onClose, onSave, currentAva
       console.log('✅ Definindo arquivo e preview URL');
       setSelectedFile(file);
       setPreviewUrl(objectUrl);
+      setStep('crop');
       setCrop({ x: 0, y: 0, scale: 1 });
     };
 
@@ -154,7 +157,7 @@ const AvatarUpload: React.FC<AvatarUploadProps> = ({ onClose, onSave, currentAva
     setCrop(prev => ({ ...prev, scale: newScale }));
   };
 
-  const getCroppedImage = (): Promise<Blob> => {
+  const getCroppedImage = (): Promise<string> => {
     return new Promise((resolve, reject) => {
       if (!imageRef.current) {
         reject(new Error('No image'));
@@ -191,10 +194,11 @@ const AvatarUpload: React.FC<AvatarUploadProps> = ({ onClose, onSave, currentAva
         scaledWidth * cropRatio, scaledHeight * cropRatio
       );
 
-      // Converter para blob
+      // Converter para blob e criar URL
       canvas.toBlob((blob) => {
         if (blob) {
-          resolve(blob);
+          const url = URL.createObjectURL(blob);
+          resolve(url);
         } else {
           reject(new Error('Failed to create blob'));
         }
@@ -202,55 +206,99 @@ const AvatarUpload: React.FC<AvatarUploadProps> = ({ onClose, onSave, currentAva
     });
   };
 
-  const handleSave = async () => {
-    if (!selectedFile) {
-      console.log('⚠️ Nenhum arquivo selecionado, fechando modal');
-      onSave(currentAvatar || '');
-      onClose();
-      return;
-    }
-
-    console.log('🖌️ Iniciando processo de crop e salvamento...');
+  // Função para recortar imagem (Etapa 1: Crop)
+  const handleCropImage = async () => {
+    console.log('✂️ Iniciando recorte da imagem...');
     setLoading(true);
     setError('');
 
     try {
-      console.log('🎨 Gerando imagem cortada...');
-      const croppedBlob = await getCroppedImage();
-      console.log('✅ Blob gerado:', croppedBlob.size, 'bytes');
-      
-      // TODO: Upload para Supabase Storage
-      // const { data, error } = await supabase.storage
-      //   .from('avatars')
-      //   .upload(`${user.id}/avatar.jpg`, croppedBlob);
-
-      // Converter blob para base64 para salvar no localStorage
-      console.log('🔄 Convertendo para base64...');
-      const base64 = await new Promise<string>((resolve, reject) => {
-        const reader = new FileReader();
-        reader.onloadend = () => resolve(reader.result as string);
-        reader.onerror = reject;
-        reader.readAsDataURL(croppedBlob);
-      });
-      
-      console.log('✅ Base64 gerado:', base64.substring(0, 50) + '...');
-      
-      // Salvar no localStorage
-      localStorage.setItem('user_avatar', base64);
-      console.log('💾 Avatar salvo no localStorage');
-      
-      // Chamar callback com o avatar
-      onSave(base64);
-      console.log('📡 Callback onSave chamado');
-      
-      // Fechar modal após pequeno delay para feedback visual
-      setTimeout(() => {
-        onClose();
-        console.log('✅ Modal fechado');
-      }, 500);
+      const croppedUrl = await getCroppedImage();
+      console.log('✅ Imagem recortada com sucesso:', croppedUrl.substring(0, 50) + '...');
+      setCroppedImageUrl(croppedUrl);
+      setStep('preview');
     } catch (err) {
-      console.error('❌ Erro no handleSave:', err);
-      setError('Erro ao processar imagem');
+      console.error('❌ Erro ao recortar imagem:', err);
+      setError('Erro ao recortar imagem. Tente novamente.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Função para escolher nova imagem
+  const handleChooseNew = () => {
+    console.log('🔄 Escolhendo nova imagem...');
+    
+    // Limpar URLs anteriores
+    if (previewUrl && previewUrl.startsWith('blob:')) {
+      URL.revokeObjectURL(previewUrl);
+    }
+    if (croppedImageUrl && croppedImageUrl.startsWith('blob:')) {
+      URL.revokeObjectURL(croppedImageUrl);
+    }
+    
+    setSelectedFile(null);
+    setPreviewUrl('');
+    setCroppedImageUrl('');
+    setStep('select');
+    setCrop({ x: 0, y: 0, scale: 1 });
+    setError('');
+  };
+
+  // Função para salvar avatar (Etapa 2: Preview)
+  const handleSave = async () => {
+    console.log('💾 Tentando salvar avatar...');
+    
+    if (!croppedImageUrl) {
+      console.log('⚠️ Nenhuma imagem recortada');
+      setError('Recorte a imagem primeiro');
+      return;
+    }
+
+    setLoading(true);
+    setError('');
+
+    try {
+      console.log('🔄 Convertendo imagem recortada para base64...');
+      
+      // Converter blob URL para base64
+      const response = await fetch(croppedImageUrl);
+      const blob = await response.blob();
+      
+      const base64String = await new Promise<string>((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          const result = e.target?.result as string;
+          resolve(result);
+        };
+        reader.onerror = reject;
+        reader.readAsDataURL(blob);
+      });
+
+      console.log('✅ Base64 gerado:', base64String.substring(0, 50) + '...');
+
+      // Salvar no localStorage
+      localStorage.setItem('user_avatar', base64String);
+      console.log('💾 Avatar salvo no localStorage');
+
+      // Limpar URLs temporárias
+      if (croppedImageUrl.startsWith('blob:')) {
+        URL.revokeObjectURL(croppedImageUrl);
+      }
+      if (previewUrl.startsWith('blob:')) {
+        URL.revokeObjectURL(previewUrl);
+      }
+
+      // Chamar callback
+      onSave(base64String);
+      console.log('📡 Callback onSave chamado');
+
+      // Fechar modal
+      onClose();
+      console.log('✅ Modal fechado');
+    } catch (err) {
+      console.error('❌ Erro ao salvar avatar:', err);
+      setError('Erro ao salvar imagem. Tente novamente.');
     } finally {
       setLoading(false);
     }
@@ -272,8 +320,8 @@ const AvatarUpload: React.FC<AvatarUploadProps> = ({ onClose, onSave, currentAva
         )}
 
         <div className="modal-content">
-          {!previewUrl ? (
-            // Upload inicial
+          {step === 'select' && (
+            // Etapa 1: Upload inicial
             <div className="upload-zone">
               <input
                 ref={fileInputRef}
@@ -292,8 +340,10 @@ const AvatarUpload: React.FC<AvatarUploadProps> = ({ onClose, onSave, currentAva
                 Selecionar Arquivo
               </Button>
             </div>
-          ) : (
-            // Editor de crop
+          )}
+
+          {step === 'crop' && previewUrl && (
+            // Etapa 2: Editor de crop
             <div className="crop-editor">
               <div className="crop-container" ref={containerRef}>
                 {/* Imagem com transformações */}
@@ -350,29 +400,65 @@ const AvatarUpload: React.FC<AvatarUploadProps> = ({ onClose, onSave, currentAva
               <p className="crop-help">
                 🖱️ Arraste a imagem para posicionar | 🔍 Use o controle para dar zoom
               </p>
+            </div>
+          )}
 
-              <Button
-                variant="secondary"
-                onClick={() => {
-                  setPreviewUrl('');
-                  setSelectedFile(null);
-                  setCrop({ x: 0, y: 0, scale: 1 });
-                }}
-                fullWidth
-              >
-                Escolher Outra Foto
-              </Button>
+          {step === 'preview' && croppedImageUrl && (
+            // Etapa 3: Preview da imagem recortada
+            <div className="preview-zone">
+              <h3>Pré-visualização</h3>
+              <div className="preview-avatar">
+                <img src={croppedImageUrl} alt="Avatar recortado" />
+              </div>
+              <p className="preview-help">
+                Esta será sua nova foto de perfil
+              </p>
             </div>
           )}
         </div>
 
         <div className="modal-footer">
-          <Button variant="secondary" onClick={onClose} disabled={loading}>
-            Cancelar
-          </Button>
-          <Button onClick={handleSave} loading={loading} disabled={!previewUrl && !currentAvatar}>
-            {selectedFile ? '✂️ Recortar e Salvar' : 'Salvar'}
-          </Button>
+          {step === 'crop' && (
+            <>
+              <Button 
+                variant="secondary" 
+                onClick={handleChooseNew}
+                disabled={loading}
+              >
+                Escolher Outra
+              </Button>
+              <Button 
+                onClick={handleCropImage} 
+                loading={loading}
+              >
+                ✂️ Recortar Imagem
+              </Button>
+            </>
+          )}
+
+          {step === 'preview' && (
+            <>
+              <Button 
+                variant="secondary" 
+                onClick={handleChooseNew}
+                disabled={loading}
+              >
+                Escolher Nova Imagem
+              </Button>
+              <Button 
+                onClick={handleSave} 
+                loading={loading}
+              >
+                💾 Salvar Avatar
+              </Button>
+            </>
+          )}
+
+          {step === 'select' && (
+            <Button variant="secondary" onClick={onClose}>
+              Cancelar
+            </Button>
+          )}
         </div>
       </div>
     </div>

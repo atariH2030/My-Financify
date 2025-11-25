@@ -435,7 +435,7 @@ Acesse: `http://localhost:3001`
 
 ### ✅ Estilos Ajustados
 
-- ✅ `.sidebar-header-top` - flexbox column para UserHeader
+- ✅ `.sidebar-header-top` -                         column para UserHeader
 - ✅ `.sidebar-footer` - removido user-profile antigo
 
 ### ✅ Testes
