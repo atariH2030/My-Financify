@@ -10,7 +10,7 @@ import TransactionsTable from './TransactionsTable';
 import Button from '../common/Button';
 import Modal from '../common/Modal';
 import { useToast } from '../common/Toast';
-import StorageService from '../../services/storage.service';
+import { transactionsService } from '../../services/transactions.service';
 import NotificationService from '../../services/notification.service';
 import Logger from '../../services/logger.service';
 import type { Transaction } from '../../types/financial.types';
@@ -31,105 +31,106 @@ const Transactions: React.FC = () => {
   const loadTransactions = async () => {
     try {
       setLoading(true);
-      const data = await StorageService.load<Transaction[]>('transactions');
+      const data = await transactionsService.getTransactions();
       setTransactions(data || []);
-      Logger.info('Transações carregadas', { count: (data || []).length }, 'TRANSACTIONS');
+      Logger.info('✅ Transações carregadas', { count: data.length, source: 'Supabase/Cache' }, 'TRANSACTIONS');
     } catch (error) {
-      Logger.error('Erro ao carregar transações', error as Error, 'TRANSACTIONS');
+      Logger.error('❌ Erro ao carregar transações', error as Error, 'TRANSACTIONS');
       showToast('Erro ao carregar transações', 'error');
     } finally {
       setLoading(false);
     }
   };
 
-  const saveTransactions = async (data: Transaction[]) => {
+  const handleCreate = async (data: Omit<Transaction, 'id' | 'createdAt' | 'updatedAt'>) => {
     try {
-      await StorageService.save('transactions', data);
-      setTransactions(data);
-      Logger.info('Transações salvas', { count: data.length }, 'TRANSACTIONS');
-    } catch (error) {
-      Logger.error('Erro ao salvar transações', error as Error, 'TRANSACTIONS');
-      throw error;
-    }
-  };
+      const newTransaction = await transactionsService.createTransaction({
+        description: data.description,
+        amount: data.amount,
+        type: data.type,
+        section: data.section,
+        category: data.category,
+        subcategory: data.subcategory,
+        date: data.date,
+        accountId: data.accountId,
+        notes: data.metadata?.notes,
+        tags: data.tags,
+      });
 
-  const handleCreate = (data: Omit<Transaction, 'id' | 'createdAt' | 'updatedAt'>) => {
-    try {
-      const newTransaction: Transaction = {
-        ...data,
-        id: `txn_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
-        date: new Date(data.date),
-      };
-
-      const updated = [newTransaction, ...transactions];
-      saveTransactions(updated);
+      // Recarregar lista
+      await loadTransactions();
 
       showToast(
-        `Transação "${data.description}" adicionada com sucesso!`,
+        `💰 Transação "${data.description}" adicionada com sucesso!`,
         'success'
       );
 
-      // Notify about new transaction
       NotificationService.notifyTransaction('created', data.description, data.amount);
-
       setIsFormOpen(false);
-      Logger.info('Transação criada', { id: newTransaction.id }, 'TRANSACTIONS');
+      Logger.info('✅ Transação criada', { id: newTransaction.id }, 'TRANSACTIONS');
     } catch (error) {
-      showToast('Erro ao criar transação', 'error');
-      Logger.error('Erro ao criar transação', error as Error, 'TRANSACTIONS');
+      showToast('❌ Erro ao criar transação', 'error');
+      Logger.error('❌ Erro ao criar transação', error as Error, 'TRANSACTIONS');
     }
   };
 
-  const handleUpdate = (data: Omit<Transaction, 'id' | 'createdAt' | 'updatedAt'>) => {
+  const handleUpdate = async (data: Omit<Transaction, 'id' | 'createdAt' | 'updatedAt'>) => {
     if (!editingTransaction) return;
 
     try {
-      const updated = transactions.map(t =>
-        t.id === editingTransaction.id
-          ? { ...t, ...data, updatedAt: new Date().toISOString() }
-          : t
-      );
+      await transactionsService.updateTransaction(editingTransaction.id, {
+        description: data.description,
+        amount: data.amount,
+        type: data.type,
+        section: data.section,
+        category: data.category,
+        subcategory: data.subcategory,
+        date: data.date,
+        accountId: data.accountId,
+        notes: data.metadata?.notes,
+        tags: data.tags,
+      });
 
-      saveTransactions(updated);
+      // Recarregar lista
+      await loadTransactions();
 
       showToast(
-        `Transação "${data.description}" atualizada com sucesso!`,
+        `✏️ Transação "${data.description}" atualizada com sucesso!`,
         'success'
       );
 
-      // Notify about updated transaction
       NotificationService.notifyTransaction('updated', data.description, data.amount);
-
       setIsFormOpen(false);
       setEditingTransaction(undefined);
-      Logger.info('Transação atualizada', { id: editingTransaction.id }, 'TRANSACTIONS');
+      Logger.info('✅ Transação atualizada', { id: editingTransaction.id }, 'TRANSACTIONS');
     } catch (error) {
-      showToast('Erro ao atualizar transação', 'error');
-      Logger.error('Erro ao atualizar transação', error as Error, 'TRANSACTIONS');
+      showToast('❌ Erro ao atualizar transação', 'error');
+      Logger.error('❌ Erro ao atualizar transação', error as Error, 'TRANSACTIONS');
     }
   };
 
-  const handleDelete = (id: string) => {
+  const handleDelete = async (id: string) => {
     try {
       const transaction = transactions.find(t => t.id === id);
-      const updated = transactions.filter(t => t.id !== id);
       
-      saveTransactions(updated);
+      await transactionsService.deleteTransaction(id);
+      
+      // Recarregar lista
+      await loadTransactions();
 
       showToast(
-        `Transação "${transaction?.description}" excluída com sucesso!`,
+        `🗑️ Transação "${transaction?.description}" excluída com sucesso!`,
         'success'
       );
 
-      // Notify about deleted transaction
       if (transaction) {
         NotificationService.notifyTransaction('deleted', transaction.description, transaction.amount);
       }
 
-      Logger.info('Transação excluída', { id }, 'TRANSACTIONS');
+      Logger.info('✅ Transação excluída', { id }, 'TRANSACTIONS');
     } catch (error) {
-      showToast('Erro ao excluir transação', 'error');
-      Logger.error('Erro ao excluir transação', error as Error, 'TRANSACTIONS');
+      showToast('❌ Erro ao excluir transação', 'error');
+      Logger.error('❌ Erro ao excluir transação', error as Error, 'TRANSACTIONS');
     }
   };
 
