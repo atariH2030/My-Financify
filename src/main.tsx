@@ -18,6 +18,7 @@ import ReportsAdvanced from './components/reports/ReportsAdvanced';
 import Goals from './components/goals/Goals';
 import Budgets from './components/budgets/Budgets';
 import Settings from './components/settings/Settings';
+import ProfilePage from './components/profile/ProfilePage';
 import NotificationCenter from './components/notifications/NotificationCenter';
 import Accounts from './components/accounts/Accounts';
 import RecurringTransactions from './components/recurring/RecurringTransactions';
@@ -82,6 +83,23 @@ const App: React.FC = () => {
   React.useEffect(() => {
     localStorage.setItem('sidebarActive', JSON.stringify(sidebarActive));
   }, [sidebarActive]);
+
+  // Listener para navegação via eventos customizados (ex: UserHeader)
+  React.useEffect(() => {
+    const handleNavigate = (e: Event) => {
+      const customEvent = e as CustomEvent;
+      if (customEvent.detail) {
+        setCurrentPage(customEvent.detail);
+        // Fechar sidebar em mobile
+        if (window.innerWidth <= 768) {
+          setSidebarActive(false);
+        }
+      }
+    };
+
+    window.addEventListener('navigate', handleNavigate);
+    return () => window.removeEventListener('navigate', handleNavigate);
+  }, []);
 
   // Responsive behavior
   React.useEffect(() => {
@@ -231,6 +249,8 @@ const App: React.FC = () => {
         return <ReportsAdvanced />;
       case 'settings':
         return <Settings />;
+      case 'profile':
+        return <ProfilePage />;
       case 'fase2-demo':
         return <Fase2Example />;
       default:

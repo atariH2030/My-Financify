@@ -71,11 +71,24 @@ const UserHeader: React.FC = () => {
               <div className="menu-divider" />
 
               <div className="menu-items">
-                <button className="menu-item" onClick={() => alert('Perfil em desenvolvimento!')}>
+                <button 
+                  className="menu-item" 
+                  onClick={() => {
+                    setShowMenu(false);
+                    // Navegar para perfil - dispara evento customizado
+                    window.dispatchEvent(new CustomEvent('navigate', { detail: 'profile' }));
+                  }}
+                >
                   <span className="menu-icon">👤</span>
                   <span>Meu Perfil</span>
                 </button>
-                <button className="menu-item" onClick={() => alert('Configurações em desenvolvimento!')}>
+                <button 
+                  className="menu-item" 
+                  onClick={() => {
+                    setShowMenu(false);
+                    window.dispatchEvent(new CustomEvent('navigate', { detail: 'settings' }));
+                  }}
+                >
                   <span className="menu-icon">⚙️</span>
                   <span>Configurações</span>
                 </button>
