@@ -165,15 +165,13 @@
   position: absolute;
   top: 0;
   left: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
+  max-width: none;
+  max-height: none;
+  object-fit: none;
   user-select: none;
-  transform-origin: center center;
-  transition: transform 0.05s ease-out;
-  background: transparent;
-  image-rendering: -webkit-optimize-contrast;
-  image-rendering: crisp-edges;
+  transform-origin: 0 0;
+  transition: none;
+  pointer-events: auto;
 }
 
 .crop-overlay {

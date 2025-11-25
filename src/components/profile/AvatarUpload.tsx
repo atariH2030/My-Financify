@@ -41,6 +41,7 @@ const AvatarUpload: React.FC<AvatarUploadProps> = ({ onClose, onSave, currentAva
     const file = e.target.files?.[0];
     if (!file) return;
 
+    console.log('📁 Arquivo selecionado:', file.name, file.type, file.size, 'bytes');
     setError('');
 
     // Validar tipo
@@ -63,8 +64,11 @@ const AvatarUpload: React.FC<AvatarUploadProps> = ({ onClose, onSave, currentAva
     // Validar dimensões
     const img = new Image();
     const objectUrl = URL.createObjectURL(file);
+    console.log('🖼️ Blob URL criada:', objectUrl);
 
     img.onload = () => {
+      console.log('✅ Imagem carregada:', img.width, 'x', img.height, 'pixels');
+      
       if (img.width < MIN_DIMENSION || img.height < MIN_DIMENSION) {
         setError(`Imagem muito pequena. Mínimo: ${MIN_DIMENSION}x${MIN_DIMENSION}px`);
         URL.revokeObjectURL(objectUrl);
@@ -72,12 +76,14 @@ const AvatarUpload: React.FC<AvatarUploadProps> = ({ onClose, onSave, currentAva
       }
 
       // Tudo OK - definir arquivo e preview
+      console.log('✅ Definindo arquivo e preview URL');
       setSelectedFile(file);
       setPreviewUrl(objectUrl);
       setCrop({ x: 0, y: 0, scale: 1 });
     };
 
     img.onerror = () => {
+      console.error('❌ Erro ao carregar imagem');
       setError('Erro ao carregar imagem');
       URL.revokeObjectURL(objectUrl);
     };
@@ -198,16 +204,20 @@ const AvatarUpload: React.FC<AvatarUploadProps> = ({ onClose, onSave, currentAva
 
   const handleSave = async () => {
     if (!selectedFile) {
+      console.log('⚠️ Nenhum arquivo selecionado, fechando modal');
       onSave(currentAvatar || '');
       onClose();
       return;
     }
 
+    console.log('🖌️ Iniciando processo de crop e salvamento...');
     setLoading(true);
     setError('');
 
     try {
+      console.log('🎨 Gerando imagem cortada...');
       const croppedBlob = await getCroppedImage();
+      console.log('✅ Blob gerado:', croppedBlob.size, 'bytes');
       
       // TODO: Upload para Supabase Storage
       // const { data, error } = await supabase.storage
@@ -215,6 +225,7 @@ const AvatarUpload: React.FC<AvatarUploadProps> = ({ onClose, onSave, currentAva
       //   .upload(`${user.id}/avatar.jpg`, croppedBlob);
 
       // Converter blob para base64 para salvar no localStorage
+      console.log('🔄 Convertendo para base64...');
       const base64 = await new Promise<string>((resolve, reject) => {
         const reader = new FileReader();
         reader.onloadend = () => resolve(reader.result as string);
@@ -222,19 +233,24 @@ const AvatarUpload: React.FC<AvatarUploadProps> = ({ onClose, onSave, currentAva
         reader.readAsDataURL(croppedBlob);
       });
       
+      console.log('✅ Base64 gerado:', base64.substring(0, 50) + '...');
+      
       // Salvar no localStorage
       localStorage.setItem('user_avatar', base64);
+      console.log('💾 Avatar salvo no localStorage');
       
       // Chamar callback com o avatar
       onSave(base64);
+      console.log('📡 Callback onSave chamado');
       
       // Fechar modal após pequeno delay para feedback visual
       setTimeout(() => {
         onClose();
+        console.log('✅ Modal fechado');
       }, 500);
     } catch (err) {
+      console.error('❌ Erro no handleSave:', err);
       setError('Erro ao processar imagem');
-      console.error(err);
     } finally {
       setLoading(false);
     }
@@ -286,12 +302,16 @@ const AvatarUpload: React.FC<AvatarUploadProps> = ({ onClose, onSave, currentAva
                   src={previewUrl}
                   alt="Preview"
                   className="crop-image"
-                  crossOrigin="anonymous"
                   style={{
                     transform: `translate(${crop.x}px, ${crop.y}px) scale(${crop.scale})`,
                     cursor: isDragging ? 'grabbing' : 'grab',
                   }}
                   onMouseDown={handleDragStart}
+                  onLoad={() => console.log('✅ Imagem carregada com sucesso:', previewUrl)}
+                  onError={(e) => {
+                    console.error('❌ Erro ao carregar imagem:', e);
+                    setError('Erro ao carregar imagem. Tente novamente.');
+                  }}
                   draggable={false}
                 />
                 
