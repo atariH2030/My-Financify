@@ -25,6 +25,9 @@ const AvatarUpload: React.FC<AvatarUploadProps> = ({ onClose, onSave, currentAva
   const [croppedImageUrl, setCroppedImageUrl] = useState<string>('');
   const [step, setStep] = useState<'select' | 'crop' | 'preview'>('select');
   const [crop, setCrop] = useState<CropState>({ x: 0, y: 0, scale: 1 });
+  const [minZoom, setMinZoom] = useState(1);
+  const [maxZoom, setMaxZoom] = useState(3);
+  const [imageDimensions, setImageDimensions] = useState({ width: 0, height: 0 });
   const [isDragging, setIsDragging] = useState(false);
   const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
   const [error, setError] = useState('');
@@ -37,7 +40,33 @@ const AvatarUpload: React.FC<AvatarUploadProps> = ({ onClose, onSave, currentAva
   // Limites de tamanho
   const MAX_FILE_SIZE = 2 * 1024 * 1024; // 2MB
   const MIN_DIMENSION = 200; // 200x200 pixels mínimo
+  const MAX_DIMENSION = 4096; // 4096x4096 pixels máximo (padrão web)
   const CROP_SIZE = 280; // Tamanho da área de crop
+
+  // Calcular zoom mínimo para cobrir toda área de crop
+  const calculateMinZoom = (imgWidth: number, imgHeight: number): number => {
+    // Zoom mínimo é o necessário para que a imagem cubra toda a área de crop
+    const minZoomWidth = CROP_SIZE / imgWidth;
+    const minZoomHeight = CROP_SIZE / imgHeight;
+    const calculatedMinZoom = Math.max(minZoomWidth, minZoomHeight);
+    
+    console.log('📏 Dimensões da imagem:', imgWidth, 'x', imgHeight);
+    console.log('📐 Zoom mínimo calculado:', calculatedMinZoom.toFixed(2));
+    
+    return Math.max(0.1, calculatedMinZoom); // Mínimo absoluto de 0.1
+  };
+
+  // Calcular zoom máximo baseado no tamanho da imagem
+  const calculateMaxZoom = (imgWidth: number, imgHeight: number): number => {
+    // Para imagens pequenas, permitir mais zoom
+    // Para imagens grandes, limitar o zoom
+    const avgDimension = (imgWidth + imgHeight) / 2;
+    
+    if (avgDimension <= 300) return 5;      // Imagens pequenas: até 500%
+    if (avgDimension <= 600) return 4;      // Imagens médias: até 400%
+    if (avgDimension <= 1200) return 3;     // Imagens grandes: até 300%
+    return 2;                                // Imagens muito grandes: até 200%
+  };
 
   const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -242,6 +271,9 @@ const AvatarUpload: React.FC<AvatarUploadProps> = ({ onClose, onSave, currentAva
     setCroppedImageUrl('');
     setStep('select');
     setCrop({ x: 0, y: 0, scale: 1 });
+    setMinZoom(1);
+    setMaxZoom(3);
+    setImageDimensions({ width: 0, height: 0 });
     setError('');
   };
 
@@ -387,15 +419,27 @@ const AvatarUpload: React.FC<AvatarUploadProps> = ({ onClose, onSave, currentAva
                 <span className="zoom-label">🔍</span>
                 <input
                   type="range"
-                  min="1"
-                  max="3"
-                  step="0.1"
+                  min={minZoom}
+                  max={maxZoom}
+                  step="0.01"
                   value={crop.scale}
                   onChange={handleZoomChange}
                   className="zoom-slider"
                 />
-                <span className="zoom-value">{Math.round(crop.scale * 100)}%</span>
+                <span className="zoom-value">
+                  {Math.round((crop.scale / minZoom) * 100)}%
+                </span>
               </div>
+
+              <p className="zoom-info">
+                📏 Imagem: {imageDimensions.width}×{imageDimensions.height}px | 
+                Zoom: {minZoom.toFixed(2)}x - {maxZoom}x
+              </p>
+
+              <p className="crop-help">
+                📏 Imagem: {imageDimensions.width}×{imageDimensions.height}px | 
+                Zoom: {minZoom.toFixed(2)}x - {maxZoom}x
+              </p>
 
               <p className="crop-help">
                 🖱️ Arraste a imagem para posicionar | 🔍 Use o controle para dar zoom

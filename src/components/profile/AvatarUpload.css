@@ -271,6 +271,15 @@
   line-height: 1.5;
 }
 
+.zoom-info {
+  text-align: center;
+  font-size: 0.75rem;
+  color: #a0aec0;
+  margin: 0.5rem 0 0 0;
+  line-height: 1.4;
+  font-family: 'Courier New', monospace;
+}
+
 /* Preview Zone */
 .preview-zone {
   display: flex;
