@@ -61,6 +61,41 @@
   gap: 1.25rem;
 }
 
+/* Força labels mais visíveis no fundo gradiente */
+.login-form .input-label {
+  color: #ffffff;
+  font-weight: 600;
+  font-size: 0.95rem;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+/* Garante fundo branco imediato em todos os inputs */
+.login-form .input {
+  background: #ffffff !important;
+  color: #1a202c;
+  border: 2px solid #e2e8f0;
+  transition: all 0.2s ease;
+}
+
+/* Placeholder mais visível */
+.login-form .input::placeholder {
+  color: #a0aec0;
+  opacity: 1;
+}
+
+/* Hover mais destacado */
+.login-form .input:hover:not(:disabled) {
+  border-color: #667eea;
+  box-shadow: 0 2px 8px rgba(102, 126, 234, 0.15);
+}
+
+/* Focus ainda mais destacado */
+.login-form .input:focus {
+  border-color: #667eea;
+  box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.2);
+  background: #ffffff !important;
+}
+
 .login-divider {
   display: flex;
   align-items: center;
@@ -135,6 +170,21 @@
   margin: 0;
   color: #718096;
   font-size: 0.875rem;
+}
+
+/* Label branco também no modo Magic Link */
+.magic-link-info + form .input-label {
+  color: #ffffff;
+  font-weight: 600;
+  font-size: 0.95rem;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+/* Input branco no modo Magic Link */
+.magic-link-info + form .input {
+  background: #ffffff !important;
+  color: #1a202c;
+  border: 2px solid #e2e8f0;
 }
 
 .login-success {

@@ -34,10 +34,10 @@
 }
 
 .user-avatar {
-  width: 40px;
-  height: 40px;
+  width: 44px;
+  height: 44px;
   border-radius: 50%;
-  border: 2px solid #667eea;
+  border: 2.5px solid #667eea;
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   display: flex;
   align-items: center;
@@ -45,6 +45,7 @@
   cursor: pointer;
   transition: all 0.2s;
   overflow: hidden;
+  flex-shrink: 0;
 }
 
 .user-avatar:hover {
@@ -60,8 +61,10 @@
 
 .avatar-initials {
   color: white;
-  font-weight: 600;
-  font-size: 0.875rem;
+  font-weight: 700;
+  font-size: 1rem;
+  letter-spacing: 0.5px;
+  user-select: none;
 }
 
 .user-menu-backdrop {
@@ -77,11 +80,12 @@
 .user-menu {
   position: absolute;
   top: calc(100% + 0.5rem);
-  right: 0;
+  left: 0;
   background: white;
   border-radius: 0.5rem;
   box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
-  min-width: 280px;
+  min-width: 260px;
+  max-width: 300px;
   z-index: 999;
   animation: slideDown 0.2s ease-out;
 }
@@ -105,10 +109,10 @@
 }
 
 .menu-avatar {
-  width: 50px;
-  height: 50px;
+  width: 56px;
+  height: 56px;
   border-radius: 50%;
-  border: 2px solid #667eea;
+  border: 2.5px solid #667eea;
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   display: flex;
   align-items: center;
@@ -124,7 +128,8 @@
 }
 
 .menu-avatar .avatar-initials {
-  font-size: 1rem;
+  font-size: 1.25rem;
+  font-weight: 700;
 }
 
 .menu-user-info {
@@ -228,6 +233,7 @@
   }
 
   .user-menu {
-    right: -0.5rem;
+    left: -0.5rem;
+    min-width: 240px;
   }
 }
