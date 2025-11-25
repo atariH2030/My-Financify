@@ -11,9 +11,15 @@ import './UserHeader.css';
 const UserHeader: React.FC = () => {
   const { user, signOut } = useAuth();
   const [showMenu, setShowMenu] = useState(false);
-  const [avatarUrl] = React.useState<string>(
-    localStorage.getItem('user_avatar') || user?.user_metadata?.avatar_url || ''
-  );
+  const [avatarUrl, setAvatarUrl] = React.useState<string>('');
+
+  // Carregar avatar do localStorage ao montar
+  React.useEffect(() => {
+    const savedAvatar = localStorage.getItem('user_avatar');
+    if (savedAvatar) {
+      setAvatarUrl(savedAvatar);
+    }
+  }, []);
 
   if (!user) return null;
 

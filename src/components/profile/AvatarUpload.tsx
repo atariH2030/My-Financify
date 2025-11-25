@@ -35,7 +35,7 @@ const AvatarUpload: React.FC<AvatarUploadProps> = ({ onClose, onSave, currentAva
   // Limites de tamanho
   const MAX_FILE_SIZE = 2 * 1024 * 1024; // 2MB
   const MIN_DIMENSION = 200; // 200x200 pixels mínimo
-  const CROP_SIZE = 300; // Tamanho da área de crop
+  const CROP_SIZE = 280; // Tamanho da área de crop
 
   const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];

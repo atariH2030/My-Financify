@@ -17,9 +17,15 @@ const ProfilePage: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState('');
   const [error, setError] = useState('');
-  const [avatarUrl, setAvatarUrl] = useState<string>(
-    localStorage.getItem('user_avatar') || user?.user_metadata?.avatar_url || ''
-  );
+  const [avatarUrl, setAvatarUrl] = useState<string>('');
+
+  // Carregar avatar do localStorage
+  React.useEffect(() => {
+    const savedAvatar = localStorage.getItem('user_avatar');
+    if (savedAvatar) {
+      setAvatarUrl(savedAvatar);
+    }
+  }, []);
 
   const handleSaveProfile = async () => {
     setLoading(true);
@@ -39,11 +45,10 @@ const ProfilePage: React.FC = () => {
 
   const handleAvatarSaved = (avatarUrl: string) => {
     setIsEditingAvatar(false);
+    setAvatarUrl(avatarUrl);
     setSuccess('Avatar atualizado com sucesso!');
-    // Força reload para atualizar avatar no header
-    setTimeout(() => {
-      window.location.reload();
-    }, 1500);
+    // Disparar evento para atualizar header
+    window.dispatchEvent(new Event('avatarUpdated'));
   };
 
   const getInitials = (email: string): string => {
@@ -104,6 +109,7 @@ const ProfilePage: React.FC = () => {
                     localStorage.removeItem('user_avatar');
                     setAvatarUrl('');
                     setSuccess('Avatar removido com sucesso!');
+                    window.dispatchEvent(new Event('avatarUpdated'));
                   }}
                   variant="secondary"
                 >
