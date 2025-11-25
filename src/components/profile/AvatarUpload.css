@@ -171,6 +171,9 @@
   user-select: none;
   transform-origin: center center;
   transition: transform 0.05s ease-out;
+  background: transparent;
+  image-rendering: -webkit-optimize-contrast;
+  image-rendering: crisp-edges;
 }
 
 .crop-overlay {

@@ -55,6 +55,11 @@ const AvatarUpload: React.FC<AvatarUploadProps> = ({ onClose, onSave, currentAva
       return;
     }
 
+    // Limpar preview anterior se existir
+    if (previewUrl && previewUrl !== currentAvatar) {
+      URL.revokeObjectURL(previewUrl);
+    }
+
     // Validar dimensões
     const img = new Image();
     const objectUrl = URL.createObjectURL(file);
@@ -66,9 +71,15 @@ const AvatarUpload: React.FC<AvatarUploadProps> = ({ onClose, onSave, currentAva
         return;
       }
 
+      // Tudo OK - definir arquivo e preview
       setSelectedFile(file);
       setPreviewUrl(objectUrl);
       setCrop({ x: 0, y: 0, scale: 1 });
+    };
+
+    img.onerror = () => {
+      setError('Erro ao carregar imagem');
+      URL.revokeObjectURL(objectUrl);
     };
 
     img.src = objectUrl;
@@ -122,6 +133,15 @@ const AvatarUpload: React.FC<AvatarUploadProps> = ({ onClose, onSave, currentAva
       };
     }
   }, [isDragging, handleDragMove, handleDragEnd]);
+
+  // Cleanup: limpar URLs ao desmontar
+  React.useEffect(() => {
+    return () => {
+      if (previewUrl && previewUrl !== currentAvatar && previewUrl.startsWith('blob:')) {
+        URL.revokeObjectURL(previewUrl);
+      }
+    };
+  }, [previewUrl, currentAvatar]);
 
   const handleZoomChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newScale = parseFloat(e.target.value);
@@ -195,17 +215,23 @@ const AvatarUpload: React.FC<AvatarUploadProps> = ({ onClose, onSave, currentAva
       //   .upload(`${user.id}/avatar.jpg`, croppedBlob);
 
       // Converter blob para base64 para salvar no localStorage
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        const base64 = reader.result as string;
-        // Salvar no localStorage temporariamente
-        localStorage.setItem('user_avatar', base64);
-        onSave(base64);
-      };
-      reader.readAsDataURL(croppedBlob);
+      const base64 = await new Promise<string>((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onloadend = () => resolve(reader.result as string);
+        reader.onerror = reject;
+        reader.readAsDataURL(croppedBlob);
+      });
       
-      // Simular delay de upload
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      // Salvar no localStorage
+      localStorage.setItem('user_avatar', base64);
+      
+      // Chamar callback com o avatar
+      onSave(base64);
+      
+      // Fechar modal após pequeno delay para feedback visual
+      setTimeout(() => {
+        onClose();
+      }, 500);
     } catch (err) {
       setError('Erro ao processar imagem');
       console.error(err);
@@ -260,6 +286,7 @@ const AvatarUpload: React.FC<AvatarUploadProps> = ({ onClose, onSave, currentAva
                   src={previewUrl}
                   alt="Preview"
                   className="crop-image"
+                  crossOrigin="anonymous"
                   style={{
                     transform: `translate(${crop.x}px, ${crop.y}px) scale(${crop.scale})`,
                     cursor: isDragging ? 'grabbing' : 'grab',
