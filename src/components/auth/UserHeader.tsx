@@ -11,6 +11,9 @@ import './UserHeader.css';
 const UserHeader: React.FC = () => {
   const { user, signOut } = useAuth();
   const [showMenu, setShowMenu] = useState(false);
+  const [avatarUrl] = React.useState<string>(
+    localStorage.getItem('user_avatar') || user?.user_metadata?.avatar_url || ''
+  );
 
   if (!user) return null;
 
@@ -43,8 +46,8 @@ const UserHeader: React.FC = () => {
           onClick={() => setShowMenu(!showMenu)}
           title={user.email || ''}
         >
-          {user.user_metadata?.avatar_url ? (
-            <img src={user.user_metadata.avatar_url} alt="Avatar" />
+          {avatarUrl ? (
+            <img src={avatarUrl} alt="Avatar" />
           ) : (
             <span className="avatar-initials">{getInitials(user.email || '')}</span>
           )}
@@ -56,8 +59,8 @@ const UserHeader: React.FC = () => {
             <div className="user-menu">
               <div className="menu-header">
                 <div className="menu-avatar">
-                  {user.user_metadata?.avatar_url ? (
-                    <img src={user.user_metadata.avatar_url} alt="Avatar" />
+                  {avatarUrl ? (
+                    <img src={avatarUrl} alt="Avatar" />
                   ) : (
                     <span className="avatar-initials">{getInitials(user.email || '')}</span>
                   )}

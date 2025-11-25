@@ -17,6 +17,9 @@ const ProfilePage: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState('');
   const [error, setError] = useState('');
+  const [avatarUrl, setAvatarUrl] = useState<string>(
+    localStorage.getItem('user_avatar') || user?.user_metadata?.avatar_url || ''
+  );
 
   const handleSaveProfile = async () => {
     setLoading(true);
@@ -37,6 +40,10 @@ const ProfilePage: React.FC = () => {
   const handleAvatarSaved = (avatarUrl: string) => {
     setIsEditingAvatar(false);
     setSuccess('Avatar atualizado com sucesso!');
+    // Força reload para atualizar avatar no header
+    setTimeout(() => {
+      window.location.reload();
+    }, 1500);
   };
 
   const getInitials = (email: string): string => {
@@ -74,8 +81,8 @@ const ProfilePage: React.FC = () => {
           
           <div className="avatar-section">
             <div className="current-avatar">
-              {user.user_metadata?.avatar_url ? (
-                <img src={user.user_metadata.avatar_url} alt="Avatar" />
+              {avatarUrl ? (
+                <img src={avatarUrl} alt="Avatar" />
               ) : (
                 <div className="avatar-placeholder">
                   <span>{getInitials(user.email || '')}</span>
@@ -88,14 +95,15 @@ const ProfilePage: React.FC = () => {
                 onClick={() => setIsEditingAvatar(true)}
                 variant="secondary"
               >
-                📷 {user.user_metadata?.avatar_url ? 'Alterar Foto' : 'Adicionar Foto'}
+                📷 {avatarUrl ? 'Alterar Foto' : 'Adicionar Foto'}
               </Button>
               
-              {user.user_metadata?.avatar_url && (
+              {avatarUrl && (
                 <Button
                   onClick={() => {
-                    // TODO: Remover avatar
-                    console.log('Remover avatar');
+                    localStorage.removeItem('user_avatar');
+                    setAvatarUrl('');
+                    setSuccess('Avatar removido com sucesso!');
                   }}
                   variant="secondary"
                 >
@@ -222,7 +230,7 @@ const ProfilePage: React.FC = () => {
         <AvatarUpload
           onClose={() => setIsEditingAvatar(false)}
           onSave={handleAvatarSaved}
-          currentAvatar={user.user_metadata?.avatar_url}
+          currentAvatar={avatarUrl}
         />
       )}
     </div>

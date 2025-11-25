@@ -194,13 +194,18 @@ const AvatarUpload: React.FC<AvatarUploadProps> = ({ onClose, onSave, currentAva
       //   .from('avatars')
       //   .upload(`${user.id}/avatar.jpg`, croppedBlob);
 
-      // Simulação - criar URL temporária
-      const tempUrl = URL.createObjectURL(croppedBlob);
+      // Converter blob para base64 para salvar no localStorage
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        const base64 = reader.result as string;
+        // Salvar no localStorage temporariamente
+        localStorage.setItem('user_avatar', base64);
+        onSave(base64);
+      };
+      reader.readAsDataURL(croppedBlob);
       
       // Simular delay de upload
       await new Promise(resolve => setTimeout(resolve, 1000));
-      
-      onSave(tempUrl);
     } catch (err) {
       setError('Erro ao processar imagem');
       console.error(err);

@@ -10,9 +10,10 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 9999;
+  z-index: 99999;
   padding: 1rem;
   animation: fadeIn 0.2s ease-out;
+  overflow-y: auto;
 }
 
 @keyframes fadeIn {
@@ -25,11 +26,12 @@
   border-radius: 1rem;
   width: 100%;
   max-width: 600px;
-  max-height: 90vh;
+  max-height: 85vh;
   display: flex;
   flex-direction: column;
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
   animation: slideUp 0.3s ease-out;
+  margin: auto;
 }
 
 @keyframes slideUp {
