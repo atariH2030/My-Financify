@@ -3,12 +3,13 @@ import { createRoot } from 'react-dom/client';
 import './styles/globals.css';
 import './styles/smooth-transitions.css';
 
-// 🧪 MODO TESTE DE AUTENTICAÇÃO
-// Descomente a linha abaixo para voltar ao app normal
-import AuthDemo from './components/auth/AuthDemo';
+// ✅ APP NORMAL COM AUTENTICAÇÃO INTEGRADA
+import { AuthProvider } from './contexts/AuthContext';
+import ProtectedRoute from './components/auth/ProtectedRoute';
+import UserHeader from './components/auth/UserHeader';
+import OnlineStatus from './components/common/OnlineStatus';
 
-/* 
-// App normal (comentado temporariamente)
+// App Components
 import Dashboard from './components/dashboard/Dashboard';
 import DashboardV2 from './components/dashboard/DashboardV2';
 import Transactions from './components/transactions/Transactions';
@@ -25,7 +26,6 @@ import { ToastEnhancedProvider } from './components/common';
 import { useKeyboardShortcuts, KeyboardShortcutsHelp, type KeyboardShortcut } from './components/common';
 import CommandPalette from './components/common/CommandPalette';
 import Fase2Example from './components/common/Fase2Example';
-*/
 
 import Logger from './services/logger.service';
 import Seeder from './services/seeder.service';
@@ -211,13 +211,6 @@ const App: React.FC = () => {
   // Registrar atalhos
   useKeyboardShortcuts({ shortcuts });
 
-  const logout = () => {
-    if (window.confirm('Deseja realmente sair?')) {
-      localStorage.clear();
-      window.location.reload();
-    }
-  };
-
   const renderPage = () => {
     switch (currentPage) {
       case 'dashboard':
@@ -289,6 +282,8 @@ const App: React.FC = () => {
         <div className="sidebar-header">
           <div className="sidebar-header-top">
             <h3><i className="fas fa-chart-line"></i> My Financify</h3>
+            {/* User Header - Mostra usuário logado */}
+            <UserHeader />
           </div>
           <div className="sidebar-header-bottom">
             <button className="sidebar-toggle" onClick={toggleSidebar} title="Alternar sidebar">
@@ -480,18 +475,14 @@ const App: React.FC = () => {
         </nav>
         
         <div className="sidebar-footer">
-          <div className="user-profile">
-            <div className="user-avatar">
-              <i className="fas fa-user"></i>
-            </div>
-            <div className="user-info">
-              <span className="user-name">Usuário</span>
-              <small className="user-email">usuario@email.com</small>
-            </div>
-          </div>
-          <button className="logout-btn" onClick={logout}>
-            <i className="fas fa-sign-out-alt"></i> Sair
-          </button>
+          {/* Indicador de Status Online/Offline */}
+          <OnlineStatus 
+            pendingOperations={0}
+            onSync={async () => {
+              // TODO: Integrar com ResilientStorage.syncPending()
+              console.log('Sincronizando operações pendentes...');
+            }}
+          />
         </div>
       </div>
 
@@ -529,27 +520,23 @@ if (!container) {
 }
 
 const root = createRoot(container);
-// 🧪 RENDER - Modo Teste de Autenticação
-root.render(
-  <React.StrictMode>
-    <AuthDemo />
-  </React.StrictMode>
-);
 
-/* 
-// App normal (temporariamente desativado para teste)
+// ✅ APP NORMAL - Com autenticação integrada e rotas protegidas
 root.render(
   <React.StrictMode>
     <ErrorBoundary>
-      <ToastProvider>
-        <ToastEnhancedProvider position="top-right" maxToasts={5}>
-          <App />
-        </ToastEnhancedProvider>
-      </ToastProvider>
+      <AuthProvider>
+        <ToastProvider>
+          <ToastEnhancedProvider position="top-right" maxToasts={5}>
+            <ProtectedRoute>
+              <App />
+            </ProtectedRoute>
+          </ToastEnhancedProvider>
+        </ToastProvider>
+      </AuthProvider>
     </ErrorBoundary>
   </React.StrictMode>
 );
-*/
 
 // Função para esconder loading screen de forma robusta
 const hideLoadingScreen = () => {
