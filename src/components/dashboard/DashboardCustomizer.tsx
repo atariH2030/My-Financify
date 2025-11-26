@@ -1,12 +1,11 @@
 /**
  * @file DashboardCustomizer.tsx
  * @description Modal de personalização do dashboard
- * @version 1.0.0
+ * @version 2.0.0 - Otimizado para performance
  * @author DEV - Rickson (TQM)
  */
 
-import React, { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import React, { useState, useEffect, useMemo } from 'react';
 import './DashboardCustomizer.css';
 
 interface Widget {

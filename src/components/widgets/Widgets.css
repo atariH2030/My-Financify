@@ -52,19 +52,22 @@
 }
 
 /* Layout Modes - Diferentes visualizações */
-/* Grid Grande: 2 colunas FIXAS - widgets espaçosos */
+/* Grid Grande: 2 colunas responsivas - widgets espaçosos */
 .widget-grid-grid-large {
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: repeat(auto-fit, minmax(min(400px, 100%), 1fr));
+  max-width: 100%;
 }
 
-/* Grid Médio: 3 colunas FIXAS - tamanho balanceado */
+/* Grid Médio: 3 colunas responsivas - tamanho balanceado */
 .widget-grid-grid-medium {
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(auto-fit, minmax(min(320px, 100%), 1fr));
+  max-width: 100%;
 }
 
-/* Grid Pequeno: 4 colunas FIXAS - widgets compactos */
+/* Grid Pequeno: 4 colunas responsivas - widgets compactos */
 .widget-grid-grid-small {
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(auto-fit, minmax(min(250px, 100%), 1fr));
+  max-width: 100%;
 }
 
 /* Lista: 1 coluna larga */

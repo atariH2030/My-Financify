@@ -1,6 +1,6 @@
 /**
  * Widget Types - Componentes individuais de widgets
- * v3.11.1 - Com formatação ABNT correta
+ * v4.0.0 - Com suporte a expandir/recolher no modo lista
  */
 
 import React, { useState, useEffect } from 'react';
@@ -9,11 +9,25 @@ import BaseWidget from './BaseWidget';
 import { formatCurrency, formatNumber } from '../../utils/currency';
 import './Widgets.css';
 
+interface WidgetProps {
+  config: WidgetConfig;
+  onRemove?: () => void;
+  isListView?: boolean;
+  isExpanded?: boolean;
+  onToggleExpand?: () => void;
+}
+
 // ============================================================================
 // BALANCE WIDGET
 // ============================================================================
 
-export const BalanceWidget: React.FC<{ config: WidgetConfig }> = ({ config }) => {
+export const BalanceWidget: React.FC<WidgetProps> = ({ 
+  config, 
+  onRemove, 
+  isListView, 
+  isExpanded, 
+  onToggleExpand 
+}) => {
   const [balance, setBalance] = useState(0);
 
   useEffect(() => {
@@ -22,7 +36,13 @@ export const BalanceWidget: React.FC<{ config: WidgetConfig }> = ({ config }) =>
   }, []);
 
   return (
-    <BaseWidget config={config}>
+    <BaseWidget 
+      config={config}
+      onRemove={onRemove}
+      isListView={isListView}
+      isExpanded={isExpanded}
+      onToggleExpand={onToggleExpand}
+    >
       <div className="widget-content balance-widget">
         <div className="balance-main">
           <span className="amount">{formatCurrency(balance)}</span>
@@ -41,7 +61,13 @@ export const BalanceWidget: React.FC<{ config: WidgetConfig }> = ({ config }) =>
 // EXPENSES WIDGET
 // ============================================================================
 
-export const ExpensesWidget: React.FC<{ config: WidgetConfig }> = ({ config }) => {
+export const ExpensesWidget: React.FC<WidgetProps> = ({ 
+  config, 
+  onRemove, 
+  isListView, 
+  isExpanded, 
+  onToggleExpand 
+}) => {
   const [expenses, setExpenses] = useState(0);
 
   useEffect(() => {
@@ -50,7 +76,13 @@ export const ExpensesWidget: React.FC<{ config: WidgetConfig }> = ({ config }) =
   }, []);
 
   return (
-    <BaseWidget config={config}>
+    <BaseWidget 
+      config={config}
+      onRemove={onRemove}
+      isListView={isListView}
+      isExpanded={isExpanded}
+      onToggleExpand={onToggleExpand}
+    >
       <div className="widget-content expenses-widget">
         <div className="stat-main">
           <span className="amount">{formatCurrency(expenses)}</span>
@@ -67,7 +99,13 @@ export const ExpensesWidget: React.FC<{ config: WidgetConfig }> = ({ config }) =
 // INCOME WIDGET
 // ============================================================================
 
-export const IncomeWidget: React.FC<{ config: WidgetConfig }> = ({ config }) => {
+export const IncomeWidget: React.FC<WidgetProps> = ({ 
+  config, 
+  onRemove, 
+  isListView, 
+  isExpanded, 
+  onToggleExpand 
+}) => {
   const [income, setIncome] = useState(0);
 
   useEffect(() => {
@@ -76,7 +114,13 @@ export const IncomeWidget: React.FC<{ config: WidgetConfig }> = ({ config }) => 
   }, []);
 
   return (
-    <BaseWidget config={config}>
+    <BaseWidget 
+      config={config}
+      onRemove={onRemove}
+      isListView={isListView}
+      isExpanded={isExpanded}
+      onToggleExpand={onToggleExpand}
+    >
       <div className="widget-content income-widget">
         <div className="stat-main">
           <span className="amount">{formatCurrency(income)}</span>
@@ -93,9 +137,21 @@ export const IncomeWidget: React.FC<{ config: WidgetConfig }> = ({ config }) => 
 // BUDGET WIDGET
 // ============================================================================
 
-export const BudgetWidget: React.FC<{ config: WidgetConfig }> = ({ config }) => {
+export const BudgetWidget: React.FC<WidgetProps> = ({ 
+  config, 
+  onRemove, 
+  isListView, 
+  isExpanded, 
+  onToggleExpand 
+}) => {
   return (
-    <BaseWidget config={config}>
+    <BaseWidget 
+      config={config}
+      onRemove={onRemove}
+      isListView={isListView}
+      isExpanded={isExpanded}
+      onToggleExpand={onToggleExpand}
+    >
       <div className="widget-content budget-widget">
         <div className="budget-summary">
           <div className="budget-item">
@@ -122,9 +178,21 @@ export const BudgetWidget: React.FC<{ config: WidgetConfig }> = ({ config }) => 
 // GOALS WIDGET
 // ============================================================================
 
-export const GoalsWidget: React.FC<{ config: WidgetConfig }> = ({ config }) => {
+export const GoalsWidget: React.FC<WidgetProps> = ({ 
+  config, 
+  onRemove, 
+  isListView, 
+  isExpanded, 
+  onToggleExpand 
+}) => {
   return (
-    <BaseWidget config={config}>
+    <BaseWidget 
+      config={config}
+      onRemove={onRemove}
+      isListView={isListView}
+      isExpanded={isExpanded}
+      onToggleExpand={onToggleExpand}
+    >
       <div className="widget-content goals-widget">
         <div className="goals-list">
           <div className="goal-item">
@@ -151,9 +219,21 @@ export const GoalsWidget: React.FC<{ config: WidgetConfig }> = ({ config }) => {
 // RECURRING WIDGET
 // ============================================================================
 
-export const RecurringWidget: React.FC<{ config: WidgetConfig }> = ({ config }) => {
+export const RecurringWidget: React.FC<WidgetProps> = ({ 
+  config, 
+  onRemove, 
+  isListView, 
+  isExpanded, 
+  onToggleExpand 
+}) => {
   return (
-    <BaseWidget config={config}>
+    <BaseWidget 
+      config={config}
+      onRemove={onRemove}
+      isListView={isListView}
+      isExpanded={isExpanded}
+      onToggleExpand={onToggleExpand}
+    >
       <div className="widget-content recurring-widget">
         <div className="recurring-list">
           <div className="recurring-item expense">
@@ -178,9 +258,21 @@ export const RecurringWidget: React.FC<{ config: WidgetConfig }> = ({ config }) 
 // RECENT TRANSACTIONS WIDGET
 // ============================================================================
 
-export const RecentTransactionsWidget: React.FC<{ config: WidgetConfig }> = ({ config }) => {
+export const RecentTransactionsWidget: React.FC<WidgetProps> = ({ 
+  config, 
+  onRemove, 
+  isListView, 
+  isExpanded, 
+  onToggleExpand 
+}) => {
   return (
-    <BaseWidget config={config}>
+    <BaseWidget 
+      config={config}
+      onRemove={onRemove}
+      isListView={isListView}
+      isExpanded={isExpanded}
+      onToggleExpand={onToggleExpand}
+    >
       <div className="widget-content transactions-widget">
         <div className="transactions-list">
           <div className="transaction-item expense">
@@ -214,9 +306,21 @@ export const RecentTransactionsWidget: React.FC<{ config: WidgetConfig }> = ({ c
 // ACCOUNTS WIDGET
 // ============================================================================
 
-export const AccountsWidget: React.FC<{ config: WidgetConfig }> = ({ config }) => {
+export const AccountsWidget: React.FC<WidgetProps> = ({ 
+  config, 
+  onRemove, 
+  isListView, 
+  isExpanded, 
+  onToggleExpand 
+}) => {
   return (
-    <BaseWidget config={config}>
+    <BaseWidget 
+      config={config}
+      onRemove={onRemove}
+      isListView={isListView}
+      isExpanded={isExpanded}
+      onToggleExpand={onToggleExpand}
+    >
       <div className="widget-content accounts-widget">
         <div className="accounts-list">
           <div className="account-item">

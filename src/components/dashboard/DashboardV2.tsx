@@ -83,14 +83,6 @@ export const DashboardV2: React.FC = () => {
           <h1>Dashboard</h1>
           <p className="dashboard-period">{getCurrentMonth()}</p>
         </div>
-        <button 
-          className="btn-customize"
-          onClick={() => setShowCustomizer(true)}
-          title="Personalizar Dashboard"
-        >
-          <i className="fas fa-cog"></i>
-          Personalizar
-        </button>
       </motion.div>
 
       {/* Cards de resumo */}
