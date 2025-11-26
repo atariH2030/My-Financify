@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Button, Modal } from '../common';
 import RecurringForm from './RecurringForm';
 import RecurringCard from './RecurringCard';
-import RecurringService from '../../services/recurring.service';
+import { recurringTransactionsService } from '../../services/recurring.service';
 import { formatCurrency } from '../../utils/performance';
 import type { RecurringTransaction } from '../../types/financial.types';
 import './Recurring.css';
@@ -23,8 +23,8 @@ const RecurringTransactions: React.FC = () => {
     applyFilters();
   }, [recurrings, filterType, filterStatus]);
 
-  const loadRecurrings = () => {
-    const data = RecurringService.getAll();
+  const loadRecurrings = async () => {
+    const data = await recurringTransactionsService.getRecurringTransactions();
     setRecurrings(data);
   };
 
@@ -57,27 +57,28 @@ const RecurringTransactions: React.FC = () => {
     setShowModal(true);
   };
 
-  const handleSubmit = (data: Partial<RecurringTransaction>) => {
+  const handleSubmit = async (data: Partial<RecurringTransaction>) => {
     if (editingRecurring) {
-      RecurringService.update(editingRecurring.id, data);
+      await recurringTransactionsService.updateRecurring(editingRecurring.id, data as any);
     } else {
-      RecurringService.create(data as Omit<RecurringTransaction, 'id' | 'createdAt' | 'generatedCount' | 'nextOccurrence'>);
+      await recurringTransactionsService.createRecurring(data as any);
     }
-    loadRecurrings();
+    await loadRecurrings();
     setShowModal(false);
     setEditingRecurring(undefined);
   };
 
-  const handleToggle = (recurring: RecurringTransaction) => {
-    RecurringService.toggleStatus(recurring.id);
-    loadRecurrings();
+  const handleToggle = async (recurring: RecurringTransaction) => {
+    const newStatus = recurring.active ? false : true;
+    await recurringTransactionsService.updateRecurring(recurring.id, { active: newStatus } as any);
+    await loadRecurrings();
   };
 
-  const handleDelete = (recurring: RecurringTransaction) => {
-    if (window.confirm(`Deseja realmente excluir a recorrência "${recurring.name}"?`)) {
-      RecurringService.remove(recurring.id);
-      loadRecurrings();
-    }
+  const handleDelete = async (recurring: RecurringTransaction) => {
+    if (!window.confirm(`Deseja realmente excluir a recorrência "${recurring.description}"?`)) return;
+    
+    await recurringTransactionsService.deleteRecurring(recurring.id);
+    await loadRecurrings();
   };
 
   const summary = RecurringService.getSummary();

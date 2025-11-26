@@ -6,8 +6,8 @@ import Modal from '../common/Modal';
 import { useToast } from '../common/Toast';
 import AccountForm from './AccountForm.tsx';
 import AccountCard from './AccountCard.tsx';
-import AccountService from '../../services/account.service';
-import StorageService from '../../services/storage.service';
+import { accountsService } from '../../services/accounts.service';
+import { transactionsService } from '../../services/transactions.service';
 import { formatCurrency } from '../../utils/performance';
 import type { Account, Transaction } from '../../types/financial.types';
 import './Accounts.css';
@@ -29,15 +29,15 @@ const Accounts: React.FC = () => {
     try {
       setLoading(true);
       const [accountsData, transactionsData] = await Promise.all([
-        AccountService.getAll(),
-        StorageService.load<Transaction[]>('transactions'),
+        accountsService.getAccounts(),
+        transactionsService.getTransactions(),
       ]);
 
       setAccounts(accountsData);
       setTransactions(transactionsData || []);
 
-      // Calcula resumo
-      const summaryData = await AccountService.getSummary(transactionsData || []);
+      // Calcula resumo usando o service
+      const summaryData = await accountsService.getSummary();
       setSummary(summaryData);
     } catch (error) {
       console.error('Erro ao carregar dados:', error);
@@ -49,7 +49,7 @@ const Accounts: React.FC = () => {
 
   const handleCreate = async (data: Omit<Account, 'id' | 'createdAt' | 'updatedAt'>) => {
     try {
-      await AccountService.create(data);
+      await accountsService.createAccount(data as any);
       await loadData();
       setIsModalOpen(false);
       showToast(`Conta "${data.name}" criada com sucesso!`, 'success');
@@ -62,7 +62,7 @@ const Accounts: React.FC = () => {
     if (!editingAccount) return;
 
     try {
-      await AccountService.update(editingAccount.id, data);
+      await accountsService.updateAccount(editingAccount.id, data as any);
       await loadData();
       setIsModalOpen(false);
       setEditingAccount(undefined);
@@ -81,33 +81,21 @@ const Accounts: React.FC = () => {
     const account = accounts.find(a => a.id === id);
     if (!account) return;
 
-    // Verifica se pode deletar
-    const validation = await AccountService.canDelete(id, transactions);
-    
-    if (!validation.canDelete) {
-      if (confirm(
-        `⚠️ Esta conta possui ${validation.transactionCount} transações associadas.\n\n` +
-        `Deseja desativar a conta ao invés de removê-la?`
-      )) {
-        try {
-          await AccountService.remove(id);
-          await loadData();
-          showToast(`Conta "${account.name}" desativada`, 'success');
-        } catch (error) {
-          showToast('Erro ao desativar conta', 'error');
-        }
-      }
+    // Confirmação simples
+    if (!confirm(`Tem certeza que deseja remover a conta "${account.name}"?`)) {
       return;
     }
 
-    if (confirm(`Tem certeza que deseja remover a conta "${account.name}"?`)) {
-      try {
-        await AccountService.permanentDelete(id);
-        await loadData();
-        showToast(`Conta "${account.name}" removida`, 'success');
-      } catch (error) {
-        showToast('Erro ao remover conta', 'error');
-      }
+    try {
+      await accountsService.deleteAccount(id);
+      await loadData();
+      showToast(`Conta "${account.name}" removida!`, 'success');
+        } catch (error) {
+          showToast('Erro ao desativar conta', 'error');
+      await loadData();
+      showToast(`Conta "${account.name}" removida!`, 'success');
+    } catch (error) {
+      showToast('Erro ao remover conta', 'error');
     }
   };
 
