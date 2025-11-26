@@ -16,6 +16,18 @@
   user-select: none;
 }
 
+/* Garantir tamanho adequado dos ícones */
+.btn i,
+.btn .fas,
+.btn .far,
+.btn .fab {
+  font-size: 0.9em;
+  line-height: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
 .btn:disabled,
 .btn.btn-loading {
   opacity: 0.6;

@@ -61,7 +61,8 @@ class TransactionsService {
   async createTransaction(data: TransactionInput): Promise<Transaction> {
     const userId = await this.getUserId();
     
-    const transaction: Omit<Transaction, 'id'> = {
+    const transaction: any = {
+      user_id: userId,
       type: data.type,
       amount: data.amount,
       description: data.description,
