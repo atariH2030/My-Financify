@@ -1,4 +1,8 @@
 import React from 'react';
+import { useState } from 'react';
+import Button from '../common/Button';
+import ExportModal from '../export/ExportModal';
+import { formatCurrency, formatPercentage } from '../../utils/currency';
 
 interface KPICardProps {
   title: string;
@@ -26,6 +30,8 @@ interface ReportsProps {
 }
 
 const Reports: React.FC<ReportsProps> = ({ className }) => {
+  const [showExportModal, setShowExportModal] = useState(false);
+
   return (
     <div className={`reports-module ${className || ''}`}>
       {/* Filter Section */}
@@ -65,40 +71,46 @@ const Reports: React.FC<ReportsProps> = ({ className }) => {
 
       {/* Report Actions */}
       <div className="report-actions">
-        <button className="btn-export">
-          📊 Exportar Excel
-        </button>
+        <Button variant="primary" onClick={() => setShowExportModal(true)}>
+          📥 Exportar Dados
+        </Button>
         <button className="btn-powerbi">
           📈 Abrir no Power BI
         </button>
       </div>
 
+      {/* Export Modal */}
+      <ExportModal 
+        isOpen={showExportModal} 
+        onClose={() => setShowExportModal(false)} 
+      />
+
       {/* KPI Grid */}
       <div className="kpi-grid">
         <KPICard
           title="Receita Total"
-          value="R$ 45.230"
+          value={formatCurrency(45230)}
           icon="💰"
-          trend="+12.5% vs mês anterior"
+          trend="+12,5% vs mês anterior"
           trendType="positive"
         />
         <KPICard
           title="Despesas Totais"
-          value="R$ 32.150"
+          value={formatCurrency(32150)}
           icon="💸"
-          trend="+3.2% vs mês anterior"
+          trend="+3,2% vs mês anterior"
           trendType="negative"
         />
         <KPICard
           title="Lucro Líquido"
-          value="R$ 13.080"
+          value={formatCurrency(13080)}
           icon="📈"
-          trend="+28.7% vs mês anterior"
+          trend="+28,7% vs mês anterior"
           trendType="positive"
         />
         <KPICard
           title="ROI Investimentos"
-          value="8.4%"
+          value={formatPercentage(8.4)}
           icon="🎯"
           trend="Estável"
           trendType="neutral"
@@ -179,35 +191,35 @@ const Reports: React.FC<ReportsProps> = ({ className }) => {
               <td>15/01/2024</td>
               <td>Salário Janeiro</td>
               <td>Renda</td>
-              <td className="money-positive">+R$ 8.500,00</td>
+              <td className="money-positive">{formatCurrency(8500)}</td>
               <td>Receita</td>
             </tr>
             <tr>
               <td>14/01/2024</td>
               <td>Aluguel Apartamento</td>
               <td>Moradia</td>
-              <td className="money-negative">-R$ 2.200,00</td>
+              <td className="money-negative">{formatCurrency(-2200)}</td>
               <td>Despesa</td>
             </tr>
             <tr>
               <td>12/01/2024</td>
               <td>Supermercado</td>
               <td>Alimentação</td>
-              <td className="money-negative">-R$ 345,50</td>
+              <td className="money-negative">{formatCurrency(-345.50)}</td>
               <td>Despesa</td>
             </tr>
             <tr>
               <td>10/01/2024</td>
               <td>Investimento CDB</td>
               <td>Investimento</td>
-              <td className="money-neutral">R$ 1.000,00</td>
+              <td className="money-neutral">{formatCurrency(1000)}</td>
               <td>Aplicação</td>
             </tr>
             <tr>
               <td>08/01/2024</td>
               <td>Freelance Design</td>
               <td>Renda Extra</td>
-              <td className="money-positive">+R$ 1.200,00</td>
+              <td className="money-positive">{formatCurrency(1200)}</td>
               <td>Receita</td>
             </tr>
           </tbody>

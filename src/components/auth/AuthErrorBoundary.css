@@ -1,0 +1,182 @@
+/* Auth Error Boundary Styles */
+
+.auth-error-boundary {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.error-card {
+  background: white;
+  border-radius: 1rem;
+  padding: 3rem 2.5rem;
+  max-width: 600px;
+  width: 100%;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  text-align: center;
+}
+
+.error-icon {
+  font-size: 4rem;
+  margin-bottom: 1rem;
+  animation: shake 0.5s ease-in-out;
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-10px); }
+  75% { transform: translateX(10px); }
+}
+
+.error-card h2 {
+  margin: 0 0 1rem;
+  color: #1a202c;
+  font-size: 1.75rem;
+}
+
+.error-message {
+  color: #4a5568;
+  margin: 0 0 1.5rem;
+  font-size: 1.1rem;
+}
+
+.error-details {
+  background: #f7fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 0.5rem;
+  padding: 1rem;
+  margin: 1.5rem 0;
+  text-align: left;
+}
+
+.error-details summary {
+  cursor: pointer;
+  font-weight: 500;
+  color: #4a5568;
+  margin-bottom: 0.5rem;
+}
+
+.error-details summary:hover {
+  color: #2d3748;
+}
+
+.error-details pre {
+  margin: 0.5rem 0 0;
+  padding: 0.75rem;
+  background: #2d3748;
+  color: #e2e8f0;
+  border-radius: 0.25rem;
+  font-size: 0.75rem;
+  overflow-x: auto;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+}
+
+.error-actions {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  margin-top: 1.5rem;
+}
+
+.error-actions button {
+  flex: 1;
+  max-width: 200px;
+}
+
+.error-help {
+  margin-top: 2rem;
+  padding-top: 2rem;
+  border-top: 1px solid #e2e8f0;
+  text-align: left;
+}
+
+.error-help p {
+  margin: 0 0 0.75rem;
+  color: #1a202c;
+  font-weight: 500;
+}
+
+.error-help ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.error-help li {
+  padding: 0.5rem 0;
+  color: #4a5568;
+  font-size: 0.875rem;
+}
+
+.error-help li::before {
+  content: '→ ';
+  color: #667eea;
+  font-weight: bold;
+}
+
+/* Dark mode */
+@media (prefers-color-scheme: dark) {
+  .error-card {
+    background: #1a202c;
+  }
+
+  .error-card h2 {
+    color: #f7fafc;
+  }
+
+  .error-message {
+    color: #cbd5e0;
+  }
+
+  .error-details {
+    background: #2d3748;
+    border-color: #4a5568;
+  }
+
+  .error-details summary {
+    color: #e2e8f0;
+  }
+
+  .error-help {
+    border-top-color: #4a5568;
+  }
+
+  .error-help p {
+    color: #f7fafc;
+  }
+
+  .error-help li {
+    color: #cbd5e0;
+  }
+}
+
+/* Responsive */
+@media (max-width: 480px) {
+  .auth-error-boundary {
+    padding: 1rem;
+  }
+
+  .error-card {
+    padding: 2rem 1.5rem;
+  }
+
+  .error-icon {
+    font-size: 3rem;
+  }
+
+  .error-card h2 {
+    font-size: 1.5rem;
+  }
+
+  .error-actions {
+    flex-direction: column;
+  }
+
+  .error-actions button {
+    max-width: 100%;
+  }
+}

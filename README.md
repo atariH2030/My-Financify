@@ -15,6 +15,8 @@ Sistema completo de gestão financeira pessoal com dashboard interativo, relató
 - 🌈 **Gradientes corporativos** para elementos visuais
 - 📱 **Mobile-first responsive** com breakpoints otimizados
 - ✨ **Micro-animações** suaves (fadeInUp, slideInRight)
+- 🔄 **Sistema Sidebar Responsivo** com collapse/expand inteligente
+- 🌙 **Tema Dark/Light** com toggle automático
 
 ## 📊 Funcionalidades
 
@@ -29,6 +31,16 @@ Sistema completo de gestão financeira pessoal com dashboard interativo, relató
 - **Export Excel/CSV** para análise externa
 - **Integração Power BI** para dashboards corporativos
 - **Tabelas de transações** com busca e ordenação
+
+### 🎛️ Sistema de Navegação Avançado
+- **Sidebar Responsivo** com estados inteligentes:
+  - 🖥️ **Desktop**: Collapse/expand com botão sempre visível
+  - 📱 **Mobile**: Sistema overlay com backdrop blur
+  - 💻 **Telas Divididas**: Auto-ajuste de largura (240px/280px)
+- **Layout Dinâmico** que se adapta automaticamente ao sidebar
+- **Transições Suaves** de 0.3s com easing profissional
+- **Theme Toggle** integrado com persistência local
+- **Perfil de Usuário** completo no footer do sidebar
 
 ### Sistema de Autenticação
 - **Azure AD Integration** (planejado)
@@ -155,6 +167,26 @@ npm run lint
 - `develop` - Integração contínua
 - `feature/*` - Novas funcionalidades
 - `hotfix/*` - Correções urgentes
+
+## ⚡ Melhorias de Performance & UX
+
+### Sistema Layout Responsivo
+- **3 breakpoints otimizados**: Desktop (≥1200px), Médio (769-1199px), Mobile (≤768px)
+- **Sidebar adaptativo**: 280px → 240px → overlay conforme tela
+- **Viewport units**: Largura real usando `vw` units para precisão
+- **Box-sizing**: Border-box global para controle pixel-perfect
+
+### Otimizações CSS
+- **CSS Variables**: 200+ variáveis para consistência de design
+- **Modular CSS**: Importação condicional por componente
+- **Lazy loading**: Carregamento otimizado de assets
+- **Transições suaves**: 0.3s ease para todas as animações
+
+### Developer Experience
+- **Hot Module Replacement**: Atualizações instantâneas durante desenvolvimento
+- **Type Safety**: TypeScript strict com interfaces completas
+- **Build otimizado**: Bundle final de apenas 205KB (minified)
+- **Error handling**: Sistema robusto de tratamento de erros
 
 ## 📄 Licença
 

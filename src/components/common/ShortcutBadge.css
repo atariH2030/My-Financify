@@ -1,0 +1,50 @@
+/**
+ * ShortcutBadge Styles
+ * Badge pequeno para atalhos de teclado
+ */
+
+.shortcut-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.125rem;
+  margin-left: auto;
+  opacity: 0.6;
+  transition: opacity 0.2s ease;
+}
+
+.nav-item:hover .shortcut-badge {
+  opacity: 1;
+}
+
+.shortcut-key {
+  font-family: 'SF Mono', 'Monaco', 'Consolas', monospace;
+  font-size: 0.625rem;
+  font-weight: 600;
+  color: currentColor;
+  background: rgba(255, 255, 255, 0.1);
+  padding: 0.125rem 0.25rem;
+  border-radius: 0.125rem;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  line-height: 1;
+  min-width: 1rem;
+  text-align: center;
+}
+
+.shortcut-plus {
+  font-size: 0.5rem;
+  opacity: 0.5;
+  margin: 0 0.0625rem;
+}
+
+/* Dark mode */
+[data-theme="dark"] .shortcut-key {
+  background: rgba(255, 255, 255, 0.15);
+  border-color: rgba(255, 255, 255, 0.25);
+}
+
+/* Responsividade - esconde em mobile */
+@media (max-width: 768px) {
+  .shortcut-badge {
+    display: none;
+  }
+}

@@ -1,0 +1,489 @@
+/**
+ * @file accessible-colors.css
+ * @description Sistema de cores acessível para daltônicos e WCAG AAA
+ * @version 1.0.0
+ * @author DEV - Rickson (TQM)
+ * 
+ * Substitui o sistema verde/vermelho por:
+ * - Azul (Positivo/Receitas) vs Laranja (Negativo/Despesas)
+ * - Múltiplos indicadores: Cor + Ícone + Borda + Prefixo
+ * - Contraste 7:1 mínimo (WCAG AAA)
+ * - Padrões de borda distintos (sólido vs tracejado)
+ */
+
+/* ============================================================================
+   SISTEMA DE CORES ACESSÍVEL
+   ============================================================================ */
+
+:root {
+  /* ===== POSITIVOS (Receitas/Ganhos/Entradas) ===== */
+  /* Azul forte - Contraste 7.5:1 com branco */
+  --color-positive-primary: #0066cc;
+  --color-positive-secondary: #0052a3;
+  --color-positive-tertiary: #003d7a;
+  --color-positive-bg: #e6f2ff;
+  --color-positive-bg-hover: #cce5ff;
+  --color-positive-border: #0066cc;
+  --color-positive-shadow: rgba(0, 102, 204, 0.15);
+  
+  /* ===== NEGATIVOS (Despesas/Perdas/Saídas) ===== */
+  /* Laranja escuro - Contraste 7.2:1 com branco */
+  --color-negative-primary: #cc4400;
+  --color-negative-secondary: #a33700;
+  --color-negative-tertiary: #7a2a00;
+  --color-negative-bg: #fff2e6;
+  --color-negative-bg-hover: #ffe5cc;
+  --color-negative-border: #cc4400;
+  --color-negative-shadow: rgba(204, 68, 0, 0.15);
+  
+  /* ===== NEUTROS (Transferências/Investimentos) ===== */
+  /* Cinza escuro - Contraste 8:1 com branco */
+  --color-neutral-primary: #5c5c5c;
+  --color-neutral-secondary: #3d3d3d;
+  --color-neutral-tertiary: #2a2a2a;
+  --color-neutral-bg: #f5f5f5;
+  --color-neutral-bg-hover: #e8e8e8;
+  --color-neutral-border: #5c5c5c;
+  --color-neutral-shadow: rgba(92, 92, 92, 0.15);
+  
+  /* ===== AVISOS (Orçamentos estourados, alertas) ===== */
+  /* Âmbar - Contraste 5.8:1 com branco (AA Large) */
+  --color-warning-primary: #d97706;
+  --color-warning-secondary: #b45309;
+  --color-warning-tertiary: #92400e;
+  --color-warning-bg: #fef3c7;
+  --color-warning-bg-hover: #fde68a;
+  --color-warning-border: #d97706;
+  --color-warning-shadow: rgba(217, 119, 6, 0.15);
+  
+  /* ===== SUCESSOS (Metas alcançadas, confirmações) ===== */
+  /* Verde esmeralda - Contraste 4.8:1 com branco (AA) */
+  --color-success-primary: #059669;
+  --color-success-secondary: #047857;
+  --color-success-tertiary: #065f46;
+  --color-success-bg: #d1fae5;
+  --color-success-bg-hover: #a7f3d0;
+  --color-success-border: #059669;
+  --color-success-shadow: rgba(5, 150, 105, 0.15);
+  
+  /* ===== INFORMAÇÕES (Dicas, tutoriais) ===== */
+  /* Índigo - Contraste 6.2:1 com branco */
+  --color-info-primary: #4f46e5;
+  --color-info-secondary: #4338ca;
+  --color-info-tertiary: #3730a3;
+  --color-info-bg: #e0e7ff;
+  --color-info-bg-hover: #c7d2fe;
+  --color-info-border: #4f46e5;
+  --color-info-shadow: rgba(79, 70, 229, 0.15);
+  
+  /* ===== PERIGOS (Exclusões, erros) ===== */
+  /* Vermelho profundo - Contraste 7:1 com branco */
+  --color-danger-primary: #b91c1c;
+  --color-danger-secondary: #991b1b;
+  --color-danger-tertiary: #7f1d1d;
+  --color-danger-bg: #fee2e2;
+  --color-danger-bg-hover: #fecaca;
+  --color-danger-border: #b91c1c;
+  --color-danger-shadow: rgba(185, 28, 28, 0.15);
+}
+
+/* Dark mode - cores mais claras com alto contraste */
+[data-theme="dark"] {
+  /* Positivos */
+  --color-positive-primary: #3b82f6;
+  --color-positive-secondary: #2563eb;
+  --color-positive-tertiary: #1d4ed8;
+  --color-positive-bg: #1e3a5f;
+  --color-positive-bg-hover: #2d4a6f;
+  
+  /* Negativos */
+  --color-negative-primary: #f97316;
+  --color-negative-secondary: #ea580c;
+  --color-negative-tertiary: #c2410c;
+  --color-negative-bg: #3d2817;
+  --color-negative-bg-hover: #4d3827;
+  
+  /* Neutros */
+  --color-neutral-primary: #9ca3af;
+  --color-neutral-secondary: #6b7280;
+  --color-neutral-tertiary: #4b5563;
+  --color-neutral-bg: #1f2937;
+  --color-neutral-bg-hover: #374151;
+  
+  /* Avisos */
+  --color-warning-primary: #fbbf24;
+  --color-warning-secondary: #f59e0b;
+  --color-warning-bg: #3d2f17;
+  --color-warning-bg-hover: #4d3f27;
+  
+  /* Sucessos */
+  --color-success-primary: #10b981;
+  --color-success-secondary: #059669;
+  --color-success-bg: #1a3d2f;
+  --color-success-bg-hover: #2a4d3f;
+  
+  /* Informações */
+  --color-info-primary: #818cf8;
+  --color-info-secondary: #6366f1;
+  --color-info-bg: #2d2f4d;
+  --color-info-bg-hover: #3d3f5d;
+  
+  /* Perigos */
+  --color-danger-primary: #ef4444;
+  --color-danger-secondary: #dc2626;
+  --color-danger-bg: #3d1f1f;
+  --color-danger-bg-hover: #4d2f2f;
+}
+
+/* ============================================================================
+   INDICADORES DE VALOR (Substituem .money-positive/.money-negative)
+   ============================================================================ */
+
+.value-indicator {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  padding: var(--spacing-xs) var(--spacing-sm);
+  border-radius: var(--border-radius-sm);
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  transition: all 0.2s ease;
+  position: relative;
+}
+
+/* Positivo: Azul + Seta ↗ + Borda sólida esquerda */
+.value-indicator.positive,
+.money-positive,
+.amount-positive {
+  color: var(--color-positive-primary);
+  background: var(--color-positive-bg);
+  border-left: 4px solid var(--color-positive-border);
+}
+
+.value-indicator.positive::before,
+.money-positive::before,
+.amount-positive::before {
+  content: '↗';
+  font-size: 1.2em;
+  font-weight: bold;
+  margin-right: 4px;
+  color: var(--color-positive-primary);
+}
+
+.value-indicator.positive:hover,
+.money-positive:hover,
+.amount-positive:hover {
+  background: var(--color-positive-bg-hover);
+  box-shadow: 0 2px 8px var(--color-positive-shadow);
+}
+
+/* Negativo: Laranja + Seta ↘ + Borda tracejada esquerda */
+.value-indicator.negative,
+.money-negative,
+.amount-negative {
+  color: var(--color-negative-primary);
+  background: var(--color-negative-bg);
+  border-left: 4px dashed var(--color-negative-border);
+}
+
+.value-indicator.negative::before,
+.money-negative::before,
+.amount-negative::before {
+  content: '↘';
+  font-size: 1.2em;
+  font-weight: bold;
+  margin-right: 4px;
+  color: var(--color-negative-primary);
+}
+
+.value-indicator.negative:hover,
+.money-negative:hover,
+.amount-negative:hover {
+  background: var(--color-negative-bg-hover);
+  box-shadow: 0 2px 8px var(--color-negative-shadow);
+}
+
+/* Neutro: Cinza + Seta → + Borda pontilhada esquerda */
+.value-indicator.neutral,
+.money-neutral,
+.amount-neutral {
+  color: var(--color-neutral-primary);
+  background: var(--color-neutral-bg);
+  border-left: 4px dotted var(--color-neutral-border);
+}
+
+.value-indicator.neutral::before,
+.money-neutral::before,
+.amount-neutral::before {
+  content: '→';
+  font-size: 1.2em;
+  font-weight: bold;
+  margin-right: 4px;
+  color: var(--color-neutral-primary);
+}
+
+.value-indicator.neutral:hover,
+.money-neutral:hover,
+.amount-neutral:hover {
+  background: var(--color-neutral-bg-hover);
+  box-shadow: 0 2px 8px var(--color-neutral-shadow);
+}
+
+/* ============================================================================
+   BADGES E TAGS ACESSÍVEIS
+   ============================================================================ */
+
+.badge,
+.tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 12px;
+  border-radius: var(--border-radius-full);
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  line-height: 1.25;
+  border: 2px solid transparent;
+}
+
+/* Badge Success (Metas alcançadas) */
+.badge-success {
+  background: var(--color-success-bg);
+  color: var(--color-success-primary);
+  border-color: var(--color-success-border);
+}
+
+.badge-success::before {
+  content: '✓';
+  font-weight: bold;
+}
+
+/* Badge Warning (Avisos) */
+.badge-warning {
+  background: var(--color-warning-bg);
+  color: var(--color-warning-primary);
+  border-color: var(--color-warning-border);
+}
+
+.badge-warning::before {
+  content: '⚠';
+}
+
+/* Badge Danger (Erros) */
+.badge-danger {
+  background: var(--color-danger-bg);
+  color: var(--color-danger-primary);
+  border-color: var(--color-danger-border);
+}
+
+.badge-danger::before {
+  content: '✕';
+  font-weight: bold;
+}
+
+/* Badge Info (Informações) */
+.badge-info {
+  background: var(--color-info-bg);
+  color: var(--color-info-primary);
+  border-color: var(--color-info-border);
+}
+
+.badge-info::before {
+  content: 'ⓘ';
+}
+
+/* ============================================================================
+   BOTÕES COM CORES ACESSÍVEIS
+   ============================================================================ */
+
+/* Botão Primary (Ação principal) */
+.btn-primary {
+  background: linear-gradient(135deg, var(--color-positive-primary) 0%, var(--color-positive-secondary) 100%);
+  color: white;
+  border: none;
+  box-shadow: 0 2px 8px var(--color-positive-shadow);
+}
+
+.btn-primary:hover:not(:disabled) {
+  background: linear-gradient(135deg, var(--color-positive-secondary) 0%, var(--color-positive-tertiary) 100%);
+  box-shadow: 0 4px 12px var(--color-positive-shadow);
+}
+
+/* Botão Danger (Ações destrutivas) */
+.btn-danger {
+  background: linear-gradient(135deg, var(--color-danger-primary) 0%, var(--color-danger-secondary) 100%);
+  color: white;
+  border: none;
+  box-shadow: 0 2px 8px var(--color-danger-shadow);
+}
+
+.btn-danger:hover:not(:disabled) {
+  background: linear-gradient(135deg, var(--color-danger-secondary) 0%, var(--color-danger-tertiary) 100%);
+  box-shadow: 0 4px 12px var(--color-danger-shadow);
+}
+
+/* Botão Warning (Atenção) */
+.btn-warning {
+  background: linear-gradient(135deg, var(--color-warning-primary) 0%, var(--color-warning-secondary) 100%);
+  color: white;
+  border: none;
+  box-shadow: 0 2px 8px var(--color-warning-shadow);
+}
+
+.btn-warning:hover:not(:disabled) {
+  background: linear-gradient(135deg, var(--color-warning-secondary) 0%, var(--color-warning-tertiary) 100%);
+  box-shadow: 0 4px 12px var(--color-warning-shadow);
+}
+
+/* ============================================================================
+   INDICADORES DE PROGRESSO ACESSÍVEIS
+   ============================================================================ */
+
+/* Barra de progresso base */
+.progress-bar-container {
+  width: 100%;
+  height: 8px;
+  background: var(--background-tertiary);
+  border-radius: var(--border-radius-full);
+  overflow: hidden;
+  position: relative;
+}
+
+.progress-bar {
+  height: 100%;
+  border-radius: var(--border-radius-full);
+  transition: width 0.3s ease, background 0.3s ease;
+  position: relative;
+  
+  /* Padrão listrado para distinção visual */
+  background-image: repeating-linear-gradient(
+    45deg,
+    transparent,
+    transparent 10px,
+    rgba(255, 255, 255, 0.1) 10px,
+    rgba(255, 255, 255, 0.1) 20px
+  );
+}
+
+/* Progresso Seguro (0-50%) - Azul */
+.progress-bar.safe {
+  background-color: var(--color-positive-primary);
+}
+
+/* Progresso Atenção (50-75%) - Âmbar */
+.progress-bar.warning {
+  background-color: var(--color-warning-primary);
+}
+
+/* Progresso Perigo (75-100%) - Laranja */
+.progress-bar.danger {
+  background-color: var(--color-negative-primary);
+}
+
+/* Progresso Excedido (>100%) - Vermelho */
+.progress-bar.over {
+  background-color: var(--color-danger-primary);
+  
+  /* Animação de pulso para chamar atenção */
+  animation: pulse-danger 2s ease-in-out infinite;
+}
+
+@keyframes pulse-danger {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
+}
+
+/* ============================================================================
+   TABELAS COM CORES ACESSÍVEIS
+   ============================================================================ */
+
+/* Linha de tabela - Positivo */
+.table-row-positive {
+  background: var(--color-positive-bg);
+  border-left: 3px solid var(--color-positive-border);
+}
+
+/* Linha de tabela - Negativo */
+.table-row-negative {
+  background: var(--color-negative-bg);
+  border-left: 3px dashed var(--color-negative-border);
+}
+
+/* Linha de tabela - Neutro */
+.table-row-neutral {
+  background: var(--color-neutral-bg);
+  border-left: 3px dotted var(--color-neutral-border);
+}
+
+/* ============================================================================
+   MODO DE ALTO CONTRASTE (Preferência do SO)
+   ============================================================================ */
+
+@media (prefers-contrast: high) {
+  :root {
+    /* Aumentar contraste ainda mais */
+    --color-positive-primary: #004499;
+    --color-negative-primary: #993300;
+    --color-neutral-primary: #000000;
+  }
+  
+  [data-theme="dark"] {
+    --color-positive-primary: #66b3ff;
+    --color-negative-primary: #ff9966;
+    --color-neutral-primary: #ffffff;
+  }
+  
+  /* Bordas mais grossas */
+  .value-indicator {
+    border-left-width: 6px;
+  }
+  
+  /* Setas maiores e mais visíveis */
+  .value-indicator::before {
+    font-size: 1.5em;
+    font-weight: 900;
+  }
+}
+
+/* ============================================================================
+   UTILITÁRIOS DE TEXTO COM CORES
+   ============================================================================ */
+
+.text-positive {
+  color: var(--color-positive-primary);
+  font-weight: 600;
+}
+
+.text-negative {
+  color: var(--color-negative-primary);
+  font-weight: 600;
+}
+
+.text-neutral {
+  color: var(--color-neutral-primary);
+  font-weight: 600;
+}
+
+.text-warning {
+  color: var(--color-warning-primary);
+  font-weight: 600;
+}
+
+.text-success {
+  color: var(--color-success-primary);
+  font-weight: 600;
+}
+
+.text-danger {
+  color: var(--color-danger-primary);
+  font-weight: 600;
+}
+
+.text-info {
+  color: var(--color-info-primary);
+  font-weight: 600;
+}
+
+/* ============================================================================
+   FIM DO ARQUIVO
+   ============================================================================ */

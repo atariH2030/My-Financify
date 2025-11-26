@@ -3,28 +3,203 @@
  * 
  * DECISÃO: Tipos centralizados e bem definidos
  * BENEFÍCIO: Type safety + IntelliSense + documentação automática
+ * 
+ * @version 3.0.0 - Reestruturação com Sessões e Subcategorias
  */
+
+// ===== CONFIGURAÇÃO DE CATEGORIAS =====
+
+export interface CategoryConfig {
+  id: string;
+  name: string;
+  icon: string;
+  color: string;
+  section: string; // Sessão à qual pertence
+  subcategories?: string[]; // Subcategorias disponíveis
+}
+
+export interface SectionConfig {
+  id: string;
+  name: string;
+  icon: string;
+  color: string;
+  description: string;
+  categories: CategoryConfig[];
+}
+
+// ===== ACCOUNTS / WALLETS =====
+
+export type AccountType = 'checking' | 'savings' | 'credit' | 'debit' | 'cash' | 'investment' | 'other';
+export type CardBrand = 'visa' | 'mastercard' | 'elo' | 'amex' | 'hipercard' | 'diners' | 'discover' | 'other' | 'none';
+
+export interface Account {
+  id: string;
+  name: string;
+  type: AccountType;
+  institution?: string;    // Banco/Instituição
+  lastFourDigits?: string; // Últimos 4 dígitos do cartão
+  lastDigits?: string;     // Alias para lastFourDigits
+  brand?: CardBrand;       // Bandeira do cartão
+  cardBrand?: CardBrand;   // Alias para brand
+  color: string;           // Cor para identificação visual
+  icon: string;            // Ícone para identificação
+  creditLimit?: number;    // Limite (apenas para crédito)
+  initialBalance?: number; // Saldo inicial
+  closingDay?: number;     // Dia fechamento fatura (1-31)
+  dueDay?: number;         // Dia vencimento (1-31)
+  isActive: boolean;
+  createdAt: string;
+  updatedAt?: string;
+}
+
+// ===== RECURRING TRANSACTIONS =====
+
+export type RecurringFrequency = 'daily' | 'weekly' | 'biweekly' | 'monthly' | 'bimonthly' | 'quarterly' | 'semiannual' | 'yearly';
+export type RecurringStatus = 'active' | 'paused' | 'completed' | 'cancelled';
+
+export interface RecurringTransaction {
+  id: string;
+  name: string;                    // "Netflix", "Salário"
+  type: TransactionType;           // 'income' | 'expense'
+  amount: number;
+  
+  // Categorização
+  section: string;
+  category: string;
+  subcategory?: string;
+  
+  // Recorrência
+  frequency: RecurringFrequency;   // Frequência de repetição
+  dayOfMonth?: number;             // Dia do mês (1-31) para mensais
+  dayOfWeek?: number;              // Dia da semana (0-6) para semanais
+  startDate: string;               // Data de início
+  endDate?: string;                // Data final (opcional)
+  nextOccurrence: string;          // Próxima ocorrência calculada
+  
+  // Configurações
+  accountId?: string;              // Conta vinculada
+  paymentMethod?: PaymentMethod;
+  autoGenerate: boolean;           // Gerar transação automaticamente?
+  notifyBefore?: number;           // Notificar X dias antes
+  
+  // Status e controle
+  status: RecurringStatus;
+  isActive: boolean;
+  lastGenerated?: string;          // Última transação gerada
+  generatedCount: number;          // Quantas transações já foram geradas
+  
+  // Metadados
+  notes?: string;
+  tags?: string[];
+  createdAt: string;
+  updatedAt?: string;
+}
+
+// ===== DASHBOARD WIDGETS =====
+
+export type WidgetType = 
+  | 'balance' 
+  | 'expenses' 
+  | 'income' 
+  | 'budget' 
+  | 'goals' 
+  | 'recurring' 
+  | 'accounts' 
+  | 'chart' 
+  | 'recent-transactions'
+  | 'quick-actions';
+
+export type WidgetSize = 'small' | 'medium' | 'large' | 'full';
+
+export interface WidgetConfig {
+  id: string;
+  type: WidgetType;
+  title: string;
+  size: WidgetSize;
+  position: number;          // Ordem na grid
+  isVisible: boolean;
+  settings?: Record<string, any>; // Configurações específicas do widget
+}
+
+export interface DashboardLayout {
+  id: string;
+  name: string;              // "Padrão", "Investidor", "Minimalista"
+  widgets: WidgetConfig[];
+  isDefault: boolean;
+  createdAt: string;
+  updatedAt?: string;
+}
+
+// ===== EXPORT SYSTEM =====
+
+export type ExportFormat = 'csv' | 'excel' | 'json' | 'pdf';
+export type ExportDataType = 'transactions' | 'accounts' | 'budgets' | 'recurring' | 'all';
+
+export interface ExportOptions {
+  format: ExportFormat;
+  dataType: ExportDataType;
+  dateRange?: {
+    start: string;
+    end: string;
+  };
+  includeMetadata?: boolean;
+  fileName?: string;
+}
+
+export interface ExportResult {
+  success: boolean;
+  fileName: string;
+  fileSize?: number;
+  recordCount: number;
+  error?: string;
+}
 
 // ===== CORE TYPES =====
 
+export type TransactionType = 'income' | 'expense';
+export type ExpenseType = 'fixed' | 'variable'; // Fixo ou Variável
+export type RecurrenceFrequency = 'once' | 'daily' | 'weekly' | 'monthly' | 'yearly';
+export type PaymentMethod = 'cash' | 'debit' | 'credit' | 'transfer' | 'pix' | 'other';
+
 export interface Transaction {
   id: string;
-  type: 'income' | 'expense';
+  type: TransactionType;
   amount: number;
   description: string;
-  category: string;
+  
+  // Hierarquia: Sessão → Categoria → Subcategoria
+  section: string;        // Ex: "Despesas da Casa"
+  category: string;       // Ex: "Moradia"
+  subcategory?: string;   // Ex: "Aluguel"
+  
+  // Tipo de despesa (apenas para expenses)
+  expenseType?: ExpenseType; // 'fixed' | 'variable'
+  
+  // Conta/Carteira associada
+  accountId?: string;
+  
   date: Date;
   tags?: string[];
+  
+  // Recorrência
   recurring?: {
     enabled: boolean;
-    frequency: 'daily' | 'weekly' | 'monthly' | 'yearly';
+    frequency: RecurrenceFrequency;
     endDate?: Date;
+    nextDate?: Date;
   };
+  
+  // Metadados
   metadata?: {
     location?: string;
-    method?: 'cash' | 'card' | 'transfer' | 'pix';
+    method?: PaymentMethod;
     notes?: string;
+    attachment?: string; // URL do comprovante
   };
+  
+  // Auditoria
+  createdAt?: string;
+  updatedAt?: string;
 }
 
 export interface FinancialSummary {
@@ -150,25 +325,46 @@ export interface CategoryTemplate {
 
 // ===== GOALS & BUDGETS =====
 
+export type GoalType = 'savings' | 'investment' | 'emergency' | 'wishlist' | 'debt-payment';
+
 export interface FinancialGoal {
   id: string;
   title: string;
+  description?: string;
+  type: GoalType; // savings, investment, emergency, wishlist, debt-payment
   targetAmount: number;
   currentAmount: number;
   deadline: Date;
+  section?: string; // Sessão relacionada
   category?: string;
   priority: 'low' | 'medium' | 'high';
-  status: 'active' | 'completed' | 'paused';
+  status: 'active' | 'completed' | 'paused' | 'cancelled';
+  icon?: string;
+  color?: string;
+  
+  // Para lista de desejos
+  isWishlist?: boolean;
+  imageUrl?: string; // Imagem do desejo
+  link?: string; // Link do produto/serviço
+  
+  // Auditoria
+  createdAt?: string;
+  updatedAt?: string;
+  completedAt?: string;
 }
 
 export interface Budget {
   id: string;
   category: string;
-  limit: number;
-  spent: number;
-  period: 'weekly' | 'monthly' | 'yearly';
-  alertThreshold: number; // Percentage
-  isExceeded: boolean;
+  description?: string;
+  period: 'monthly' | 'quarterly' | 'yearly';
+  limitAmount: number;
+  currentSpent: number;
+  alertThreshold: number; // Percentage (ex: 80 = alerta aos 80%)
+  status: 'active' | 'paused' | 'completed';
+  startDate: string;
+  createdAt?: string;
+  updatedAt?: string;
 }
 
 // ===== API RESPONSES =====
@@ -214,15 +410,7 @@ export interface ValidationResult {
   }[];
 }
 
-// ===== EXPORT TYPES =====
-
-export interface ExportOptions {
-  format: 'csv' | 'xlsx' | 'pdf';
-  dateRange: DateRange;
-  includeCategories: string[];
-  includeFields: (keyof Transaction)[];
-  groupBy?: 'category' | 'month' | 'type';
-}
+// ===== IMPORT TYPES =====
 
 export interface ImportOptions {
   format: 'csv' | 'xlsx';

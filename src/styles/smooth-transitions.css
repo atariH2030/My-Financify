@@ -1,0 +1,38 @@
+/* ===== SISTEMA DE TRANSIÇÕES ULTRA-SUAVES ANTI-PULO ===== */
+
+/* Transições sincronizadas com timing idêntico para eliminar pulo */
+.main-content {
+  transition: margin-left 0.35s cubic-bezier(0.4, 0.0, 0.2, 1),
+              width 0.35s cubic-bezier(0.4, 0.0, 0.2, 1),
+              padding 0.35s cubic-bezier(0.4, 0.0, 0.2, 1);
+}
+
+.sidebar {
+  transition: transform 0.35s cubic-bezier(0.4, 0.0, 0.2, 1);
+}
+
+/* Hardware acceleration máximo para performance */
+.main-content,
+.sidebar {
+  -webkit-transform: translate3d(0, 0, 0);
+  transform: translate3d(0, 0, 0);
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+  -webkit-perspective: 1000px;
+  perspective: 1000px;
+  will-change: transform, margin-left, width, padding;
+}
+
+/* Otimizações específicas para elementos filhos */
+.main-content > * {
+  transition: max-width 0.35s cubic-bezier(0.4, 0.0, 0.2, 1);
+  -webkit-transform: translateZ(0);
+  transform: translateZ(0);
+}
+
+/* Força GPU acceleration durante transições */
+.main-content.sidebar-active,
+.main-content.sidebar-collapsed {
+  -webkit-transform: translate3d(0, 0, 0);
+  transform: translate3d(0, 0, 0);
+}

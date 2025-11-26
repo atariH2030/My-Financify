@@ -1,0 +1,868 @@
+/* ===== Widgets Styles ===== */
+
+/* Widget Grid Container */
+.widget-grid-container {
+  padding: 1.5rem;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.widget-grid-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.widget-grid-header h2 {
+  font-size: 1.75rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.widget-grid-header .btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.625rem 1.25rem;
+  font-size: 0.9375rem;
+  font-weight: 500;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.widget-grid-header .btn i {
+  font-size: 1rem;
+}
+
+/* Widget Grid */
+.widget-grid {
+  display: grid;
+  gap: 1.5rem;
+  align-items: start;
+  width: 100%;
+}
+
+/* Layout Modes - Diferentes visualizações */
+/* Grid Grande: 2 colunas FIXAS - widgets espaçosos */
+.widget-grid-grid-large {
+  grid-template-columns: repeat(2, 1fr);
+}
+
+/* Grid Médio: 3 colunas FIXAS - tamanho balanceado */
+.widget-grid-grid-medium {
+  grid-template-columns: repeat(3, 1fr);
+}
+
+/* Grid Pequeno: 4 colunas FIXAS - widgets compactos */
+.widget-grid-grid-small {
+  grid-template-columns: repeat(4, 1fr);
+}
+
+/* Lista: 1 coluna larga */
+.widget-grid-list {
+  grid-template-columns: 1fr;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+/* Widget em modo lista */
+.widget-list-mode {
+  display: flex;
+  flex-direction: column;
+}
+
+.widget-list-mode .widget-header {
+  cursor: pointer;
+  user-select: none;
+  transition: background 0.2s ease;
+}
+
+.widget-list-mode .widget-header:hover {
+  background: var(--background);
+}
+
+.widget-expand-btn {
+  width: 32px;
+  height: 32px;
+  border: none;
+  background: transparent;
+  color: var(--text-secondary);
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.widget-expand-btn:hover {
+  background: var(--background);
+  color: var(--primary);
+}
+
+.widget-expand-btn i {
+  font-size: 0.875rem;
+  transition: transform 0.3s ease;
+}
+
+/* Animação de conteúdo expandido */
+.widget-content {
+  animation: slideDown 0.3s ease;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    max-height: 0;
+    overflow: hidden;
+  }
+  to {
+    opacity: 1;
+    max-height: 1000px;
+  }
+}
+
+/* Base Widget */
+.widget {
+  background: var(--card-bg);
+  border-radius: 12px;
+  border: 1px solid var(--border-color);
+  overflow: hidden;
+  transition: all 0.2s ease;
+  height: 100%;
+}
+
+.widget:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  transform: translateY(-2px);
+}
+
+/* ===== ESTILOS BASEADOS NO LAYOUT ===== */
+
+/* Layout GRANDE - Widgets maiores com mais detalhes */
+.widget-grid-grid-large .widget {
+  min-height: 220px;
+}
+
+.widget-grid-grid-large .widget-header {
+  padding: 1.25rem 1.5rem;
+}
+
+.widget-grid-grid-large .widget-header h3 {
+  font-size: clamp(1.125rem, 2vw, 1.375rem);
+}
+
+.widget-grid-grid-large .widget-content {
+  padding: 1.25rem 1.5rem;
+  gap: 1rem;
+}
+
+.widget-grid-grid-large .amount {
+  font-size: clamp(1.875rem, 3.5vw, 2.5rem) !important;
+}
+
+.widget-grid-grid-large .meta-label,
+.widget-grid-grid-large .trend-label,
+.widget-grid-grid-large .budget-label,
+.widget-grid-grid-large .goal-name,
+.widget-grid-grid-large .recurring-name {
+  font-size: clamp(0.875rem, 1.5vw, 1rem) !important;
+}
+
+.widget-grid-grid-large .budget-values,
+.widget-grid-grid-large .goal-values,
+.widget-grid-grid-large .recurring-value {
+  font-size: clamp(0.8125rem, 1.3vw, 0.9375rem) !important;
+}
+
+/* Layout MÉDIO - Tamanho padrão (3 colunas) */
+.widget-grid-grid-medium .widget {
+  min-height: 190px;
+}
+
+.widget-grid-grid-medium .widget-header {
+  padding: 1rem 1.25rem;
+}
+
+.widget-grid-grid-medium .widget-header h3 {
+  font-size: clamp(1rem, 1.8vw, 1.125rem);
+}
+
+.widget-grid-grid-medium .widget-content {
+  padding: 1rem 1.25rem;
+  gap: 0.875rem;
+}
+
+.widget-grid-grid-medium .amount {
+  font-size: clamp(1.5rem, 2.8vw, 2rem) !important;
+}
+
+.widget-grid-grid-medium .meta-label,
+.widget-grid-grid-medium .trend-label,
+.widget-grid-grid-medium .budget-label,
+.widget-grid-grid-medium .goal-name,
+.widget-grid-grid-medium .recurring-name {
+  font-size: clamp(0.75rem, 1.3vw, 0.875rem) !important;
+}
+
+.widget-grid-grid-medium .budget-values,
+.widget-grid-grid-medium .goal-values,
+.widget-grid-grid-medium .recurring-value {
+  font-size: clamp(0.6875rem, 1.1vw, 0.8125rem) !important;
+}
+
+/* Layout PEQUENO - Widgets compactos (4 colunas) */
+.widget-grid-grid-small .widget {
+  min-height: 160px;
+}
+
+.widget-grid-grid-small .widget-header {
+  padding: 0.75rem 1rem;
+}
+
+.widget-grid-grid-small .widget-header h3 {
+  font-size: clamp(0.875rem, 1.5vw, 1rem);
+}
+
+.widget-grid-grid-small .widget-content {
+  padding: 0.75rem 1rem;
+  gap: 0.5rem;
+}
+
+.widget-grid-grid-small .amount {
+  font-size: clamp(1.25rem, 2.2vw, 1.625rem) !important;
+}
+
+.widget-grid-grid-small .meta-label,
+.widget-grid-grid-small .trend-label,
+.widget-grid-grid-small .budget-label,
+.widget-grid-grid-small .goal-name,
+.widget-grid-grid-small .recurring-name {
+  font-size: clamp(0.6875rem, 1.1vw, 0.75rem) !important;
+}
+
+.widget-grid-grid-small .budget-values,
+.widget-grid-grid-small .goal-values,
+.widget-grid-grid-small .recurring-value {
+  font-size: clamp(0.625rem, 1vw, 0.6875rem) !important;
+}
+
+.widget-grid-grid-small .widget-icon {
+  font-size: clamp(1rem, 1.5vw, 1.25rem) !important;
+}
+
+.widget-grid-grid-small .budget-item,
+.widget-grid-grid-small .goal-item,
+.widget-grid-grid-small .recurring-item {
+  padding: 0.5rem 0;
+  gap: 0.375rem;
+}
+
+/* Layout LISTA - Horizontal e largo */
+.widget-grid-list .widget {
+  min-height: auto;
+}
+
+.widget-grid-list .widget-header {
+  padding: 1rem 1.5rem;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.widget-grid-list .widget-header h3 {
+  font-size: 1.125rem;
+  font-weight: 600;
+}
+
+.widget-grid-list .widget-content {
+  padding: 1.25rem 1.5rem;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1.5rem;
+  align-items: start;
+}
+
+/* Layout lista - valores principais em destaque */
+.widget-grid-list .amount {
+  font-size: 1.875rem !important;
+  font-weight: 700;
+}
+
+.widget-grid-list .meta-label,
+.widget-grid-list .trend-label {
+  font-size: 0.875rem !important;
+  color: var(--text-secondary);
+}
+
+/* Lista - itens em grid horizontal */
+.widget-grid-list .budget-list,
+.widget-grid-list .goals-list,
+.widget-grid-list .recurring-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 1rem;
+}
+
+.widget-grid-list .budget-item,
+.widget-grid-list .goal-item,
+.widget-grid-list .recurring-item {
+  padding: 0.75rem;
+  background: var(--background);
+  border-radius: 8px;
+  border: 1px solid var(--border-color);
+}
+
+.widget-grid-list .budget-label,
+.widget-grid-list .goal-name,
+.widget-grid-list .recurring-name {
+  font-size: 0.875rem !important;
+  font-weight: 500;
+  margin-bottom: 0.5rem;
+}
+
+.widget-grid-list .budget-values,
+.widget-grid-list .goal-values,
+.widget-grid-list .recurring-value {
+  font-size: 0.8125rem !important;
+  color: var(--text-secondary);
+}
+
+.widget-grid-list .widget-label {
+  font-size: 0.875rem !important;
+}
+
+/* Widget Header */
+.widget-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 1.25rem;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.widget-title {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin: 0;
+}
+
+.widget-actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.widget-btn {
+  width: 32px;
+  height: 32px;
+  border: none;
+  background: transparent;
+  color: var(--text-secondary);
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.widget-btn:hover {
+  background: var(--background);
+  color: var(--primary);
+}
+
+/* Widget Content */
+.widget-content {
+  padding: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  flex: 1;
+  min-height: 0; /* Permite flex shrink */
+}
+
+/* Tornar elementos internos flexíveis */
+.balance-main,
+.stat-main {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.amount {
+  font-size: clamp(1.5rem, 3vw, 2.5rem);
+  font-weight: 700;
+  line-height: 1.2;
+  word-break: break-word;
+}
+
+.meta-label,
+.trend-label {
+  font-size: clamp(0.75rem, 1.5vw, 0.9375rem);
+  color: var(--text-secondary);
+}
+
+/* Items de listas flexíveis */
+.budget-item,
+.goal-item,
+.recurring-item,
+.transaction-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding: 0.75rem 0;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.budget-item:last-child,
+.goal-item:last-child,
+.recurring-item:last-child,
+.transaction-item:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.budget-label,
+.goal-name,
+.recurring-name {
+  font-size: clamp(0.8125rem, 1.5vw, 1rem);
+  font-weight: 500;
+  color: var(--text-primary);
+}
+
+.budget-values,
+.goal-values,
+.recurring-value {
+  font-size: clamp(0.75rem, 1.2vw, 0.875rem);
+  color: var(--text-secondary);
+}
+
+/* Progress bars flexíveis */
+.budget-progress,
+.goal-progress {
+  width: 100%;
+  height: 8px;
+  background: var(--border-color);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.progress-bar {
+  height: 100%;
+  background: var(--primary);
+  transition: width 0.3s ease;
+}
+
+/* Widget Stat (para Balance, Income, Expense) */
+.widget-stat {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.stat-icon {
+  width: 60px;
+  height: 60px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  color: white;
+}
+
+.stat-icon.balance {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.stat-icon.income {
+  background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+}
+
+.stat-icon.expense {
+  background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+}
+
+.stat-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.stat-label {
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+}
+
+.stat-value {
+  font-size: 1.75rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.stat-value.positive {
+  color: var(--success);
+}
+
+.stat-value.negative {
+  color: var(--danger);
+}
+
+/* Widget List (para Budget, Goals, Recurring, etc) */
+.widget-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.empty-message {
+  text-align: center;
+  color: var(--text-secondary);
+  padding: 2rem 1rem;
+  font-size: 0.875rem;
+}
+
+/* Budget Items */
+.budget-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.budget-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.budget-name {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--text-primary);
+}
+
+.budget-value {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+}
+
+.budget-bar {
+  height: 6px;
+  background: var(--background);
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.budget-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--success), var(--primary));
+  border-radius: 3px;
+  transition: width 0.3s ease;
+}
+
+.budget-fill.warning {
+  background: linear-gradient(90deg, var(--warning), var(--danger));
+}
+
+.budget-fill.danger {
+  background: var(--danger);
+}
+
+/* Goal Items */
+.goal-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.goal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.goal-name {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--text-primary);
+}
+
+.goal-value {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+}
+
+.goal-bar {
+  height: 6px;
+  background: var(--background);
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.goal-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+  border-radius: 3px;
+  transition: width 0.3s ease;
+}
+
+/* Recurring Items */
+.recurring-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.75rem 1rem;
+  background: var(--background);
+  border-radius: 8px;
+  border-left: 3px solid var(--border-color);
+  transition: all 0.2s ease;
+  gap: 1rem;
+  min-width: 0; /* Permite shrink */
+}
+
+.recurring-item:hover {
+  transform: translateX(4px);
+}
+
+.recurring-item.income {
+  border-left-color: var(--success);
+}
+
+.recurring-item.expense {
+  border-left-color: var(--danger);
+}
+
+.recurring-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  flex: 1;
+  min-width: 0;
+}
+
+.recurring-name {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  flex-shrink: 0;
+}
+
+.recurring-date {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+}
+
+.recurring-amount,
+.recurring-value {
+  font-size: 1rem;
+  font-weight: 600;
+  white-space: nowrap;
+  flex-shrink: 0;
+  text-align: right;
+}
+
+.recurring-amount.income,
+.recurring-item.income .recurring-value {
+  color: var(--success);
+}
+
+.recurring-amount.expense,
+.recurring-item.expense .recurring-value {
+  color: var(--danger);
+}
+
+/* Transaction Items */
+.transaction-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.75rem;
+  background: var(--background);
+  border-radius: 8px;
+  border-left: 3px solid var(--border-color);
+  transition: all 0.2s ease;
+}
+
+.transaction-item:hover {
+  background: var(--card-bg);
+}
+
+.transaction-item.income {
+  border-left-color: var(--success);
+}
+
+.transaction-item.expense {
+  border-left-color: var(--danger);
+}
+
+.transaction-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.transaction-description {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--text-primary);
+}
+
+.transaction-category {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+}
+
+.transaction-amount {
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.transaction-amount.income {
+  color: var(--success);
+}
+
+.transaction-amount.expense {
+  color: var(--danger);
+}
+
+/* Account Items */
+.account-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem;
+  background: var(--background);
+  border-radius: 8px;
+  transition: all 0.2s ease;
+}
+
+.account-item:hover {
+  background: var(--card-bg);
+}
+
+.account-item .account-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 1rem;
+}
+
+.account-item .account-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.account-item .account-name {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--text-primary);
+}
+
+.account-item .account-type {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+  text-transform: capitalize;
+}
+
+/* Empty State */
+.widget-grid .empty-state {
+  grid-column: 1 / -1;
+  text-align: center;
+  padding: 4rem 2rem;
+  color: var(--text-secondary);
+}
+
+.widget-grid .empty-state i {
+  font-size: 4rem;
+  margin-bottom: 1rem;
+  opacity: 0.3;
+}
+
+.widget-grid .empty-state h3 {
+  font-size: 1.25rem;
+  margin-bottom: 0.5rem;
+  color: var(--text-primary);
+}
+
+.widget-grid .empty-state p {
+  margin-bottom: 1.5rem;
+}
+
+/* ===== RESPONSIVE DESIGN ===== */
+
+/* Desktop Large (>1200px) - Mantém configurações originais */
+
+/* Desktop (900px - 1200px) */
+@media (max-width: 1200px) {
+  .widget-grid-grid-large {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* Tablet (768px - 900px) */
+@media (max-width: 900px) {
+  .widget-grid-grid-medium {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  .widget-grid-grid-small {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+/* Mobile (< 768px) - Todos viram 1-2 colunas */
+@media (max-width: 768px) {
+  .widget-grid-container {
+    padding: 1rem;
+  }
+  
+  .widget-grid-grid-large,
+  .widget-grid-grid-medium,
+  .widget-grid-list {
+    grid-template-columns: 1fr;
+  }
+  
+  .widget-grid-grid-small {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .widget-grid-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+
+  .widget-grid-header h2 {
+    font-size: 1.5rem;
+  }
+}
+
+/* Mobile Small (< 480px) - Tudo vira 1 coluna */
+@media (max-width: 480px) {
+  .widget-grid,
+  .widget-grid-grid-large,
+  .widget-grid-grid-medium,
+  .widget-grid-grid-small,
+  .widget-grid-list {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+}

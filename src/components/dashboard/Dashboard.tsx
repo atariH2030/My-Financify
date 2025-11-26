@@ -1,5 +1,7 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect } from 'react';
+import './dashboard.css';
 
+// Interfaces para manter type safety
 interface FinancialItem {
   id: string;
   title: string;
@@ -14,26 +16,93 @@ interface FinancialData {
   variableExpenses: FinancialItem[];
 }
 
-interface FinancialItemModalProps {
-  isOpen: boolean;
-  onClose: () => void;
-  onSave: (data: any) => void;
-  editingItem: FinancialItem | null;
-  category: keyof FinancialData;
+interface MarketData {
+  usdRate: string;
+  selicRate: string;
 }
 
-const FinancialItemModal: React.FC<FinancialItemModalProps> = ({
-  isOpen,
-  onClose,
-  onSave,
-  editingItem,
-  category,
-}) => {
+interface ModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+  onSave: (item: Omit<FinancialItem, 'id'>) => void;
+  title: string;
+  editingItem?: FinancialItem | null;
+}
+
+// Utility functions (migradas do base.js)
+const formatCurrency = (value: number): string => {
+  return new Intl.NumberFormat('pt-BR', {
+    style: 'currency',
+    currency: 'BRL'
+  }).format(value);
+};
+
+const generateId = (): string => {
+  return Date.now().toString(36) + Math.random().toString(36).substr(2);
+};
+
+// Função para buscar dados de mercado (simulada)
+const fetchMarketData = async (): Promise<MarketData> => {
+  try {
+    // Simula API call - substitua com endpoints reais
+    await new Promise(resolve => setTimeout(resolve, 1000));
+    return {
+      usdRate: 'R$ 5,25',
+      selicRate: '11,25%'
+    };
+  } catch (error) {
+    console.error('Erro ao buscar dados do mercado:', error);
+    return {
+      usdRate: 'Erro',
+      selicRate: 'Erro'
+    };
+  }
+};
+
+// Financial Item Component (equivalente aos itens da lista HTML)
+const FinancialItemComponent: React.FC<{
+  item: FinancialItem;
+  onEdit: (item: FinancialItem) => void;
+  onDelete: (id: string) => void;
+  type: 'income' | 'expense';
+}> = ({ item, onEdit, onDelete, type }) => (
+  <div className="financial-item">
+    <div className="item-info">
+      <h4>{item.title}</h4>
+      <p>{item.description}</p>
+      <span className="item-date">{new Date(item.date).toLocaleDateString('pt-BR')}</span>
+    </div>
+    <div className="item-amount">
+      <span className={type === 'income' ? 'income' : 'expense'}>
+        {formatCurrency(item.amount)}
+      </span>
+    </div>
+    <div className="item-actions">
+      <button onClick={() => onEdit(item)} className="btn-edit" title="Editar">
+        <i className="fas fa-edit"></i>
+      </button>
+      <button onClick={() => onDelete(item.id)} className="btn-delete" title="Excluir">
+        <i className="fas fa-trash"></i>
+      </button>
+    </div>
+  </div>
+);
+
+// Empty State Component (equivalente aos empty states HTML)
+const EmptyState: React.FC<{ message: string; icon: string }> = ({ message, icon }) => (
+  <div className="empty-state">
+    <i className={icon}></i>
+    <p>{message}</p>
+  </div>
+);
+
+// Modal Component (equivalente ao modal HTML)
+const ItemModal: React.FC<ModalProps> = ({ isOpen, onClose, onSave, title, editingItem }) => {
   const [formData, setFormData] = useState({
-    title: editingItem?.title || "",
-    amount: editingItem?.amount || "",
-    date: editingItem?.date || new Date().toISOString().split("T")[0],
-    description: editingItem?.description || "",
+    title: '',
+    amount: '',
+    date: '',
+    description: ''
   });
 
   useEffect(() => {
@@ -42,48 +111,42 @@ const FinancialItemModal: React.FC<FinancialItemModalProps> = ({
         title: editingItem.title,
         amount: editingItem.amount.toString(),
         date: editingItem.date,
-        description: editingItem.description || "",
+        description: editingItem.description || ''
       });
     } else {
       setFormData({
-        title: "",
-        amount: "",
-        date: new Date().toISOString().split("T")[0],
-        description: "",
+        title: '',
+        amount: '',
+        date: new Date().toISOString().split('T')[0],
+        description: ''
       });
     }
-  }, [editingItem]);
+  }, [editingItem, isOpen]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    onSave(formData);
-  };
-
-  const getCategoryTitle = () => {
-    switch (category) {
-      case "income":
-        return "Receita";
-      case "fixedExpenses":
-        return "Gasto Fixo";
-      case "variableExpenses":
-        return "Gasto Variável";
-      default:
-        return "Item";
-    }
+    onSave({
+      title: formData.title,
+      amount: parseFloat(formData.amount),
+      date: formData.date,
+      description: formData.description
+    });
+    setFormData({
+      title: '',
+      amount: '',
+      date: new Date().toISOString().split('T')[0],
+      description: ''
+    });
   };
 
   if (!isOpen) return null;
 
   return (
-    <div className="modal" onClick={onClose}>
-      <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+    <div className="modal" onClick={(e) => e.target === e.currentTarget && onClose()}>
+      <div className="modal-content">
         <div className="modal-header">
-          <h3>
-            {editingItem ? "Editar" : "Adicionar"} {getCategoryTitle()}
-          </h3>
-          <span className="close" onClick={onClose}>
-            &times;
-          </span>
+          <h3>{title}</h3>
+          <span className="close" onClick={onClose}>&times;</span>
         </div>
         <div className="modal-body">
           <form onSubmit={handleSubmit}>
@@ -93,9 +156,7 @@ const FinancialItemModal: React.FC<FinancialItemModalProps> = ({
                 type="text"
                 id="item-title"
                 value={formData.title}
-                onChange={(e) =>
-                  setFormData((prev) => ({ ...prev, title: e.target.value }))
-                }
+                onChange={(e) => setFormData({ ...formData, title: e.target.value })}
                 required
               />
             </div>
@@ -106,9 +167,7 @@ const FinancialItemModal: React.FC<FinancialItemModalProps> = ({
                 id="item-amount"
                 step="0.01"
                 value={formData.amount}
-                onChange={(e) =>
-                  setFormData((prev) => ({ ...prev, amount: e.target.value }))
-                }
+                onChange={(e) => setFormData({ ...formData, amount: e.target.value })}
                 required
               />
             </div>
@@ -118,9 +177,7 @@ const FinancialItemModal: React.FC<FinancialItemModalProps> = ({
                 type="date"
                 id="item-date"
                 value={formData.date}
-                onChange={(e) =>
-                  setFormData((prev) => ({ ...prev, date: e.target.value }))
-                }
+                onChange={(e) => setFormData({ ...formData, date: e.target.value })}
                 required
               />
             </div>
@@ -130,156 +187,139 @@ const FinancialItemModal: React.FC<FinancialItemModalProps> = ({
                 id="item-description"
                 rows={3}
                 value={formData.description}
-                onChange={(e) =>
-                  setFormData((prev) => ({
-                    ...prev,
-                    description: e.target.value,
-                  }))
-                }
-              ></textarea>
+                onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+              />
+            </div>
+            <div className="modal-footer">
+              <button type="button" className="btn-cancel" onClick={onClose}>
+                Cancelar
+              </button>
+              <button type="submit" className="btn-save">
+                Salvar
+              </button>
             </div>
           </form>
-        </div>
-        <div className="modal-footer">
-          <button type="button" className="btn-cancel" onClick={onClose}>
-            Cancelar
-          </button>
-          <button type="submit" className="btn-save" onClick={handleSubmit}>
-            Salvar
-          </button>
         </div>
       </div>
     </div>
   );
 };
 
-const Dashboard: React.FC = () => {
+// Main Dashboard Component (estrutura idêntica à pagina_home.html)
+const Dashboard: React.FC<{ className?: string }> = ({ className }) => {
   const [financialData, setFinancialData] = useState<FinancialData>({
     income: [],
     fixedExpenses: [],
-    variableExpenses: [],
+    variableExpenses: []
   });
 
-  const [marketData, setMarketData] = useState({
-    usdRate: "Carregando...",
-    selicRate: "Carregando...",
+  const [marketData, setMarketData] = useState<MarketData>({
+    usdRate: 'Carregando...',
+    selicRate: 'Carregando...'
   });
 
-  const [showModal, setShowModal] = useState(false);
-  const [currentCategory, setCurrentCategory] =
-    useState<keyof FinancialData>("income");
-  const [editingItem, setEditingItem] = useState<FinancialItem | null>(null);
+  const [modalState, setModalState] = useState({
+    isOpen: false,
+    type: '' as 'income' | 'fixedExpenses' | 'variableExpenses' | '',
+    title: '',
+    editingItem: null as FinancialItem | null
+  });
 
+  // Load data from localStorage on mount (implementação do base.js)
   useEffect(() => {
-    loadFinancialData();
-    fetchMarketData();
-  }, []);
-
-  const loadFinancialData = () => {
-    const savedData = localStorage.getItem("my-financify-data");
+    const savedData = localStorage.getItem('financialData');
     if (savedData) {
       setFinancialData(JSON.parse(savedData));
     }
-  };
+    
+    // Fetch market data
+    fetchMarketData().then(setMarketData);
 
-  const saveFinancialData = (data: FinancialData) => {
-    localStorage.setItem("my-financify-data", JSON.stringify(data));
-    setFinancialData(data);
-  };
+    // Update market data every 5 minutes (como no base.js)
+    const interval = setInterval(() => {
+      fetchMarketData().then(setMarketData);
+    }, 300000);
+    
+    return () => clearInterval(interval);
+  }, []);
 
-  const fetchMarketData = async () => {
-    // Simulando dados de mercado
-    setTimeout(() => {
-      setMarketData({
-        usdRate: "R$ 5,25",
-        selicRate: "11,75%",
-      });
-    }, 1000);
-  };
+  // Save data to localStorage whenever financialData changes (como no base.js)
+  useEffect(() => {
+    localStorage.setItem('financialData', JSON.stringify(financialData));
+  }, [financialData]);
 
-  const calculateTotals = () => {
-    const totalIncome = financialData.income.reduce(
-      (sum: number, item: FinancialItem) => sum + item.amount,
-      0
-    );
-    const totalExpenses =
-      financialData.fixedExpenses.reduce(
-        (sum: number, item: FinancialItem) => sum + item.amount,
-        0
-      ) +
-      financialData.variableExpenses.reduce(
-        (sum: number, item: FinancialItem) => sum + item.amount,
-        0
-      );
-    const balance = totalIncome - totalExpenses;
-
-    return {
-      totalIncome: totalIncome.toLocaleString("pt-BR", {
-        style: "currency",
-        currency: "BRL",
-      }),
-      totalExpenses: totalExpenses.toLocaleString("pt-BR", {
-        style: "currency",
-        currency: "BRL",
-      }),
-      balance: balance.toLocaleString("pt-BR", {
-        style: "currency",
-        currency: "BRL",
-      }),
-    };
-  };
-
-  const totals = calculateTotals();
-
-  const addItem = (category: keyof FinancialData) => {
-    setCurrentCategory(category);
-    setEditingItem(null);
-    setShowModal(true);
-  };
-
-  const saveItem = (formData: any) => {
-    const newItem: FinancialItem = {
-      id: editingItem?.id || Date.now().toString(),
-      title: formData.title,
-      amount: parseFloat(formData.amount),
-      date: formData.date,
-      description: formData.description || "",
+  const openModal = (type: 'income' | 'fixedExpenses' | 'variableExpenses', editingItem?: FinancialItem) => {
+    const titles = {
+      income: editingItem ? 'Editar Receita' : 'Adicionar Receita',
+      fixedExpenses: editingItem ? 'Editar Gasto Fixo' : 'Adicionar Gasto Fixo', 
+      variableExpenses: editingItem ? 'Editar Gasto Variável' : 'Adicionar Gasto Variável'
     };
 
-    const newData = { ...financialData };
+    setModalState({
+      isOpen: true,
+      type,
+      title: titles[type],
+      editingItem: editingItem || null
+    });
+  };
 
+  const closeModal = () => {
+    setModalState({
+      isOpen: false,
+      type: '',
+      title: '',
+      editingItem: null
+    });
+  };
+
+  const saveItem = (itemData: Omit<FinancialItem, 'id'>) => {
+    const { type, editingItem } = modalState;
+    
+    if (!type) return;
+    
     if (editingItem) {
-      const index = newData[currentCategory].findIndex(
-        (item) => item.id === editingItem.id
-      );
-      newData[currentCategory][index] = newItem;
+      // Edit existing item
+      setFinancialData(prev => ({
+        ...prev,
+        [type]: prev[type as keyof FinancialData].map((item: FinancialItem) => 
+          item.id === editingItem.id 
+            ? { ...itemData, id: editingItem.id }
+            : item
+        )
+      }));
     } else {
-      newData[currentCategory].push(newItem);
+      // Add new item
+      const newItem: FinancialItem = {
+        ...itemData,
+        id: generateId()
+      };
+      
+      setFinancialData(prev => ({
+        ...prev,
+        [type]: [...prev[type as keyof FinancialData], newItem]
+      }));
     }
-
-    saveFinancialData(newData);
-    setShowModal(false);
+    
+    closeModal();
   };
 
-  const editItem = (item: FinancialItem, category: keyof FinancialData) => {
-    setCurrentCategory(category);
-    setEditingItem(item);
-    setShowModal(true);
-  };
-
-  const deleteItem = (itemId: string, category: keyof FinancialData) => {
-    if (window.confirm("Deseja realmente excluir este item?")) {
-      const newData = { ...financialData };
-      newData[category] = newData[category].filter(
-        (item) => item.id !== itemId
-      );
-      saveFinancialData(newData);
+  const deleteItem = (id: string, type: 'income' | 'fixedExpenses' | 'variableExpenses') => {
+    if (window.confirm('Deseja realmente excluir este item?')) {
+      setFinancialData(prev => ({
+        ...prev,
+        [type]: prev[type as keyof FinancialData].filter((item: FinancialItem) => item.id !== id)
+      }));
     }
   };
+
+  // Calculate summary values (implementação do updateSummaryCards do base.js)
+  const totalIncome = financialData.income.reduce((sum, item) => sum + item.amount, 0);
+  const totalExpenses = [...financialData.fixedExpenses, ...financialData.variableExpenses]
+    .reduce((sum, item) => sum + item.amount, 0);
+  const balance = totalIncome - totalExpenses;
 
   return (
-    <>
-      {/* Header */}
+    <div className="dashboard-container">
       <header className="header">
         <div className="header-left">
           <h1>Dashboard Financeiro</h1>
@@ -299,14 +339,15 @@ const Dashboard: React.FC = () => {
         </div>
       </header>
 
-      {/* Summary Cards */}
-      <div className="summary-cards">
+      <div className="dashboard-content">
+        {/* Summary Cards (estrutura idêntica ao HTML) */}
+        <div className="summary-cards">
         <div className="card income-card">
           <div className="card-icon income">
             <i className="fas fa-arrow-up"></i>
           </div>
           <div className="card-content">
-            <h3>{totals.totalIncome}</h3>
+            <h3 id="total-income">{formatCurrency(totalIncome)}</h3>
             <p>Total de Receitas</p>
           </div>
         </div>
@@ -315,7 +356,7 @@ const Dashboard: React.FC = () => {
             <i className="fas fa-arrow-down"></i>
           </div>
           <div className="card-content">
-            <h3>{totals.totalExpenses}</h3>
+            <h3 id="total-expenses">{formatCurrency(totalExpenses)}</h3>
             <p>Total de Gastos</p>
           </div>
         </div>
@@ -324,66 +365,41 @@ const Dashboard: React.FC = () => {
             <i className="fas fa-wallet"></i>
           </div>
           <div className="card-content">
-            <h3>{totals.balance}</h3>
+            <h3 id="balance" style={{ color: balance >= 0 ? '#059669' : '#dc2626' }}>
+              {formatCurrency(balance)}
+            </h3>
             <p>Saldo Atual</p>
           </div>
         </div>
       </div>
 
-      {/* Financial Sections */}
+      {/* Financial Sections (estrutura idêntica ao HTML) */}
       <div className="financial-sections">
         {/* Receitas Section */}
         <section className="section">
           <div className="section-header">
-            <h2>
-              <i className="fas fa-plus-circle"></i> Receitas
-            </h2>
-            <button className="btn-add" onClick={() => addItem("income")}>
+            <h2><i className="fas fa-plus-circle"></i> Receitas</h2>
+            <button className="btn-add" onClick={() => openModal('income')}>
               <i className="fas fa-plus"></i> Adicionar Receita
             </button>
           </div>
           <div className="section-content">
-            <div className="items-list">
-              {financialData.income.length === 0 ? (
-                <div className="empty-state">
-                  <i className="fas fa-inbox"></i>
-                  <p>
-                    Nenhuma receita cadastrada. Clique em "Adicionar Receita"
-                    para começar.
-                  </p>
-                </div>
-              ) : (
-                financialData.income.map((item) => (
-                  <div key={item.id} className="item">
-                    <div className="item-info">
-                      <h4>{item.title}</h4>
-                      <p>{item.description}</p>
-                      <span className="item-date">
-                        {new Date(item.date).toLocaleDateString("pt-BR")}
-                      </span>
-                    </div>
-                    <div className="item-amount">
-                      {item.amount.toLocaleString("pt-BR", {
-                        style: "currency",
-                        currency: "BRL",
-                      })}
-                    </div>
-                    <div className="item-actions">
-                      <button
-                        className="btn-edit"
-                        onClick={() => editItem(item, "income")}
-                      >
-                        <i className="fas fa-edit"></i>
-                      </button>
-                      <button
-                        className="btn-delete"
-                        onClick={() => deleteItem(item.id, "income")}
-                      >
-                        <i className="fas fa-trash"></i>
-                      </button>
-                    </div>
-                  </div>
+            <div id="income-list" className="items-list">
+              {financialData.income.length > 0 ? (
+                financialData.income.map(item => (
+                  <FinancialItemComponent
+                    key={item.id}
+                    item={item}
+                    onEdit={(item) => openModal('income', item)}
+                    onDelete={(id) => deleteItem(id, 'income')}
+                    type="income"
+                  />
                 ))
+              ) : (
+                <EmptyState
+                  message="Nenhuma receita cadastrada. Clique em 'Adicionar Receita' para começar."
+                  icon="fas fa-inbox"
+                />
               )}
             </div>
           </div>
@@ -392,58 +408,28 @@ const Dashboard: React.FC = () => {
         {/* Gastos Fixos Section */}
         <section className="section">
           <div className="section-header">
-            <h2>
-              <i className="fas fa-calendar-check"></i> Gastos Fixos
-            </h2>
-            <button
-              className="btn-add"
-              onClick={() => addItem("fixedExpenses")}
-            >
+            <h2><i className="fas fa-calendar-check"></i> Gastos Fixos</h2>
+            <button className="btn-add" onClick={() => openModal('fixedExpenses')}>
               <i className="fas fa-plus"></i> Adicionar Gasto Fixo
             </button>
           </div>
           <div className="section-content">
-            <div className="items-list">
-              {financialData.fixedExpenses.length === 0 ? (
-                <div className="empty-state">
-                  <i className="fas fa-inbox"></i>
-                  <p>
-                    Nenhum gasto fixo cadastrado. Clique em "Adicionar Gasto
-                    Fixo" para começar.
-                  </p>
-                </div>
-              ) : (
-                financialData.fixedExpenses.map((item) => (
-                  <div key={item.id} className="item">
-                    <div className="item-info">
-                      <h4>{item.title}</h4>
-                      <p>{item.description}</p>
-                      <span className="item-date">
-                        {new Date(item.date).toLocaleDateString("pt-BR")}
-                      </span>
-                    </div>
-                    <div className="item-amount">
-                      {item.amount.toLocaleString("pt-BR", {
-                        style: "currency",
-                        currency: "BRL",
-                      })}
-                    </div>
-                    <div className="item-actions">
-                      <button
-                        className="btn-edit"
-                        onClick={() => editItem(item, "fixedExpenses")}
-                      >
-                        <i className="fas fa-edit"></i>
-                      </button>
-                      <button
-                        className="btn-delete"
-                        onClick={() => deleteItem(item.id, "fixedExpenses")}
-                      >
-                        <i className="fas fa-trash"></i>
-                      </button>
-                    </div>
-                  </div>
+            <div id="fixed-expenses-list" className="items-list">
+              {financialData.fixedExpenses.length > 0 ? (
+                financialData.fixedExpenses.map(item => (
+                  <FinancialItemComponent
+                    key={item.id}
+                    item={item}
+                    onEdit={(item) => openModal('fixedExpenses', item)}
+                    onDelete={(id) => deleteItem(id, 'fixedExpenses')}
+                    type="expense"
+                  />
                 ))
+              ) : (
+                <EmptyState
+                  message="Nenhum gasto fixo cadastrado. Clique em 'Adicionar Gasto Fixo' para começar."
+                  icon="fas fa-inbox"
+                />
               )}
             </div>
           </div>
@@ -452,75 +438,44 @@ const Dashboard: React.FC = () => {
         {/* Gastos Variáveis Section */}
         <section className="section">
           <div className="section-header">
-            <h2>
-              <i className="fas fa-shopping-cart"></i> Gastos Variáveis
-            </h2>
-            <button
-              className="btn-add"
-              onClick={() => addItem("variableExpenses")}
-            >
+            <h2><i className="fas fa-shopping-cart"></i> Gastos Variáveis</h2>
+            <button className="btn-add" onClick={() => openModal('variableExpenses')}>
               <i className="fas fa-plus"></i> Adicionar Gasto Variável
             </button>
           </div>
           <div className="section-content">
-            <div className="items-list">
-              {financialData.variableExpenses.length === 0 ? (
-                <div className="empty-state">
-                  <i className="fas fa-inbox"></i>
-                  <p>
-                    Nenhum gasto variável cadastrado. Clique em "Adicionar Gasto
-                    Variável" para começar.
-                  </p>
-                </div>
-              ) : (
-                financialData.variableExpenses.map((item) => (
-                  <div key={item.id} className="item">
-                    <div className="item-info">
-                      <h4>{item.title}</h4>
-                      <p>{item.description}</p>
-                      <span className="item-date">
-                        {new Date(item.date).toLocaleDateString("pt-BR")}
-                      </span>
-                    </div>
-                    <div className="item-amount">
-                      {item.amount.toLocaleString("pt-BR", {
-                        style: "currency",
-                        currency: "BRL",
-                      })}
-                    </div>
-                    <div className="item-actions">
-                      <button
-                        className="btn-edit"
-                        onClick={() => editItem(item, "variableExpenses")}
-                      >
-                        <i className="fas fa-edit"></i>
-                      </button>
-                      <button
-                        className="btn-delete"
-                        onClick={() => deleteItem(item.id, "variableExpenses")}
-                      >
-                        <i className="fas fa-trash"></i>
-                      </button>
-                    </div>
-                  </div>
+            <div id="variable-expenses-list" className="items-list">
+              {financialData.variableExpenses.length > 0 ? (
+                financialData.variableExpenses.map(item => (
+                  <FinancialItemComponent
+                    key={item.id}
+                    item={item}
+                    onEdit={(item) => openModal('variableExpenses', item)}
+                    onDelete={(id) => deleteItem(id, 'variableExpenses')}
+                    type="expense"
+                  />
                 ))
+              ) : (
+                <EmptyState
+                  message="Nenhum gasto variável cadastrado. Clique em 'Adicionar Gasto Variável' para começar."
+                  icon="fas fa-inbox"
+                />
               )}
             </div>
           </div>
         </section>
       </div>
 
-      {/* Modal */}
-      {showModal && (
-        <FinancialItemModal
-          isOpen={showModal}
-          onClose={() => setShowModal(false)}
+      {/* Modal (estrutura idêntica ao HTML) */}
+        <ItemModal
+          isOpen={modalState.isOpen}
+          onClose={closeModal}
           onSave={saveItem}
-          editingItem={editingItem}
-          category={currentCategory}
+          title={modalState.title}
+          editingItem={modalState.editingItem}
         />
-      )}
-    </>
+      </div>
+    </div>
   );
 };
 
