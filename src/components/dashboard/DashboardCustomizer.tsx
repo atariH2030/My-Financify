@@ -224,15 +224,10 @@ const DashboardCustomizer: React.FC<DashboardCustomizerProps> = ({ isOpen, onClo
   const enabledCount = widgets.filter(w => w.enabled).length;
 
   return (
-    <AnimatePresence>
-      <div className="customizer-overlay" onClick={onClose}>
-        <motion.div
-          className="customizer-modal"
-          onClick={(e) => e.stopPropagation()}
-          initial={{ opacity: 0, scale: 0.9, y: 20 }}
-          animate={{ opacity: 1, scale: 1, y: 0 }}
-          exit={{ opacity: 0, scale: 0.9, y: 20 }}
-          transition={{ type: 'spring', duration: 0.3 }}
+    <div className="customizer-overlay" onClick={onClose}>
+      <div
+        className="customizer-modal"
+        onClick={(e) => e.stopPropagation()}
         >
           {/* Header */}
           <div className="customizer-header">
@@ -364,9 +359,9 @@ const DashboardCustomizer: React.FC<DashboardCustomizerProps> = ({ isOpen, onClo
               </button>
             </div>
           </div>
-        </motion.div>
+        </div>
       </div>
-    </AnimatePresence>
+    </div>
   );
 };
 
