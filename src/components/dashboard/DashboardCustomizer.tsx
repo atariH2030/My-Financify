@@ -227,10 +227,9 @@ const DashboardCustomizer: React.FC<DashboardCustomizerProps> = ({ isOpen, onClo
     <div className="customizer-overlay" onClick={onClose}>
       <div
         className="customizer-modal"
-        onClick={(e) => e.stopPropagation()}
-        >
-          {/* Header */}
-          <div className="customizer-header">
+        onClick={(e) => e.stopPropagation()}>
+        {/* Header */}
+        <div className="customizer-header">
             <div className="header-content">
               <h2>
                 <i className="fas fa-sliders-h"></i> Personalizar Dashboard
