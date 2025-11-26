@@ -360,7 +360,6 @@ const DashboardCustomizer: React.FC<DashboardCustomizerProps> = ({ isOpen, onClo
           </div>
         </div>
       </div>
-    </div>
   );
 };
 
