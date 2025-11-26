@@ -237,6 +237,17 @@ class GoalsService {
     return Math.min((goal.currentAmount / goal.targetAmount) * 100, 100);
   }
 
+  /**
+   * Sincronizar metas pendentes (método público)
+   */
+  public async syncPending(): Promise<number> {
+    const queue = await this.getSyncQueue();
+    if (queue.length === 0) return 0;
+    
+    await this.syncPendingGoals();
+    return queue.length;
+  }
+
   private async syncPendingGoals(): Promise<void> {
     const queue = await this.getSyncQueue();
     

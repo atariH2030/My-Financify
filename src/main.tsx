@@ -8,6 +8,7 @@ import { AuthProvider } from './contexts/AuthContext';
 import ProtectedRoute from './components/auth/ProtectedRoute';
 import UserHeader from './components/auth/UserHeader';
 import OnlineStatus from './components/common/OnlineStatus';
+import SyncIndicator from './components/common/SyncIndicator';
 
 // App Components
 import Dashboard from './components/dashboard/Dashboard';
@@ -262,6 +263,9 @@ const App: React.FC = () => {
     <>
       {/* Notification Center - Fixo no canto superior direito */}
       <NotificationCenter />
+      
+      {/* Sync Indicator - Status de sincronização */}
+      <SyncIndicator />
 
       {/* Keyboard Shortcuts Button - Fixo ao lado do NotificationCenter */}
       <button 

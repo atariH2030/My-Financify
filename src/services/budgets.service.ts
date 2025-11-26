@@ -220,6 +220,17 @@ class BudgetsService {
     }
   }
 
+  /**
+   * Sincronizar orçamentos pendentes (método público)
+   */
+  public async syncPending(): Promise<number> {
+    const queue = await this.getSyncQueue();
+    if (queue.length === 0) return 0;
+    
+    await this.syncPendingBudgets();
+    return queue.length;
+  }
+
   private async syncPendingBudgets(): Promise<void> {
     const queue = await this.getSyncQueue();
     

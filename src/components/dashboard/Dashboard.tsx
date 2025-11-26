@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import SyncIndicator from '../common/SyncIndicator';
 import './dashboard.css';
 
 // Interfaces para manter type safety
@@ -475,6 +476,9 @@ const Dashboard: React.FC<{ className?: string }> = ({ className }) => {
           editingItem={modalState.editingItem}
         />
       </div>
+      
+      {/* Indicador de Sincronização */}
+      <SyncIndicator />
     </div>
   );
 };

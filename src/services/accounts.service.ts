@@ -239,6 +239,17 @@ class AccountsService {
     return summary;
   }
 
+  /**
+   * Sincronizar contas pendentes (método público)
+   */
+  public async syncPending(): Promise<number> {
+    const queue = await this.getSyncQueue();
+    if (queue.length === 0) return 0;
+    
+    await this.syncPendingAccounts();
+    return queue.length;
+  }
+
   private async syncPendingAccounts(): Promise<void> {
     const queue = await this.getSyncQueue();
     

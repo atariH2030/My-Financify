@@ -266,6 +266,17 @@ class RecurringTransactionsService {
     }
   }
 
+  /**
+   * Sincronizar transações recorrentes pendentes (método público)
+   */
+  public async syncPending(): Promise<number> {
+    const queue = await this.getSyncQueue();
+    if (queue.length === 0) return 0;
+    
+    await this.syncPendingRecurring();
+    return queue.length;
+  }
+
   private async syncPendingRecurring(): Promise<void> {
     const queue = await this.getSyncQueue();
     

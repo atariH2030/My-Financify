@@ -42,10 +42,48 @@ const TransactionsTable: React.FC<TransactionsTableProps> = ({
   const [searchTerm, setSearchTerm] = useState('');
   const [sortBy, setSortBy] = useState<'date' | 'amount' | 'description'>('date');
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc');
+  
+  // Filtros de Data
+  const [dateFilter, setDateFilter] = useState<'all' | 'today' | 'week' | 'month' | 'custom'>('month');
+  const [startDate, setStartDate] = useState('');
+  const [endDate, setEndDate] = useState('');
 
   // Filtrar e ordenar transações
   const filteredTransactions = useMemo(() => {
     let filtered = [...transactions];
+
+    // Filtro por data
+    if (dateFilter !== 'all') {
+      const now = new Date();
+      const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+      
+      filtered = filtered.filter(t => {
+        const transactionDate = new Date(t.date);
+        
+        switch (dateFilter) {
+          case 'today':
+            return transactionDate >= today;
+          case 'week':
+            const weekAgo = new Date(today);
+            weekAgo.setDate(weekAgo.getDate() - 7);
+            return transactionDate >= weekAgo;
+          case 'month':
+            const monthAgo = new Date(today);
+            monthAgo.setMonth(monthAgo.getMonth() - 1);
+            return transactionDate >= monthAgo;
+          case 'custom':
+            if (startDate && endDate) {
+              const start = new Date(startDate);
+              const end = new Date(endDate);
+              end.setHours(23, 59, 59, 999);
+              return transactionDate >= start && transactionDate <= end;
+            }
+            return true;
+          default:
+            return true;
+        }
+      });
+    }
 
     // Filtro por tipo
     if (filterType !== 'all') {
@@ -88,7 +126,7 @@ const TransactionsTable: React.FC<TransactionsTableProps> = ({
     });
 
     return filtered;
-  }, [transactions, filterType, filterExpenseType, searchTerm, sortBy, sortOrder]);
+  }, [transactions, filterType, filterExpenseType, searchTerm, sortBy, sortOrder, dateFilter, startDate, endDate]);
 
   // Agrupar por sessão
   const groupedTransactions = useMemo(() => {
@@ -165,6 +203,43 @@ const TransactionsTable: React.FC<TransactionsTableProps> = ({
     <div className="transactions-table-container">
       {/* Filtros e Busca */}
       <div className="table-filters">
+        {/* Filtro de Data */}
+        <div className="filter-group date-filters">
+          <select
+            value={dateFilter}
+            onChange={(e) => setDateFilter(e.target.value as any)}
+            className="date-filter-select"
+          >
+            <option value="all">📅 Todas as datas</option>
+            <option value="today">Hoje</option>
+            <option value="week">Últimos 7 dias</option>
+            <option value="month">Último mês</option>
+            <option value="custom">Personalizado</option>
+          </select>
+          
+          {dateFilter === 'custom' && (
+            <motion.div
+              initial={{ opacity: 0, width: 0 }}
+              animate={{ opacity: 1, width: 'auto' }}
+              className="custom-date-range"
+            >
+              <input
+                type="date"
+                value={startDate}
+                onChange={(e) => setStartDate(e.target.value)}
+                className="date-input"
+              />
+              <span>até</span>
+              <input
+                type="date"
+                value={endDate}
+                onChange={(e) => setEndDate(e.target.value)}
+                className="date-input"
+              />
+            </motion.div>
+          )}
+        </div>
+        
         <div className="filter-group">
           <input
             type="text"

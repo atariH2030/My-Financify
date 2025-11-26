@@ -41,21 +41,82 @@ const Reports: React.FC<ReportsProps> = ({ className }) => {
     transactionCount: 0
   });
   const [loading, setLoading] = useState(true);
+  
+  // Filtros
+  const [period, setPeriod] = useState<'month' | '3months' | '6months' | 'year' | 'custom'>('month');
+  const [categoryFilter, setCategoryFilter] = useState<'all' | 'income' | 'expense'>('all');
+  const [startDate, setStartDate] = useState('');
+  const [endDate, setEndDate] = useState('');
 
   useEffect(() => {
     loadData();
-  }, []);
+  }, [period, categoryFilter, startDate, endDate]);
 
   const loadData = async () => {
     try {
       setLoading(true);
+      
+      // Calcular datas baseadas no período
+      const now = new Date();
+      let filterStartDate = startDate;
+      let filterEndDate = endDate;
+      
+      if (period !== 'custom') {
+        const start = new Date();
+        switch (period) {
+          case 'month':
+            start.setMonth(start.getMonth() - 1);
+            break;
+          case '3months':
+            start.setMonth(start.getMonth() - 3);
+            break;
+          case '6months':
+            start.setMonth(start.getMonth() - 6);
+            break;
+          case 'year':
+            start.setFullYear(start.getFullYear() - 1);
+            break;
+        }
+        filterStartDate = start.toISOString().split('T')[0];
+        filterEndDate = now.toISOString().split('T')[0];
+      }
+      
       const [transactionsData, summaryData] = await Promise.all([
         transactionsService.getTransactions(),
         transactionsService.getFinancialSummary()
       ]);
       
-      setTransactions(transactionsData || []);
-      setSummary(summaryData);
+      // Aplicar filtros
+      let filtered = transactionsData || [];
+      
+      // Filtro de data
+      if (filterStartDate && filterEndDate) {
+        const start = new Date(filterStartDate);
+        const end = new Date(filterEndDate);
+        end.setHours(23, 59, 59, 999);
+        
+        filtered = filtered.filter(t => {
+          const date = new Date(t.date);
+          return date >= start && date <= end;
+        });
+      }
+      
+      // Filtro de categoria
+      if (categoryFilter !== 'all') {
+        filtered = filtered.filter(t => t.type === categoryFilter);
+      }
+      
+      // Recalcular summary com dados filtrados
+      const filteredSummary = {
+        income: filtered.filter(t => t.type === 'income').reduce((sum, t) => sum + t.amount, 0),
+        expenses: filtered.filter(t => t.type === 'expense').reduce((sum, t) => sum + t.amount, 0),
+        balance: 0,
+        transactionCount: filtered.length
+      };
+      filteredSummary.balance = filteredSummary.income - filteredSummary.expenses;
+      
+      setTransactions(filtered);
+      setSummary(filteredSummary);
     } catch (error) {
       console.error('Error loading data:', error);
     } finally {
@@ -72,30 +133,42 @@ const Reports: React.FC<ReportsProps> = ({ className }) => {
           <div className="filter-controls">
             <div className="filter-group">
               <label>Período</label>
-              <select>
-                <option>Último mês</option>
-                <option>Últimos 3 meses</option>
-                <option>Últimos 6 meses</option>
-                <option>Último ano</option>
+              <select value={period} onChange={(e) => setPeriod(e.target.value as any)}>
+                <option value="month">Último mês</option>
+                <option value="3months">Últimos 3 meses</option>
+                <option value="6months">Últimos 6 meses</option>
+                <option value="year">Último ano</option>
+                <option value="custom">Personalizado</option>
               </select>
             </div>
             <div className="filter-group">
               <label>Categoria</label>
-              <select>
-                <option>Todas as categorias</option>
-                <option>Receitas</option>
-                <option>Despesas</option>
-                <option>Investimentos</option>
+              <select value={categoryFilter} onChange={(e) => setCategoryFilter(e.target.value as any)}>
+                <option value="all">Todas as categorias</option>
+                <option value="income">📈 Receitas</option>
+                <option value="expense">📉 Despesas</option>
               </select>
             </div>
-            <div className="filter-group">
-              <label>Data Inicial</label>
-              <input type="date" />
-            </div>
-            <div className="filter-group">
-              <label>Data Final</label>
-              <input type="date" />
-            </div>
+            {period === 'custom' && (
+              <>
+                <div className="filter-group">
+                  <label>Data Inicial</label>
+                  <input 
+                    type="date" 
+                    value={startDate}
+                    onChange={(e) => setStartDate(e.target.value)}
+                  />
+                </div>
+                <div className="filter-group">
+                  <label>Data Final</label>
+                  <input 
+                    type="date"
+                    value={endDate}
+                    onChange={(e) => setEndDate(e.target.value)}
+                  />
+                </div>
+              </>
+            )}
           </div>
         </div>
       </div>
