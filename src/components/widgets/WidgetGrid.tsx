@@ -14,7 +14,7 @@ import {
   RecurringWidget,
   RecentTransactionsWidget,
   AccountsWidget,
-} from './WidgetTypes.tsx';
+} from './WidgetTypes';
 import WidgetService from '../../services/widget.service';
 import './Widgets.css';
 
