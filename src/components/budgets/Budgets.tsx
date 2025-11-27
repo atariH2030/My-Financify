@@ -96,8 +96,6 @@ const Budgets: React.FC = () => {
     });
   };
 
-  };
-
   const handleCreate = async (budgetData: Omit<Budget, 'id' | 'createdAt' | 'updatedAt'>) => {
     try {
       await budgetsService.createBudget(budgetData as any);
@@ -107,8 +105,6 @@ const Budgets: React.FC = () => {
     } catch (error) {
       showToast('Erro ao criar orçamento', 'error');
     }
-  };
-    showToast('Orçamento criado com sucesso! 💰', 'success');
   };
 
   const handleUpdate = async (budgetData: Omit<Budget, 'id' | 'createdAt' | 'updatedAt'>) => {

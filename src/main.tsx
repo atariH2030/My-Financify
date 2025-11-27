@@ -503,8 +503,10 @@ const App: React.FC = () => {
           <OnlineStatus 
             pendingOperations={0}
             onSync={async () => {
-              // TODO: Integrar com ResilientStorage.syncPending()
-              console.log('Sincronizando operações pendentes...');
+              // Sincronização já é feita automaticamente pelo SyncService
+              if (import.meta.env.VITE_DEBUG_MODE === 'true') {
+                console.log('Sincronizando operações pendentes...');
+              }
             }}
           />
         </div>

@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Input, Button } from '../common';
-import type { RecurringTransaction, RecurringFrequency, TransactionType, PaymentMethod } from '../../types/financial.types';
+import type { RecurringTransaction, RecurringFrequency, TransactionType, PaymentMethod, Account } from '../../types/financial.types';
 import { validateRecurring } from '../../utils/validation';
-import AccountService from '../../services/account.service';
+import { accountsService } from '../../services/accounts.service';
 
 interface RecurringFormProps {
   recurring?: RecurringTransaction;
@@ -41,7 +41,7 @@ const CATEGORIES_INCOME = [
 ];
 
 const RecurringForm: React.FC<RecurringFormProps> = ({ recurring, onSubmit, onCancel }) => {
-  const accounts = AccountService.getAll().filter(a => a.isActive);
+  const [accounts, setAccounts] = useState<Account[]>([]);
 
   const [formData, setFormData] = useState({
     name: recurring?.name || '',
@@ -65,6 +65,20 @@ const RecurringForm: React.FC<RecurringFormProps> = ({ recurring, onSubmit, onCa
   });
 
   const [errors, setErrors] = useState<Record<string, string>>({});
+
+  // Carregar contas do Supabase
+  useEffect(() => {
+    const loadAccounts = async () => {
+      try {
+        const data = await accountsService.getAccounts();
+        setAccounts(data.filter(a => a.isActive));
+      } catch (error) {
+        console.error('Erro ao carregar contas:', error);
+        setAccounts([]);
+      }
+    };
+    loadAccounts();
+  }, []);
 
   const categories = formData.type === 'income' ? CATEGORIES_INCOME : CATEGORIES_EXPENSE;
 

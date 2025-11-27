@@ -16,8 +16,8 @@ import {
   AccountsWidget,
 } from './WidgetTypes';
 import WidgetService from '../../services/widget.service';
+import Logger from '../../services/logger.service';
 import './Widgets.css';
-
 interface WidgetGridProps {
   onCustomize?: () => void;
 }
@@ -53,13 +53,13 @@ const WidgetGrid: React.FC<WidgetGridProps> = ({ onCustomize }) => {
       try {
         const settings = JSON.parse(saved);
         const mode = settings.layoutMode || 'grid-medium';
-        console.log('Layout mode carregado:', mode);
+        Logger.debug('Layout mode carregado', { mode }, 'WIDGETS');
         setLayoutMode(mode);
       } catch (error) {
-        console.error('Error loading layout settings:', error);
+        Logger.error('Error loading layout settings', error as Error, 'WIDGETS');
       }
     } else {
-      console.log('Nenhuma configuração salva, usando padrão: grid-medium');
+      Logger.debug('Nenhuma configuração salva, usando padrão', { mode: 'grid-medium' }, 'WIDGETS');
     }
   };
 
@@ -88,7 +88,7 @@ const WidgetGrid: React.FC<WidgetGridProps> = ({ onCustomize }) => {
           return;
         }
       } catch (error) {
-        console.error('Error loading custom widgets:', error);
+        Logger.error('Error loading custom widgets', error as Error, 'WIDGETS');
       }
     }
     

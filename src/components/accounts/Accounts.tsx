@@ -90,10 +90,6 @@ const Accounts: React.FC = () => {
       await accountsService.deleteAccount(id);
       await loadData();
       showToast(`Conta "${account.name}" removida!`, 'success');
-        } catch (error) {
-          showToast('Erro ao desativar conta', 'error');
-      await loadData();
-      showToast(`Conta "${account.name}" removida!`, 'success');
     } catch (error) {
       showToast('Erro ao remover conta', 'error');
     }

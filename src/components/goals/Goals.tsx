@@ -56,7 +56,6 @@ const Goals: React.FC = () => {
       Logger.error('Erro ao criar meta', error as Error, 'GOALS');
     }
   };
-  };
 
   const handleUpdate = async (data: Omit<FinancialGoal, 'id' | 'createdAt' | 'updatedAt' | 'completedAt'>) => {
     if (!editingGoal) return;
