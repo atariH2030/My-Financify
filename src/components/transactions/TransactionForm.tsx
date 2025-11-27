@@ -9,7 +9,7 @@ import Card from '../common/Card';
 import Button from '../common/Button';
 import Input from '../common/Input';
 import { transactionSchema } from '../../utils/validation';
-import { formatCurrency } from '../../utils/performance';
+import { formatCurrency } from '../../utils/currency';
 import type { Transaction } from '../../types/financial.types';
 import './TransactionForm.css';
 
@@ -85,6 +85,11 @@ const TransactionForm: React.FC<TransactionFormProps> = ({ transaction, onSubmit
       await onSubmit({
         ...result.data,
         date: new Date(result.data.date),
+        // Converter recurring.endDate de string para Date se existir
+        recurring: result.data.recurring ? {
+          ...result.data.recurring,
+          endDate: result.data.recurring.endDate ? new Date(result.data.recurring.endDate) : undefined
+        } : undefined
       });
     } catch (error) {
       console.error('Erro ao submeter formulário:', error);

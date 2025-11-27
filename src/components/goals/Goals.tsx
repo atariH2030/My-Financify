@@ -34,8 +34,13 @@ const Goals: React.FC = () => {
     try {
       setLoading(true);
       const data = await goalsService.getGoals();
-      setGoals(data || []);
-      Logger.info('Metas carregadas', { count: (data || []).length }, 'GOALS');
+      // Converter string para Date no deadline
+      const goalsWithDateConversion = (data || []).map(goal => ({
+        ...goal,
+        deadline: new Date(goal.deadline)
+      })) as FinancialGoal[];
+      setGoals(goalsWithDateConversion);
+      Logger.info('Metas carregadas', { count: goalsWithDateConversion.length }, 'GOALS');
     } catch (error) {
       Logger.error('Erro ao carregar metas', error as Error, 'GOALS');
       showToast('Erro ao carregar metas', 'error');

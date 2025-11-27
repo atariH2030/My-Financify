@@ -10,14 +10,13 @@ import {
   debounce,
   throttle,
   memoize,
-  formatCurrency,
   formatCurrencyString,
-  formatPercentage,
   truncateString,
   generateId,
   deepClone,
   isEmptyObject,
 } from '../utils/performance';
+import { formatCurrency, formatPercentage } from '../utils/currency';
 import {
   formatDate,
   formatDateTime,
@@ -123,8 +122,8 @@ describe('Performance Utils', () => {
     });
 
     it('deve respeitar casas decimais especificadas', () => {
-      expect(formatPercentage(0.1234, 0)).toBe('12%');
-      expect(formatPercentage(0.1234, 1)).toBe('12,3%');
+      expect(formatPercentage(0.1234, { decimals: 0 })).toBe('12%');
+      expect(formatPercentage(0.1234, { decimals: 1 })).toBe('12,3%');
     });
   });
 

@@ -15,31 +15,42 @@ const toError = (error: unknown): Error => {
 export interface Goal {
   id: string;
   user_id?: string;
-  name: string;
+  title: string;
   description?: string;
+  type: 'savings' | 'investment' | 'emergency' | 'wishlist' | 'debt-payment';
   targetAmount: number;
   currentAmount: number;
   deadline: string;
-  category: string;
-  icon: string;
-  color: string;
+  section?: string;
+  category?: string;
+  icon?: string;
+  color?: string;
   priority: 'high' | 'medium' | 'low';
-  status: 'active' | 'completed' | 'paused';
+  status: 'active' | 'completed' | 'paused' | 'cancelled';
+  isWishlist?: boolean;
+  imageUrl?: string;
+  link?: string;
   createdAt: string;
   updatedAt?: string;
+  completedAt?: string;
 }
 
 interface GoalInput {
-  name: string;
+  title: string;
   description?: string;
+  type: 'savings' | 'investment' | 'emergency' | 'wishlist' | 'debt-payment';
   targetAmount: number;
   currentAmount?: number;
   deadline: string;
-  category: string;
+  section?: string;
+  category?: string;
   icon?: string;
   color?: string;
   priority?: 'high' | 'medium' | 'low';
-  status?: 'active' | 'completed' | 'paused';
+  status?: 'active' | 'completed' | 'paused' | 'cancelled';
+  isWishlist?: boolean;
+  imageUrl?: string;
+  link?: string;
 }
 
 class GoalsService {
@@ -65,16 +76,21 @@ class GoalsService {
     
     const goal: any = {
       user_id: userId,
-      name: data.name,
+      title: data.title,
       description: data.description,
+      type: data.type,
       targetAmount: data.targetAmount,
       currentAmount: data.currentAmount || 0,
       deadline: data.deadline,
+      section: data.section,
       category: data.category,
       icon: data.icon || '🎯',
       color: data.color || '#3b82f6',
       priority: data.priority || 'medium',
       status: data.status || 'active',
+      isWishlist: data.isWishlist,
+      imageUrl: data.imageUrl,
+      link: data.link,
       createdAt: new Date().toISOString(),
     };
 
@@ -222,7 +238,7 @@ class GoalsService {
     // Auto-completar se atingiu a meta
     if (newAmount >= goal.targetAmount) {
       updates.status = 'completed';
-      logService.info(`🎉 Meta "${goal.name}" atingida!`);
+      logService.info(`🎉 Meta "${goal.title}" atingida!`);
     }
 
     await this.updateGoal(id, updates);

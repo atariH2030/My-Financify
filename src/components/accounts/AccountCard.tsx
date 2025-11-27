@@ -1,7 +1,7 @@
 import React from 'react';
 import Card from '../common/Card';
 import Button from '../common/Button';
-import { formatCurrency } from '../../utils/performance';
+import { formatCurrency } from '../../utils/currency';
 import type { Account } from '../../types/financial.types';
 
 interface AccountCardProps {

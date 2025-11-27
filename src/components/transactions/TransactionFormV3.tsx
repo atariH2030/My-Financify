@@ -14,7 +14,7 @@ import Button from '../common/Button';
 import Input from '../common/Input';
 import Tooltip from '../common/Tooltip';
 import { transactionSchema } from '../../utils/validation';
-import { formatCurrency } from '../../utils/performance';
+import { formatCurrency } from '../../utils/currency';
 import type { Transaction, ExpenseType, PaymentMethod } from '../../types/financial.types';
 import { 
   SECTIONS_CONFIG, 

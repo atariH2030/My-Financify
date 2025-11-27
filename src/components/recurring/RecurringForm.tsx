@@ -95,7 +95,7 @@ const RecurringForm: React.FC<RecurringFormProps> = ({ recurring, onSubmit, onCa
 
     if (!validation.success) {
       const newErrors: Record<string, string> = {};
-      validation.errors?.forEach(err => {
+      validation.error.issues?.forEach((err: any) => {
         newErrors[err.path[0] as string] = err.message;
       });
       setErrors(newErrors);

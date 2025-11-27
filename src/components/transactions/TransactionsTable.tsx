@@ -9,7 +9,7 @@
 
 import React, { useState, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { formatCurrency } from '../../utils/performance';
+import { formatCurrency } from '../../utils/currency';
 import { formatDate } from '../../utils/date';
 import type { Transaction } from '../../types/financial.types';
 import { getSectionById, getCategoriesBySection, EXPENSE_TYPE_COLORS, EXPENSE_TYPE_LABELS } from '../../config/categories.config';

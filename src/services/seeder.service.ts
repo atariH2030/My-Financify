@@ -8,7 +8,7 @@
 
 import Logger from './logger.service';
 import Storage from './storage.service';
-import type { Transaction } from '../types/financial.types';
+import type { Transaction, Budget as BudgetType, Account as AccountType } from '../types/financial.types';
 import { SECTIONS_CONFIG } from '../config/categories.config';
 
 export interface Account {
@@ -19,15 +19,10 @@ export interface Account {
   currency: string;
 }
 
-export interface Budget {
+export type Budget = Partial<BudgetType> & {
   id: string;
-  section: string;
   category: string;
-  expenseType?: 'fixed' | 'variable';
-  limit: number;
-  spent: number;
-  period: 'monthly' | 'yearly';
-}
+};
 
 export interface SeederConfig {
   forceReset?: boolean;
@@ -275,30 +270,46 @@ class DatabaseSeeder {
         {
           id: 'budget-1',
           category: 'Alimentação',
-          limit: 1500,
-          spent: 987.50,
-          period: 'monthly'
+          limitAmount: 1500,
+          currentSpent: 987.50,
+          period: 'monthly',
+          alertThreshold: 80,
+          status: 'active',
+          startDate: new Date().toISOString(),
+          createdAt: new Date().toISOString()
         },
         {
           id: 'budget-2',
           category: 'Transporte',
-          limit: 500,
-          spent: 345.00,
-          period: 'monthly'
+          limitAmount: 500,
+          currentSpent: 345.00,
+          period: 'monthly',
+          alertThreshold: 80,
+          status: 'active',
+          startDate: new Date().toISOString(),
+          createdAt: new Date().toISOString()
         },
         {
           id: 'budget-3',
           category: 'Lazer',
-          limit: 800,
-          spent: 620.00,
-          period: 'monthly'
+          limitAmount: 800,
+          currentSpent: 620.00,
+          period: 'monthly',
+          alertThreshold: 80,
+          status: 'active',
+          startDate: new Date().toISOString(),
+          createdAt: new Date().toISOString()
         },
         {
           id: 'budget-4',
           category: 'Saúde',
-          limit: 1000,
-          spent: 450.00,
-          period: 'monthly'
+          limitAmount: 1000,
+          currentSpent: 450.00,
+          period: 'monthly',
+          alertThreshold: 80,
+          status: 'active',
+          startDate: new Date().toISOString(),
+          createdAt: new Date().toISOString()
         }
       ];
 
@@ -328,7 +339,7 @@ class DatabaseSeeder {
   async getStats(): Promise<{ accounts: number; transactions: number; budgets: number }> {
     try {
       const accounts = await Storage.load<Account[]>('accounts') || [];
-      const transactions = await Storage.load<FinancialTransaction[]>('transactions') || [];
+      const transactions = await Storage.load<Transaction[]>('transactions') || [];
       const budgets = await Storage.load<Budget[]>('budgets') || [];
 
       return {

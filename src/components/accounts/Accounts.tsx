@@ -8,7 +8,7 @@ import AccountForm from './AccountForm.tsx';
 import AccountCard from './AccountCard.tsx';
 import { accountsService } from '../../services/accounts.service';
 import { transactionsService } from '../../services/transactions.service';
-import { formatCurrency } from '../../utils/performance';
+import { formatCurrency } from '../../utils/currency';
 import type { Account, Transaction } from '../../types/financial.types';
 import './Accounts.css';
 

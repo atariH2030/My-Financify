@@ -16,26 +16,26 @@ export interface Budget {
   id: string;
   user_id?: string;
   category: string;
-  amount: number;
-  spent: number;
-  period: 'monthly' | 'weekly' | 'yearly';
+  description?: string;
+  period: 'monthly' | 'quarterly' | 'yearly';
+  limitAmount: number;
+  currentSpent: number;
+  alertThreshold: number; // Percentage (ex: 80 = alerta aos 80%)
+  status: 'active' | 'paused' | 'completed';
   startDate: string;
-  endDate: string;
-  alertThreshold?: number;
-  active: boolean;
-  createdAt: string;
+  createdAt?: string;
   updatedAt?: string;
 }
 
 interface BudgetInput {
   category: string;
-  amount: number;
-  spent?: number;
-  period: 'monthly' | 'weekly' | 'yearly';
-  startDate: string;
-  endDate: string;
+  description?: string;
+  period: 'monthly' | 'quarterly' | 'yearly';
+  limitAmount: number;
+  currentSpent?: number;
   alertThreshold?: number;
-  active?: boolean;
+  status?: 'active' | 'paused' | 'completed';
+  startDate: string;
 }
 
 class BudgetsService {
@@ -62,13 +62,13 @@ class BudgetsService {
     const budget: any = {
       user_id: userId,
       category: data.category,
-      amount: data.amount,
-      spent: data.spent || 0,
+      description: data.description,
+      limitAmount: data.limitAmount,
+      currentSpent: data.currentSpent || 0,
       period: data.period,
       startDate: data.startDate,
-      endDate: data.endDate,
       alertThreshold: data.alertThreshold || 80,
-      active: data.active !== false,
+      status: data.status || 'active',
       createdAt: new Date().toISOString(),
     };
 
@@ -210,11 +210,11 @@ class BudgetsService {
     
     if (!budget) throw new Error('Orçamento não encontrado');
 
-    const newSpent = budget.spent + amount;
-    await this.updateBudget(id, { spent: newSpent });
+    const newSpent = budget.currentSpent + amount;
+    await this.updateBudget(id, { currentSpent: newSpent } as any);
 
     // Verificar alertas
-    const percentage = (newSpent / budget.amount) * 100;
+    const percentage = (newSpent / budget.limitAmount) * 100;
     if (budget.alertThreshold && percentage >= budget.alertThreshold) {
       logService.warn(`⚠️ Orçamento "${budget.category}" atingiu ${percentage.toFixed(1)}%`);
     }
