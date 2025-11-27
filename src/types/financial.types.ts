@@ -423,7 +423,6 @@ export interface ImportOptions {
 
 // ===== UTILITY TYPES =====
 
-export type TransactionType = Transaction['type'];
 export type CategoryType = CategoryTemplate['type'];
 export type ChartType = 'line' | 'bar' | 'pie' | 'doughnut';
 export type ThemeMode = 'light' | 'dark' | 'auto';

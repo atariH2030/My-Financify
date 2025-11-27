@@ -10,14 +10,13 @@ import {
   debounce,
   throttle,
   memoize,
-  formatCurrency,
   formatCurrencyString,
-  formatPercentage,
   truncateString,
   generateId,
   deepClone,
   isEmptyObject,
 } from '../utils/performance';
+import { formatCurrency, formatPercentage } from '../utils/currency';
 import {
   formatDate,
   formatDateTime,

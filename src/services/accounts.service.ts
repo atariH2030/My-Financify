@@ -25,7 +25,7 @@ export interface Account {
   dueDay?: number;
   color: string;
   icon: string;
-  active: boolean;
+  isActive: boolean;
   createdAt: string;
   updatedAt?: string;
 }
@@ -41,7 +41,7 @@ interface AccountInput {
   dueDay?: number;
   color: string;
   icon: string;
-  active?: boolean;
+  isActive?: boolean;
 }
 
 class AccountsService {
@@ -77,7 +77,7 @@ class AccountsService {
       dueDay: data.dueDay,
       color: data.color,
       icon: data.icon,
-      active: data.active !== false,
+      isActive: data.isActive !== false,
       createdAt: new Date().toISOString(),
     };
 
@@ -223,7 +223,7 @@ class AccountsService {
 
     const summary = accounts.reduce(
       (acc, account) => {
-        if (account.active) {
+        if (account.isActive) {
           acc.totalBalance += account.balance;
           if (account.creditLimit) {
             acc.totalLimit += account.creditLimit;

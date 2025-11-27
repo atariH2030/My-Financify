@@ -16,39 +16,57 @@ const toError = (error: unknown): Error => {
 export interface RecurringTransaction {
   id: string;
   user_id?: string;
-  description: string;
-  amount: number;
+  name: string;
   type: TransactionType;
+  amount: number;
+  
+  // Categorização
+  section: string;
   category: string;
   subcategory?: string;
-  frequency: 'daily' | 'weekly' | 'monthly' | 'yearly';
+  
+  // Recorrência
+  frequency: 'daily' | 'weekly' | 'biweekly' | 'monthly' | 'bimonthly' | 'quarterly' | 'semiannual' | 'yearly';
   dayOfMonth?: number;
   dayOfWeek?: number;
   startDate: string;
   endDate?: string;
+  nextOccurrence: string;
+  
+  // Configurações
   accountId?: string;
-  active: boolean;
-  lastProcessed?: string;
-  nextDue: string;
-  autoProcess: boolean;
+  paymentMethod?: string;
+  autoGenerate: boolean;
+  notifyBefore?: number;
+  
+  // Status e controle
+  status: 'active' | 'paused' | 'completed' | 'cancelled';
+  isActive: boolean;
+  lastGenerated?: string;
+  generatedCount: number;
+  
   createdAt: string;
   updatedAt?: string;
 }
 
 interface RecurringTransactionInput {
-  description: string;
+  name: string;
   amount: number;
   type: TransactionType;
+  section: string;
   category: string;
   subcategory?: string;
-  frequency: 'daily' | 'weekly' | 'monthly' | 'yearly';
+  frequency: 'daily' | 'weekly' | 'biweekly' | 'monthly' | 'bimonthly' | 'quarterly' | 'semiannual' | 'yearly';
   dayOfMonth?: number;
   dayOfWeek?: number;
   startDate: string;
   endDate?: string;
   accountId?: string;
-  active?: boolean;
-  autoProcess?: boolean;
+  paymentMethod?: string;
+  autoGenerate?: boolean;
+  notifyBefore?: number;
+  status?: 'active' | 'paused' | 'completed' | 'cancelled';
+  isActive?: boolean;
 }
 
 class RecurringTransactionsService {
@@ -74,9 +92,10 @@ class RecurringTransactionsService {
     
     const recurring: any = {
       user_id: userId,
-      description: data.description,
+      name: data.name,
       amount: data.amount,
       type: data.type,
+      section: data.section,
       category: data.category,
       subcategory: data.subcategory,
       frequency: data.frequency,
@@ -85,9 +104,13 @@ class RecurringTransactionsService {
       startDate: data.startDate,
       endDate: data.endDate,
       accountId: data.accountId,
-      active: data.active !== false,
-      autoProcess: data.autoProcess !== false,
-      nextDue: this.calculateNextDue(data),
+      paymentMethod: data.paymentMethod,
+      status: data.status || 'active',
+      isActive: data.isActive !== false,
+      autoGenerate: data.autoGenerate !== false,
+      notifyBefore: data.notifyBefore,
+      nextOccurrence: this.calculateNextDue(data),
+      generatedCount: 0,
       createdAt: new Date().toISOString(),
     };
 
@@ -230,8 +253,8 @@ class RecurringTransactionsService {
     futureDate.setDate(futureDate.getDate() + days);
 
     return all.filter(r => {
-      if (!r.active) return false;
-      const dueDate = new Date(r.nextDue);
+      if (!r.isActive) return false;
+      const dueDate = new Date(r.nextOccurrence);
       return dueDate >= now && dueDate <= futureDate;
     });
   }

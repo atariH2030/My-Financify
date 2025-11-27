@@ -9,7 +9,7 @@ import Card from '../common/Card';
 import Button from '../common/Button';
 import Input from '../common/Input';
 import { transactionSchema } from '../../utils/validation';
-import { formatCurrency } from '../../utils/performance';
+import { formatCurrency } from '../../utils/currency';
 import type { Transaction } from '../../types/financial.types';
 import './TransactionForm.css';
 

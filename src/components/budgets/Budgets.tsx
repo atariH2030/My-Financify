@@ -150,7 +150,7 @@ const Budgets: React.FC = () => {
   };
 
   const handleRefresh = () => {
-    recalculateBudgets();
+    loadData();
     showToast('Orçamentos atualizados! 🔄', 'success');
   };
 

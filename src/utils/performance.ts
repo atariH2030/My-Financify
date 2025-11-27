@@ -4,7 +4,6 @@
  */
 
 import React from 'react';
-import { formatCurrency as formatCurrencyNew } from './currency';
 
 /**
  * Debounce function - Atrasa execução até que chamadas parem
@@ -227,17 +226,8 @@ export const safeStorage = {
   }
 };
 
-// Aliases para retrocompatibilidade - Agora usando nova implementação ABNT
-export const formatCurrency = formatCurrencyNew;
 // Mantém função legada disponível se necessário
 export const formatCurrencyLegacy = formatCurrencyString;
-
-/**
- * Format percentage - Formata número como porcentagem
- */
-export const formatPercentage = (value: number, decimals: number = 2): string => {
-  return `${(value * 100).toFixed(decimals).replace('.', ',')}%`;
-};
 
 /**
  * Truncate string - Trunca string longa
