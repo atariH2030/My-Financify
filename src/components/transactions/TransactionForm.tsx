@@ -85,6 +85,11 @@ const TransactionForm: React.FC<TransactionFormProps> = ({ transaction, onSubmit
       await onSubmit({
         ...result.data,
         date: new Date(result.data.date),
+        // Converter recurring.endDate de string para Date se existir
+        recurring: result.data.recurring ? {
+          ...result.data.recurring,
+          endDate: result.data.recurring.endDate ? new Date(result.data.recurring.endDate) : undefined
+        } : undefined
       });
     } catch (error) {
       console.error('Erro ao submeter formulário:', error);

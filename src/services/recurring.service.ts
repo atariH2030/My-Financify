@@ -5,7 +5,7 @@
 
 import { supabase } from '../config/supabase.config';
 import Logger from './logger.service';
-import type { TransactionType } from '../types/financial.types';
+import type { TransactionType, PaymentMethod } from '../types/financial.types';
 
 const logService = Logger;
 
@@ -35,7 +35,7 @@ export interface RecurringTransaction {
   
   // Configurações
   accountId?: string;
-  paymentMethod?: string;
+  paymentMethod?: PaymentMethod;
   autoGenerate: boolean;
   notifyBefore?: number;
   
@@ -62,7 +62,7 @@ interface RecurringTransactionInput {
   startDate: string;
   endDate?: string;
   accountId?: string;
-  paymentMethod?: string;
+  paymentMethod?: PaymentMethod;
   autoGenerate?: boolean;
   notifyBefore?: number;
   status?: 'active' | 'paused' | 'completed' | 'cancelled';

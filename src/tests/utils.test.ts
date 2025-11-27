@@ -122,8 +122,8 @@ describe('Performance Utils', () => {
     });
 
     it('deve respeitar casas decimais especificadas', () => {
-      expect(formatPercentage(0.1234, 0)).toBe('12%');
-      expect(formatPercentage(0.1234, 1)).toBe('12,3%');
+      expect(formatPercentage(0.1234, { decimals: 0 })).toBe('12%');
+      expect(formatPercentage(0.1234, { decimals: 1 })).toBe('12,3%');
     });
   });
 

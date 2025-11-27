@@ -5,6 +5,7 @@
 
 import { supabase } from '../config/supabase.config';
 import Logger from './logger.service';
+import type { CardBrand } from '../types/financial.types';
 
 const logService = Logger;
 
@@ -17,7 +18,7 @@ export interface Account {
   user_id?: string;
   name: string;
   type: 'credit' | 'debit' | 'cash' | 'investment' | 'savings';
-  brand?: string;
+  brand?: CardBrand;
   lastDigits?: string;
   balance: number;
   creditLimit?: number;
@@ -33,7 +34,7 @@ export interface Account {
 interface AccountInput {
   name: string;
   type: 'credit' | 'debit' | 'cash' | 'investment' | 'savings';
-  brand?: string;
+  brand?: CardBrand;
   lastDigits?: string;
   balance: number;
   creditLimit?: number;
