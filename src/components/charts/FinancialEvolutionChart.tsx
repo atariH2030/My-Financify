@@ -4,7 +4,7 @@
  * @version 1.0.0
  */
 
-import React from 'react';
+import React, { useMemo } from 'react';
 import {
   LineChart,
   Line,
@@ -34,25 +34,27 @@ const FinancialEvolutionChart: React.FC<FinancialEvolutionChartProps> = ({
   data, 
   height = 300 
 }) => {
-  const CustomTooltip = ({ active, payload }: any) => {
-    if (active && payload && payload.length) {
-      return (
-        <div className="custom-tooltip">
-          <p className="label">{payload[0].payload.month}</p>
-          <p className="income">
-            Receitas: <strong>{formatCurrency(payload[0].value)}</strong>
-          </p>
-          <p className="expense">
-            Despesas: <strong>{formatCurrency(payload[1].value)}</strong>
-          </p>
-          <p className="balance">
-            Saldo: <strong>{formatCurrency(payload[2].value)}</strong>
-          </p>
-        </div>
-      );
-    }
-    return null;
-  };
+  const CustomTooltip = useMemo(() => {
+    return ({ active, payload }: any) => {
+      if (active && payload && payload.length) {
+        return (
+          <div className="custom-tooltip">
+            <p className="label">{payload[0].payload.month}</p>
+            <p className="income">
+              Receitas: <strong>{formatCurrency(payload[0].value)}</strong>
+            </p>
+            <p className="expense">
+              Despesas: <strong>{formatCurrency(payload[1].value)}</strong>
+            </p>
+            <p className="balance">
+              Saldo: <strong>{formatCurrency(payload[2].value)}</strong>
+            </p>
+          </div>
+        );
+      }
+      return null;
+    };
+  }, []);
 
   return (
     <div className="chart-container">
@@ -70,7 +72,7 @@ const FinancialEvolutionChart: React.FC<FinancialEvolutionChartProps> = ({
             style={{ fontSize: '12px' }}
             tickFormatter={(value: number) => formatCurrency(value).replace('R$', '').trim()}
           />
-          <Tooltip content={<CustomTooltip />} />
+          <Tooltip content={CustomTooltip} />
           <Legend 
             wrapperStyle={{ fontSize: '14px', paddingTop: '10px' }}
           />

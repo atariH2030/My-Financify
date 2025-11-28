@@ -4,7 +4,7 @@
  * @version 1.0.0
  */
 
-import React from 'react';
+import React, { useMemo } from 'react';
 import {
   PieChart,
   Pie,
@@ -44,23 +44,25 @@ const CategoryDistributionChart: React.FC<CategoryDistributionChartProps> = ({
   data, 
   height = 350 
 }) => {
-  const CustomTooltip = ({ active, payload }: any) => {
-    if (active && payload && payload.length) {
-      const item = payload[0].payload;
-      return (
-        <div className="custom-tooltip">
-          <p className="label">{item.name}</p>
-          <p className="value">
-            <strong>{formatCurrency(item.value)}</strong>
-          </p>
-          <p className="percentage">
-            {item.percentage.toFixed(1)}% do total
-          </p>
-        </div>
-      );
-    }
-    return null;
-  };
+  const CustomTooltip = useMemo(() => {
+    return ({ active, payload }: any) => {
+      if (active && payload && payload.length) {
+        const item = payload[0].payload;
+        return (
+          <div className="custom-tooltip">
+            <p className="label">{item.name}</p>
+            <p className="value">
+              <strong>{formatCurrency(item.value)}</strong>
+            </p>
+            <p className="percentage">
+              {item.percentage.toFixed(1)}% do total
+            </p>
+          </div>
+        );
+      }
+      return null;
+    };
+  }, []);
 
   const renderLabel = (entry: any) => {
     const categoryData = entry as CategoryData;
@@ -86,7 +88,7 @@ const CategoryDistributionChart: React.FC<CategoryDistributionChartProps> = ({
               <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
             ))}
           </Pie>
-          <Tooltip content={<CustomTooltip />} />
+          <Tooltip content={CustomTooltip} />
           <Legend 
             verticalAlign="bottom" 
             height={36}

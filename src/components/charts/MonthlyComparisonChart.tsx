@@ -4,7 +4,7 @@
  * @version 1.0.0
  */
 
-import React from 'react';
+import React, { useMemo } from 'react';
 import {
   BarChart,
   Bar,
@@ -37,27 +37,29 @@ const MonthlyComparisonChart: React.FC<MonthlyComparisonChartProps> = ({
   currentMonthName = 'Mês Atual',
   previousMonthName = 'Mês Anterior'
 }) => {
-  const CustomTooltip = ({ active, payload }: any) => {
-    if (active && payload && payload.length) {
-      return (
-        <div className="custom-tooltip">
-          <p className="label">{payload[0].payload.category}</p>
-          <p className="current">
-            {currentMonthName}: <strong>{formatCurrency(payload[0].value)}</strong>
-          </p>
-          <p className="previous">
-            {previousMonthName}: <strong>{formatCurrency(payload[1].value)}</strong>
-          </p>
-          <p className="diff">
-            Variação: <strong className={payload[0].value > payload[1].value ? 'negative' : 'positive'}>
-              {payload[0].value > payload[1].value ? '▲' : '▼'} {formatCurrency(Math.abs(payload[0].value - payload[1].value))}
-            </strong>
-          </p>
-        </div>
-      );
-    }
-    return null;
-  };
+  const CustomTooltip = useMemo(() => {
+    return ({ active, payload }: any) => {
+      if (active && payload && payload.length) {
+        return (
+          <div className="custom-tooltip">
+            <p className="label">{payload[0].payload.category}</p>
+            <p className="current">
+              {currentMonthName}: <strong>{formatCurrency(payload[0].value)}</strong>
+            </p>
+            <p className="previous">
+              {previousMonthName}: <strong>{formatCurrency(payload[1].value)}</strong>
+            </p>
+            <p className="diff">
+              Variação: <strong className={payload[0].value > payload[1].value ? 'negative' : 'positive'}>
+                {payload[0].value > payload[1].value ? '▲' : '▼'} {formatCurrency(Math.abs(payload[0].value - payload[1].value))}
+              </strong>
+            </p>
+          </div>
+        );
+      }
+      return null;
+    };
+  }, [currentMonthName, previousMonthName]);
 
   return (
     <div className="chart-container">
@@ -75,7 +77,7 @@ const MonthlyComparisonChart: React.FC<MonthlyComparisonChartProps> = ({
             style={{ fontSize: '12px' }}
             tickFormatter={(value: number) => formatCurrency(value).replace('R$', '').trim()}
           />
-          <Tooltip content={<CustomTooltip />} />
+          <Tooltip content={CustomTooltip} />
           <Legend wrapperStyle={{ fontSize: '14px', paddingTop: '10px' }} />
           <Bar 
             dataKey="currentMonth" 
