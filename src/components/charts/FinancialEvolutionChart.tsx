@@ -4,7 +4,7 @@
  * @version 1.0.0
  */
 
-import React, { useMemo } from 'react';
+import React from 'react';
 import {
   LineChart,
   Line,
@@ -30,32 +30,32 @@ interface FinancialEvolutionChartProps {
   height?: number;
 }
 
+// Tooltip component (module-level para evitar re-criação)
+const CustomTooltip = ({ active, payload }: any) => {
+  if (active && payload && payload.length) {
+    return (
+      <div className="custom-tooltip">
+        <p className="label">{payload[0].payload.month}</p>
+        <p className="income">
+          Receitas: <strong>{formatCurrency(payload[0].value)}</strong>
+        </p>
+        <p className="expense">
+          Despesas: <strong>{formatCurrency(payload[1].value)}</strong>
+        </p>
+        <p className="balance">
+          Saldo: <strong>{formatCurrency(payload[2].value)}</strong>
+        </p>
+      </div>
+    );
+  }
+  return null;
+};
+CustomTooltip.displayName = 'CustomTooltip';
+
 const FinancialEvolutionChart: React.FC<FinancialEvolutionChartProps> = ({ 
   data, 
   height = 300 
 }) => {
-  const CustomTooltip = useMemo(() => {
-    return ({ active, payload }: any) => {
-      if (active && payload && payload.length) {
-        return (
-          <div className="custom-tooltip">
-            <p className="label">{payload[0].payload.month}</p>
-            <p className="income">
-              Receitas: <strong>{formatCurrency(payload[0].value)}</strong>
-            </p>
-            <p className="expense">
-              Despesas: <strong>{formatCurrency(payload[1].value)}</strong>
-            </p>
-            <p className="balance">
-              Saldo: <strong>{formatCurrency(payload[2].value)}</strong>
-            </p>
-          </div>
-        );
-      }
-      return null;
-    };
-  }, []);
-
   return (
     <div className="chart-container">
       <h3 className="chart-title">📈 Evolução Financeira</h3>

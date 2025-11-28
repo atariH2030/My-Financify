@@ -4,7 +4,7 @@
  * @version 1.0.0
  */
 
-import React, { useMemo } from 'react';
+import React from 'react';
 import {
   PieChart,
   Pie,
@@ -40,30 +40,30 @@ const COLORS = [
   '#6366f1', // indigo
 ];
 
+// Tooltip component (module-level para evitar re-criação)
+const CustomTooltip = ({ active, payload }: any) => {
+  if (active && payload && payload.length) {
+    const item = payload[0].payload;
+    return (
+      <div className="custom-tooltip">
+        <p className="label">{item.name}</p>
+        <p className="value">
+          <strong>{formatCurrency(item.value)}</strong>
+        </p>
+        <p className="percentage">
+          {item.percentage.toFixed(1)}% do total
+        </p>
+      </div>
+    );
+  }
+  return null;
+};
+CustomTooltip.displayName = 'CustomTooltip';
+
 const CategoryDistributionChart: React.FC<CategoryDistributionChartProps> = ({ 
   data, 
   height = 350 
 }) => {
-  const CustomTooltip = useMemo(() => {
-    return ({ active, payload }: any) => {
-      if (active && payload && payload.length) {
-        const item = payload[0].payload;
-        return (
-          <div className="custom-tooltip">
-            <p className="label">{item.name}</p>
-            <p className="value">
-              <strong>{formatCurrency(item.value)}</strong>
-            </p>
-            <p className="percentage">
-              {item.percentage.toFixed(1)}% do total
-            </p>
-          </div>
-        );
-      }
-      return null;
-    };
-  }, []);
-
   const renderLabel = (entry: any) => {
     const categoryData = entry as CategoryData;
     return `${categoryData.percentage.toFixed(0)}%`;

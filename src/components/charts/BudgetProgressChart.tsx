@@ -4,7 +4,7 @@
  * @version 1.0.0
  */
 
-import React, { useMemo } from 'react';
+import React from 'react';
 import {
   BarChart,
   Bar,
@@ -37,41 +37,41 @@ const getBarColor = (percentage: number) => {
   return '#10b981'; // green - baixo uso
 };
 
+// Tooltip component (module-level para evitar re-criação)
+const CustomTooltip = ({ active, payload }: any) => {
+  if (active && payload && payload.length) {
+    const item = payload[0].payload;
+    return (
+      <div className="custom-tooltip">
+        <p className="label">{item.category}</p>
+        <p className="spent">
+          Gasto: <strong>{formatCurrency(item.spent)}</strong>
+        </p>
+        <p className="limit">
+          Limite: <strong>{formatCurrency(item.limit)}</strong>
+        </p>
+        <p className="percentage">
+          <strong style={{ color: getBarColor(item.percentage) }}>
+            {item.percentage.toFixed(1)}%
+          </strong> do orçamento
+        </p>
+        <p className="remaining">
+          {item.percentage < 100 ? 'Restante' : 'Excedido'}: {' '}
+          <strong className={item.percentage < 100 ? 'positive' : 'negative'}>
+            {formatCurrency(Math.abs(item.limit - item.spent))}
+          </strong>
+        </p>
+      </div>
+    );
+  }
+  return null;
+};
+CustomTooltip.displayName = 'CustomTooltip';
+
 const BudgetProgressChart: React.FC<BudgetProgressChartProps> = ({ 
   data, 
   height = 300 
 }) => {
-  const CustomTooltip = useMemo(() => {
-    return ({ active, payload }: any) => {
-      if (active && payload && payload.length) {
-        const item = payload[0].payload;
-        return (
-          <div className="custom-tooltip">
-            <p className="label">{item.category}</p>
-            <p className="spent">
-              Gasto: <strong>{formatCurrency(item.spent)}</strong>
-            </p>
-            <p className="limit">
-              Limite: <strong>{formatCurrency(item.limit)}</strong>
-            </p>
-            <p className="percentage">
-              <strong style={{ color: getBarColor(item.percentage) }}>
-                {item.percentage.toFixed(1)}%
-              </strong> do orçamento
-            </p>
-            <p className="remaining">
-              {item.percentage < 100 ? 'Restante' : 'Excedido'}: {' '}
-              <strong className={item.percentage < 100 ? 'positive' : 'negative'}>
-                {formatCurrency(Math.abs(item.limit - item.spent))}
-              </strong>
-            </p>
-          </div>
-        );
-      }
-      return null;
-    };
-  }, []);
-
   return (
     <div className="chart-container">
       <h3 className="chart-title">💰 Progresso dos Orçamentos</h3>

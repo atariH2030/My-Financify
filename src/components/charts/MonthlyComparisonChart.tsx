@@ -38,7 +38,7 @@ const MonthlyComparisonChart: React.FC<MonthlyComparisonChartProps> = ({
   previousMonthName = 'Mês Anterior'
 }) => {
   const CustomTooltip = useMemo(() => {
-    return ({ active, payload }: any) => {
+    const TooltipComponent = ({ active, payload }: any) => {
       if (active && payload && payload.length) {
         return (
           <div className="custom-tooltip">
@@ -59,6 +59,7 @@ const MonthlyComparisonChart: React.FC<MonthlyComparisonChartProps> = ({
       }
       return null;
     };
+    return Object.assign(TooltipComponent, { displayName: 'CustomTooltip' });
   }, [currentMonthName, previousMonthName]);
 
   return (
