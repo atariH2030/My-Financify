@@ -98,7 +98,8 @@ export const transactionSchema = z.object({
   // Hierarquia: Sessão → Categoria → Subcategoria
   section: z
     .string()
-    .min(2, 'Sessão é obrigatória'),
+    .min(2, 'Sessão é obrigatória')
+    .optional(),
   category: z
     .string()
     .min(2, 'Categoria deve ter no mínimo 2 caracteres')
@@ -113,7 +114,8 @@ export const transactionSchema = z.object({
     message: 'Tipo de despesa inválido',
   }).optional(),
   
-  date: z.string().min(1, 'Data é obrigatória'),
+  date: z.union([z.string().min(1, 'Data é obrigatória'), z.date()]),
+  accountId: z.string().optional(),
   tags: z.array(z.string()).optional(),
   
   // Recorrência
@@ -142,12 +144,16 @@ export const budgetSchema = z.object({
     .string()
     .max(500, 'Descrição muito longa')
     .optional(),
-  limitAmount: currencySchema,
+  limitAmount: currencySchema.optional(),
+  limit: currencySchema.optional(), // Alias para compatibilidade
   period: z.enum(['monthly', 'quarterly', 'yearly'], {
     message: 'Período inválido',
   }),
-  startDate: z.string().min(1, 'Data de início é obrigatória'),
-  alertThreshold: z.number().min(50).max(100).default(80),
+  startDate: z.union([z.string().min(1, 'Data de início é obrigatória'), z.date()]),
+  endDate: z.union([z.string(), z.date()]).optional(),
+  alertThreshold: z.number().min(50).max(100).default(80).optional(),
+}).refine(data => data.limitAmount || data.limit, {
+  message: 'Limite é obrigatório (limitAmount ou limit)',
 });
 
 /**
@@ -190,17 +196,19 @@ export const goalSchema = z.object({
   title: z
     .string()
     .min(3, 'Título deve ter no mínimo 3 caracteres')
-    .max(100, 'Título muito longo'),
+    .max(100, 'Título muito longo')
+    .optional(),
+  name: z.string().min(3).max(100).optional(), // Alias para compatibilidade
   description: z
     .string()
     .max(500, 'Descrição muito longa')
     .optional(),
   type: z.enum(['savings', 'investment', 'emergency', 'wishlist', 'debt-payment'], {
     message: 'Tipo de meta inválido',
-  }),
+  }).optional(),
   targetAmount: currencySchema,
-  currentAmount: currencySchema.optional().default(0),
-  deadline: dateSchema,
+  currentAmount: currencySchema.optional(),
+  deadline: z.union([dateSchema, z.date()]),
   section: z.string().optional(),
   category: z.string().optional(),
   priority: z.enum(['low', 'medium', 'high'], {

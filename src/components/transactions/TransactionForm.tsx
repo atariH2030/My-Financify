@@ -84,6 +84,7 @@ const TransactionForm: React.FC<TransactionFormProps> = ({ transaction, onSubmit
       // Submeter dados com Date convertida
       await onSubmit({
         ...result.data,
+        section: result.data.section || 'Geral', // Garantir section nunca é undefined
         date: new Date(result.data.date),
         // Converter recurring.endDate de string para Date se existir
         recurring: result.data.recurring ? {

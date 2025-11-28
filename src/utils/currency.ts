@@ -126,8 +126,8 @@ export function formatCurrency(
   // Formatação usando Intl.NumberFormat
   try {
     const formatter = new Intl.NumberFormat(config.locale, {
-      style: 'currency',
-      currency: config.code,
+      style: showSymbol ? 'currency' : 'decimal',
+      currency: showSymbol ? config.code : undefined,
       minimumFractionDigits: config.decimalPlaces,
       maximumFractionDigits: config.decimalPlaces,
     });
@@ -140,7 +140,7 @@ export function formatCurrency(
     }
 
     // Adicionar código da moeda se solicitado
-    if (showCode) {
+    if (showCode && showSymbol) {
       formatted = `${formatted} (${config.code})`;
     }
 

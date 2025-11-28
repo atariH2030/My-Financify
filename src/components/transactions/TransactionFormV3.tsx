@@ -175,6 +175,7 @@ const TransactionFormV3: React.FC<TransactionFormV3Props> = ({
       // Submeter com Date convertida
       await onSubmit({
         ...result.data,
+        section: result.data.section || 'Geral', // Garantir section nunca é undefined
         date: new Date(result.data.date),
         recurring: result.data.recurring ? {
           ...result.data.recurring,
