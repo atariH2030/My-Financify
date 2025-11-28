@@ -166,7 +166,7 @@ const Accounts: React.FC = () => {
       )}
 
       {/* Accounts Grid */}
-      {summary && summary.accounts.length > 0 ? (
+      {summary && summary.accounts && summary.accounts.length > 0 ? (
         <div className="accounts-grid">
           {summary.accounts.map(({ account, balance, creditUsed, creditAvailable }: any) => (
             <AccountCard

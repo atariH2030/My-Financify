@@ -121,7 +121,7 @@ class AccountsService {
           .from('accounts')
           .select('*')
           .eq('user_id', userId)
-          .order('createdAt', { ascending: false });
+          .order('created_at', { ascending: false });
 
         if (error) throw error;
 
@@ -219,6 +219,13 @@ class AccountsService {
     totalLimit: number;
     totalUsed: number;
     activeAccounts: number;
+    totalAccounts: number;
+    accounts: Array<{
+      account: Account;
+      balance: number;
+      creditUsed: number;
+      creditAvailable: number;
+    }>;
   }> {
     const accounts = await this.getAccounts();
 
@@ -237,7 +244,19 @@ class AccountsService {
       { totalBalance: 0, totalLimit: 0, totalUsed: 0, activeAccounts: 0 }
     );
 
-    return summary;
+    // Adicionar array de contas com detalhes calculados
+    const accountsWithDetails = accounts.map(account => ({
+      account,
+      balance: account.balance,
+      creditUsed: account.creditLimit ? Math.max(0, account.creditLimit - account.balance) : 0,
+      creditAvailable: account.creditLimit ? Math.max(0, account.balance) : 0,
+    }));
+
+    return {
+      ...summary,
+      totalAccounts: accounts.length,
+      accounts: accountsWithDetails,
+    };
   }
 
   /**
