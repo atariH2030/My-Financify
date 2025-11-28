@@ -1,0 +1,38 @@
+# Diretórios de build
+dist
+build
+dev-dist
+*.local
+
+# Dependências
+node_modules
+
+# Arquivos de configuração
+*.config.js
+*.config.ts
+vite.config.ts
+vitest.config.ts
+
+# Assets
+public
+*.html
+
+# Logs
+*.log
+npm-debug.log*
+
+# Environment
+.env
+.env.*
+
+# Cache
+.cache
+.vscode
+.idea
+
+# Git
+.git
+.gitignore
+
+# Documentação (opcional - remover se quiser lint em .md)
+*.md

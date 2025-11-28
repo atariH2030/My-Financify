@@ -63,14 +63,16 @@ const TransactionsTable: React.FC<TransactionsTableProps> = ({
         switch (dateFilter) {
           case 'today':
             return transactionDate >= today;
-          case 'week':
+          case 'week': {
             const weekAgo = new Date(today);
             weekAgo.setDate(weekAgo.getDate() - 7);
             return transactionDate >= weekAgo;
-          case 'month':
+          }
+          case 'month': {
             const monthAgo = new Date(today);
             monthAgo.setMonth(monthAgo.getMonth() - 1);
             return transactionDate >= monthAgo;
+          }
           case 'custom':
             if (startDate && endDate) {
               const start = new Date(startDate);

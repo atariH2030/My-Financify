@@ -693,7 +693,7 @@ Localizações principais:
       - AI processing on Supabase Edge Functions
       - Dados nunca saem do controle do usuário
       - Opt-in para AI features
-      - Anonimização de dados sensíveis
+      -                                                      de dados sensíveis
    
    IMPLEMENTAÇÃO (5 Fases):
    

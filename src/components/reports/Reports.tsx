@@ -1,5 +1,4 @@
-import React from 'react';
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import Button from '../common/Button';
 import ExportModal from '../export/ExportModal';
 import { formatCurrency, formatPercentage } from '../../utils/currency';
@@ -195,28 +194,28 @@ const Reports: React.FC<ReportsProps> = ({ className }) => {
           title="Receita Total"
           value={formatCurrency(summary.income)}
           icon="💰"
-          trend={loading ? "Carregando..." : `${summary.transactionCount} transações`}
+          trend={loading ? 'Carregando...' : `${summary.transactionCount} transações`}
           trendType="positive"
         />
         <KPICard
           title="Despesas Totais"
           value={formatCurrency(summary.expenses)}
           icon="💸"
-          trend={loading ? "Carregando..." : "Total do mês"}
+          trend={loading ? 'Carregando...' : 'Total do mês'}
           trendType="negative"
         />
         <KPICard
           title="Saldo"
           value={formatCurrency(summary.balance)}
           icon="📈"
-          trend={summary.balance >= 0 ? "Positivo" : "Atenção"}
-          trendType={summary.balance >= 0 ? "positive" : "negative"}
+          trend={summary.balance >= 0 ? 'Positivo' : 'Atenção'}
+          trendType={summary.balance >= 0 ? 'positive' : 'negative'}
         />
         <KPICard
           title="Taxa de Economia"
           value={formatPercentage(summary.income > 0 ? (summary.balance / summary.income) * 100 : 0)}
           icon="🎯"
-          trend={loading ? "Carregando..." : "Do rendimento"}
+          trend={loading ? 'Carregando...' : 'Do rendimento'}
           trendType="neutral"
         />
       </div>

@@ -1,0 +1,94 @@
+{
+  "env": {
+    "browser": true,
+    "es2021": true,
+    "node": true
+  },
+  "extends": [
+    "eslint:recommended",
+    "plugin:@typescript-eslint/recommended",
+    "plugin:react/recommended",
+    "plugin:react-hooks/recommended",
+    "plugin:react/jsx-runtime"
+  ],
+  "parser": "@typescript-eslint/parser",
+  "parserOptions": {
+    "ecmaVersion": "latest",
+    "sourceType": "module",
+    "ecmaFeatures": {
+      "jsx": true
+    },
+    "project": "./tsconfig.json"
+  },
+  "plugins": [
+    "@typescript-eslint",
+    "react",
+    "react-hooks",
+    "react-refresh"
+  ],
+  "rules": {
+    // TypeScript - Type Safety (Relaxado para MVP)
+    "@typescript-eslint/no-explicit-any": "off",
+    "@typescript-eslint/explicit-function-return-type": "off",
+    "@typescript-eslint/no-unused-vars": [
+      "warn",
+      {
+        "argsIgnorePattern": "^_",
+        "varsIgnorePattern": "^_"
+      }
+    ],
+    "@typescript-eslint/no-non-null-assertion": "warn",
+
+    // React - Best Practices
+    "react/react-in-jsx-scope": "off",
+    "react/prop-types": "off",
+    "react/jsx-uses-react": "off",
+    "react/no-unescaped-entities": "warn",
+    "react-hooks/rules-of-hooks": "error",
+    "react-hooks/exhaustive-deps": "warn",
+    "react-hooks/set-state-in-effect": "warn",
+    "react-hooks/immutability": "warn",
+    "react-hooks/static-components": "warn",
+    "react-hooks/purity": "warn",
+    "react-hooks/use-memo": "warn",
+    "react-refresh/only-export-components": "warn",
+
+    // Qualidade de Código (ISO 25010 - Manutenibilidade)
+    "no-console": "off",
+    "no-debugger": "warn",
+    "no-duplicate-imports": "error",
+    "no-unused-expressions": "warn",
+    "no-case-declarations": "error",
+    "prefer-const": "error",
+    "no-var": "error",
+
+    // Performance
+    "no-await-in-loop": "warn",
+    "require-atomic-updates": "error",
+
+    // Segurança
+    "no-eval": "error",
+    "no-implied-eval": "error",
+    "no-new-func": "error",
+
+    // Code Style (será sobreposto por Prettier)
+    "semi": ["error", "always"],
+    "quotes": ["error", "single", { "avoidEscape": true }],
+    "indent": "off",
+    "comma-dangle": "off"
+  },
+  "settings": {
+    "react": {
+      "version": "detect"
+    }
+  },
+  "ignorePatterns": [
+    "dist",
+    "build",
+    "node_modules",
+    "*.config.js",
+    "*.config.ts",
+    "dev-dist",
+    "public"
+  ]
+}

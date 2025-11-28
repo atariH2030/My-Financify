@@ -45,7 +45,7 @@ const Budgets: React.FC = () => {
     if (budget.status !== 'active') return budget.currentSpent || 0;
 
     const startDate = new Date(budget.startDate);
-    let endDate = new Date(startDate);
+    const endDate = new Date(startDate);
 
     // Calculate end date based on period
     switch (budget.period) {

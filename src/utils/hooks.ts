@@ -1,4 +1,4 @@
-import { useEffect, useRef, DependencyList } from 'react';
+import React, { useEffect, useRef, DependencyList } from 'react';
 
 /**
  * useDebounce - Hook para debounce de valores
@@ -215,6 +215,3 @@ export function useOnClickOutside<T extends HTMLElement = HTMLElement>(
 
   return ref;
 }
-
-// Re-export React para evitar importar duas vezes
-import React from 'react';

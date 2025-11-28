@@ -269,20 +269,21 @@ class RecurringTransactionsService {
       case 'daily':
         return new Date(now.setDate(now.getDate() + 1)).toISOString();
       
-      case 'weekly':
+      case 'weekly': {
         const daysUntilTarget = ((data.dayOfWeek || 0) - now.getDay() + 7) % 7;
         return new Date(now.setDate(now.getDate() + daysUntilTarget)).toISOString();
-      
-      case 'monthly':
+      }
+      case 'monthly': {
         const nextMonth = new Date(now);
         nextMonth.setMonth(nextMonth.getMonth() + 1);
         nextMonth.setDate(data.dayOfMonth || 1);
         return nextMonth.toISOString();
-      
-      case 'yearly':
+      }
+      case 'yearly': {
         const nextYear = new Date(now);
         nextYear.setFullYear(nextYear.getFullYear() + 1);
         return nextYear.toISOString();
+      }
       
       default:
         return data.startDate;

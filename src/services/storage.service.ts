@@ -44,11 +44,11 @@ class StorageService {
 
       localStorage.setItem(`${this.storageKey}-${key}`, serialized);
       
-      Logger.info(`Dados salvos com sucesso`, { key, size: serialized.length }, 'STORAGE');
+      Logger.info('Dados salvos com sucesso', { key, size: serialized.length }, 'STORAGE');
       return true;
 
     } catch (error) {
-      Logger.error(`Falha ao salvar dados`, error as Error, 'STORAGE');
+      Logger.error('Falha ao salvar dados', error as Error, 'STORAGE');
       return false;
     }
   }
@@ -69,15 +69,15 @@ class StorageService {
       
       // Validação de integridade
       if (!this.validateData(storageData)) {
-        Logger.warn(`Dados corrompidos detectados, tentando recovery`, { key }, 'STORAGE');
+        Logger.warn('Dados corrompidos detectados, tentando recovery', { key }, 'STORAGE');
         return await this.attemptRecovery<T>(key);
       }
 
-      Logger.info(`Dados carregados com sucesso`, { key, version: storageData.version }, 'STORAGE');
+      Logger.info('Dados carregados com sucesso', { key, version: storageData.version }, 'STORAGE');
       return storageData.data;
 
     } catch (error) {
-      Logger.error(`Falha ao carregar dados`, error as Error, 'STORAGE');
+      Logger.error('Falha ao carregar dados', error as Error, 'STORAGE');
       return await this.attemptRecovery<T>(key);
     }
   }
@@ -88,10 +88,10 @@ class StorageService {
   async remove(key: string): Promise<boolean> {
     try {
       localStorage.removeItem(`${this.storageKey}-${key}`);
-      Logger.info(`Dados removidos`, { key }, 'STORAGE');
+      Logger.info('Dados removidos', { key }, 'STORAGE');
       return true;
     } catch (error) {
-      Logger.error(`Falha ao remover dados`, error as Error, 'STORAGE');
+      Logger.error('Falha ao remover dados', error as Error, 'STORAGE');
       return false;
     }
   }
@@ -113,7 +113,7 @@ class StorageService {
       
       return keys;
     } catch (error) {
-      Logger.error(`Falha ao listar chaves`, error as Error, 'STORAGE');
+      Logger.error('Falha ao listar chaves', error as Error, 'STORAGE');
       return [];
     }
   }
@@ -128,10 +128,10 @@ class StorageService {
         localStorage.removeItem(`${this.storageKey}-${key}`);
       });
       
-      Logger.info(`Todos os dados foram limpos`, { count: keys.length }, 'STORAGE');
+      Logger.info('Todos os dados foram limpos', { count: keys.length }, 'STORAGE');
       return true;
     } catch (error) {
-      Logger.error(`Falha ao limpar dados`, error as Error, 'STORAGE');
+      Logger.error('Falha ao limpar dados', error as Error, 'STORAGE');
       return false;
     }
   }
@@ -144,10 +144,10 @@ class StorageService {
       const current = localStorage.getItem(`${this.storageKey}-${key}`);
       if (current) {
         localStorage.setItem(`${this.backupKey}-${key}`, current);
-        Logger.debug(`Backup criado`, { key }, 'STORAGE');
+        Logger.debug('Backup criado', { key }, 'STORAGE');
       }
     } catch (error) {
-      Logger.warn(`Falha ao criar backup`, error, 'STORAGE');
+      Logger.warn('Falha ao criar backup', error, 'STORAGE');
     }
   }
 
@@ -156,7 +156,7 @@ class StorageService {
    */
   private async attemptRecovery<T>(key: string): Promise<T | null> {
     try {
-      Logger.info(`Tentando recovery dos dados...`, { key }, 'STORAGE');
+      Logger.info('Tentando recovery dos dados...', { key }, 'STORAGE');
       
       const backup = localStorage.getItem(`${this.backupKey}-${key}`);
       if (backup) {
@@ -166,16 +166,16 @@ class StorageService {
           // Restaura backup como dados principais
           localStorage.setItem(`${this.storageKey}-${key}`, backup);
           
-          Logger.info(`Recovery bem-sucedido!`, { key }, 'STORAGE');
+          Logger.info('Recovery bem-sucedido!', { key }, 'STORAGE');
           return backupData.data;
         }
       }
       
-      Logger.error(`Recovery falhou - dados irrecuperáveis`, undefined, 'STORAGE');
+      Logger.error('Recovery falhou - dados irrecuperáveis', undefined, 'STORAGE');
       return null;
 
     } catch (error) {
-      Logger.error(`Falha no processo de recovery`, error as Error, 'STORAGE');
+      Logger.error('Falha no processo de recovery', error as Error, 'STORAGE');
       return null;
     }
   }
@@ -231,7 +231,7 @@ class StorageService {
       
       return true;
     } catch (error) {
-      Logger.error(`Falha ao salvar dados (sync)`, error as Error, 'STORAGE');
+      Logger.error('Falha ao salvar dados (sync)', error as Error, 'STORAGE');
       return false;
     }
   }
@@ -251,7 +251,7 @@ class StorageService {
       const storageData: StorageData<T> = JSON.parse(stored);
       return storageData.data;
     } catch (error) {
-      Logger.error(`Falha ao carregar dados (sync)`, error as Error, 'STORAGE');
+      Logger.error('Falha ao carregar dados (sync)', error as Error, 'STORAGE');
       return null;
     }
   }
@@ -275,7 +275,7 @@ class StorageService {
         keys
       };
     } catch (error) {
-      Logger.error(`Falha ao obter info do storage`, error as Error, 'STORAGE');
+      Logger.error('Falha ao obter info do storage', error as Error, 'STORAGE');
       return { used: 0, available: 0, keys: [] };
     }
   }

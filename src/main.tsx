@@ -23,9 +23,7 @@ import ProfilePage from './components/profile/ProfilePage';
 import NotificationCenter from './components/notifications/NotificationCenter';
 import Accounts from './components/accounts/Accounts';
 import RecurringTransactions from './components/recurring/RecurringTransactions';
-import { ErrorBoundary, ToastProvider } from './components/common';
-import { ToastEnhancedProvider } from './components/common';
-import { useKeyboardShortcuts, KeyboardShortcutsHelp, type KeyboardShortcut } from './components/common';
+import { ErrorBoundary, ToastProvider, ToastEnhancedProvider, useKeyboardShortcuts, KeyboardShortcutsHelp, type KeyboardShortcut } from './components/common';
 import CommandPalette from './components/common/CommandPalette';
 import Fase2Example from './components/common/Fase2Example';
 
