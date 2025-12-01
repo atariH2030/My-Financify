@@ -192,8 +192,8 @@ const TransactionFormV3: React.FC<TransactionFormV3Props> = ({
   };
 
   // Busca informações da sessão/categoria selecionada
-  const selectedSection = getSectionById(formData.section);
-  const selectedCategory = availableCategories.find(c => c.id === formData.category);
+  const _selectedSection = getSectionById(formData.section);
+  const _selectedCategory = availableCategories.find(c => c.id === formData.category);
 
   return (
     <motion.div

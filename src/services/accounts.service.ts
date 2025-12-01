@@ -283,7 +283,7 @@ class AccountsService {
     for (const item of queue) {
       try {
         if (item.action === 'create' && item.account.id.startsWith('offline_')) {
-          const { id, user_id, ...accountData } = item.account;
+          const { id, user_id: _user_id, ...accountData } = item.account;
           const { data, error } = await supabase
             .from('accounts')
             .insert([{ ...accountData, user_id: await this.getUserId() }])

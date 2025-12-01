@@ -76,7 +76,7 @@ const Budgets: React.FC = () => {
   };
 
   // Check budget alerts and notify if necessary
-  const checkBudgetAlerts = (updatedBudgets: Budget[]) => {
+  const _checkBudgetAlerts = (updatedBudgets: Budget[]) => {
     updatedBudgets.forEach(budget => {
       if (budget.status !== 'active') return;
 

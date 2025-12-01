@@ -6,7 +6,7 @@
 import React, { useState, useEffect } from 'react';
 import type { WidgetConfig } from '../../types/financial.types';
 import BaseWidget from './BaseWidget';
-import { formatCurrency, formatNumber } from '../../utils/currency';
+import { formatCurrency } from '../../utils/currency';
 import './Widgets.css';
 
 interface WidgetProps {
