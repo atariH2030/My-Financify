@@ -11,7 +11,6 @@ import OnlineStatus from './components/common/OnlineStatus';
 import SyncIndicator from './components/common/SyncIndicator';
 
 // App Components
-import Dashboard from './components/dashboard/Dashboard';
 import DashboardV2 from './components/dashboard/DashboardV2';
 import Transactions from './components/transactions/Transactions';
 import Reports from './components/reports/Reports';

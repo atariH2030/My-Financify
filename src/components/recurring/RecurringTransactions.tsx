@@ -1,9 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Button, Modal } from '../common';
 import RecurringForm from './RecurringForm';
 import RecurringCard from './RecurringCard';
 import { recurringTransactionsService } from '../../services/recurring.service';
-import { formatCurrency } from '../../utils/currency';
 import type { RecurringTransaction } from '../../types/financial.types';
 import './Recurring.css';
 
@@ -15,20 +14,7 @@ const RecurringTransactions: React.FC = () => {
   const [filterType, setFilterType] = useState<'all' | 'income' | 'expense'>('all');
   const [filterStatus, setFilterStatus] = useState<'all' | 'active' | 'paused'>('all');
 
-  useEffect(() => {
-    loadRecurrings();
-  }, []);
-
-  useEffect(() => {
-    applyFilters();
-  }, [recurrings, filterType, filterStatus]);
-
-  const loadRecurrings = async () => {
-    const data = await recurringTransactionsService.getRecurringTransactions();
-    setRecurrings(data);
-  };
-
-  const applyFilters = () => {
+  const applyFilters = useCallback(() => {
     let filtered = [...recurrings];
 
     if (filterType !== 'all') {
@@ -45,7 +31,20 @@ const RecurringTransactions: React.FC = () => {
     );
 
     setFilteredRecurrings(filtered);
+  }, [recurrings, filterType, filterStatus]);
+
+  const loadRecurrings = async () => {
+    const data = await recurringTransactionsService.getRecurringTransactions();
+    setRecurrings(data);
   };
+
+  useEffect(() => {
+    loadRecurrings();
+  }, []);
+
+  useEffect(() => {
+    applyFilters();
+  }, [applyFilters]);
 
   const handleCreate = () => {
     setEditingRecurring(undefined);

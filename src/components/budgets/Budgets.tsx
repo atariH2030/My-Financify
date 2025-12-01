@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import './Budgets.css';
 import BudgetsForm from './BudgetsForm';
 import BudgetsTable from './BudgetsTable';
@@ -12,18 +12,12 @@ import type { Budget, Transaction } from '../../types/financial.types';
 
 const Budgets: React.FC = () => {
   const [budgets, setBudgets] = useState<Budget[]>([]);
-  const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingBudget, setEditingBudget] = useState<Budget | undefined>();
   const [isLoading, setIsLoading] = useState(true);
   const { showToast } = useToast();
 
-  // Load budgets and transactions
-  useEffect(() => {
-    loadData();
-  }, []);
-
-  const loadData = async () => {
+  const loadData = useCallback(async () => {
     try {
       const [loadedBudgets, loadedTransactions] = await Promise.all([
         budgetsService.getBudgets(),
@@ -38,7 +32,12 @@ const Budgets: React.FC = () => {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [showToast]);
+
+  // Load budgets and transactions
+  useEffect(() => {
+    loadData();
+  }, [loadData]);
 
   // Calculate spent amount for a budget based on transactions
   const calculateSpentForBudget = (budget: Budget, allTransactions: Transaction[]): number => {

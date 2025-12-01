@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { motion } from 'framer-motion';
 import Card from '../common/Card';
 import Button from '../common/Button';
@@ -16,12 +16,7 @@ const Settings: React.FC = () => {
   const [stats, setStats] = useState<any>(null);
   const { showToast } = useToast();
 
-  useEffect(() => {
-    loadSettings();
-    loadStats();
-  }, []);
-
-  const loadSettings = async () => {
+  const loadSettings = useCallback(async () => {
     try {
       const data = await SettingsService.getSettings();
       setSettings(data);
@@ -30,12 +25,17 @@ const Settings: React.FC = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [showToast]);
 
   const loadStats = async () => {
     const data = await SettingsService.getSystemStats();
     setStats(data);
   };
+
+  useEffect(() => {
+    loadSettings();
+    loadStats();
+  }, [loadSettings]);
 
   const handleProfileSave = async (e: React.FormEvent) => {
     e.preventDefault();

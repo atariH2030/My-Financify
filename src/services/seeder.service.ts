@@ -8,8 +8,7 @@
 
 import Logger from './logger.service';
 import Storage from './storage.service';
-import type { Transaction, Budget as BudgetType, Account as AccountType } from '../types/financial.types';
-import { SECTIONS_CONFIG } from '../config/categories.config';
+import type { Transaction, Budget as BudgetType } from '../types/financial.types';
 
 export interface Account {
   id: string;

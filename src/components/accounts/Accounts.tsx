@@ -14,18 +14,13 @@ import './Accounts.css';
 
 const Accounts: React.FC = () => {
   const [accounts, setAccounts] = useState<Account[]>([]);
-  const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [summary, setSummary] = useState<any>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingAccount, setEditingAccount] = useState<Account | undefined>();
   const [loading, setLoading] = useState(true);
   const { showToast } = useToast();
 
-  useEffect(() => {
-    loadData();
-  }, []);
-
-  const loadData = async () => {
+  const loadData = useCallback(async () => {
     try {
       setLoading(true);
       const [accountsData, transactionsData] = await Promise.all([
@@ -34,7 +29,6 @@ const Accounts: React.FC = () => {
       ]);
 
       setAccounts(accountsData);
-      setTransactions(transactionsData || []);
 
       // Calcula resumo usando o service
       const summaryData = await accountsService.getSummary();
@@ -45,7 +39,11 @@ const Accounts: React.FC = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [showToast]);
+
+  useEffect(() => {
+    loadData();
+  }, [loadData]);
 
   const handleCreate = async (data: Omit<Account, 'id' | 'createdAt' | 'updatedAt'>) => {
     try {

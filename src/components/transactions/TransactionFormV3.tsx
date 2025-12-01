@@ -79,7 +79,7 @@ const TransactionFormV3: React.FC<TransactionFormV3Props> = ({
         setFormData(prev => ({ ...prev, section: '' }));
       }
     }
-  }, [formData.type]);
+  }, [formData.type, formData.section]);
 
   // Atualiza categorias quando sessão muda
   useEffect(() => {
@@ -95,7 +95,7 @@ const TransactionFormV3: React.FC<TransactionFormV3Props> = ({
       setAvailableCategories([]);
       setFormData(prev => ({ ...prev, category: '', subcategory: '' }));
     }
-  }, [formData.section]);
+  }, [formData.section, formData.category]);
 
   // Atualiza subcategorias quando categoria muda
   useEffect(() => {
@@ -115,7 +115,7 @@ const TransactionFormV3: React.FC<TransactionFormV3Props> = ({
       setAvailableSubcategories([]);
       setFormData(prev => ({ ...prev, subcategory: '' }));
     }
-  }, [formData.category, formData.section, availableCategories]);
+  }, [formData.category, formData.section, formData.subcategory, availableCategories]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     const { name, value, type } = e.target;

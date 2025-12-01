@@ -3,7 +3,7 @@
  * Captura erros de autenticação sem derrubar o app
  */
 
-import React, { Component, ErrorInfo, ReactNode } from 'react';
+import { Component, ErrorInfo, ReactNode } from 'react';
 import Logger from '../../services/logger.service';
 import { Button } from '../common';
 import './AuthErrorBoundary.css';

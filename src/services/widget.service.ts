@@ -7,7 +7,7 @@
 
 import StorageService from './storage.service';
 import Logger from './logger.service';
-import type { WidgetConfig, DashboardLayout, WidgetType, WidgetSize } from '../types/financial.types';
+import type { WidgetConfig, DashboardLayout, WidgetType } from '../types/financial.types';
 
 const STORAGE_KEY = 'dashboard_layouts';
 const ACTIVE_LAYOUT_KEY = 'active_dashboard_layout';

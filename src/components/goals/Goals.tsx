@@ -5,7 +5,7 @@
  * @author DEV - Rickson (TQM)
  */
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import GoalsForm from './GoalsForm';
 import GoalsTable from './GoalsTable';
@@ -25,12 +25,7 @@ const Goals: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const { showToast } = useToast();
 
-  // Carregar metas
-  useEffect(() => {
-    loadGoals();
-  }, []);
-
-  const loadGoals = async () => {
+  const loadGoals = useCallback(async () => {
     try {
       setLoading(true);
       const data = await goalsService.getGoals();
@@ -47,7 +42,12 @@ const Goals: React.FC = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [showToast]);
+
+  // Carregar metas
+  useEffect(() => {
+    loadGoals();
+  }, [loadGoals]);
 
   const handleCreate = async (data: Omit<FinancialGoal, 'id' | 'createdAt' | 'updatedAt' | 'completedAt'>) => {
     try {

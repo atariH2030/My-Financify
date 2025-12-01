@@ -5,7 +5,7 @@
  * @author DEV - Rickson (TQM)
  */
 
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect } from 'react';
 import './DashboardCustomizer.css';
 
 interface Widget {

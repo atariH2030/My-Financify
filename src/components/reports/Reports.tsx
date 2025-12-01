@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import Button from '../common/Button';
 import ExportModal from '../export/ExportModal';
 import { formatCurrency, formatPercentage } from '../../utils/currency';
@@ -47,11 +47,7 @@ const Reports: React.FC<ReportsProps> = ({ className }) => {
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
 
-  useEffect(() => {
-    loadData();
-  }, [period, categoryFilter, startDate, endDate]);
-
-  const loadData = async () => {
+  const loadData = useCallback(async () => {
     try {
       setLoading(true);
       
@@ -121,7 +117,11 @@ const Reports: React.FC<ReportsProps> = ({ className }) => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [period, categoryFilter, startDate, endDate]);
+
+  useEffect(() => {
+    loadData();
+  }, [loadData]);
 
   return (
     <div className={`reports-module ${className || ''}`}>

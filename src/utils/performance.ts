@@ -3,8 +3,6 @@
  * Implementa TQM: Performance + Manutenibilidade
  */
 
-import React from 'react';
-
 /**
  * Debounce function - Atrasa execução até que chamadas parem
  * Útil para inputs, buscas, resize

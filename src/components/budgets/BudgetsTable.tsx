@@ -1,7 +1,6 @@
 import React, { useState, useMemo } from 'react';
 import './BudgetsTable.css';
 import Card from '../common/Card';
-import Button from '../common/Button';
 import Tooltip from '../common/Tooltip';
 import { formatCurrency, formatPercentage } from '../../utils/currency';
 import type { Budget } from '../../types/financial.types';
