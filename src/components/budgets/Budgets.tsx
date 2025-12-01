@@ -40,7 +40,7 @@ const Budgets: React.FC = () => {
   }, [loadData]);
 
   // Calculate spent amount for a budget based on transactions
-  const calculateSpentForBudget = (budget: Budget, allTransactions: Transaction[]): number => {
+  const _calculateSpentForBudget = (budget: Budget, allTransactions: Transaction[]): number => {
     if (budget.status !== 'active') return budget.currentSpent || 0;
 
     const startDate = new Date(budget.startDate);

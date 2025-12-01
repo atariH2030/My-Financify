@@ -31,7 +31,7 @@ const ReportsAdvanced: React.FC = () => {
   const [budgets, setBudgets] = useState<Budget[]>([]);
   const [goals, setGoals] = useState<FinancialGoal[]>([]);
   const [period, setPeriod] = useState<'6months' | '12months' | 'all'>('6months');
-  const [selectedCategory, setSelectedCategory] = useState<string>('all');
+  const [_selectedCategory, _setSelectedCategory] = useState<string>('all');
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {

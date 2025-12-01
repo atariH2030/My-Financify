@@ -342,7 +342,7 @@ const CommandPalette: React.FC<CommandPaletteProps> = ({ isOpen, onClose, onNavi
                 return (
                   <div key={category} className="command-palette-category">
                     <div className="category-label">{categoryLabels[category]}</div>
-                    {items.map((command, index) => {
+                    {items.map((command, _index) => {
                       const globalIndex = filteredCommands.indexOf(command);
                       return (
                         <div

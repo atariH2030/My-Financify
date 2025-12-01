@@ -9,7 +9,7 @@ import AccountCard from './AccountCard.tsx';
 import { accountsService } from '../../services/accounts.service';
 import { transactionsService } from '../../services/transactions.service';
 import { formatCurrency } from '../../utils/currency';
-import type { Account, Transaction } from '../../types/financial.types';
+import type { Account } from '../../types/financial.types';
 import './Accounts.css';
 
 const Accounts: React.FC = () => {
@@ -23,7 +23,7 @@ const Accounts: React.FC = () => {
   const loadData = useCallback(async () => {
     try {
       setLoading(true);
-      const [accountsData, transactionsData] = await Promise.all([
+      const [accountsData] = await Promise.all([
         accountsService.getAccounts(),
         transactionsService.getTransactions(),
       ]);
