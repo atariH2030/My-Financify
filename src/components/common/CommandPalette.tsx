@@ -237,6 +237,16 @@ const CommandPalette: React.FC<CommandPaletteProps> = ({ isOpen, onClose, onNavi
     }
   }, [isOpen]);
 
+  // Executar comando e salvar histórico
+  const executeCommand = useCallback((command: CommandItem) => {
+    // Salvar nos recentes
+    const updated = [searchTerm, ...recentSearches.filter(s => s !== searchTerm)].slice(0, 5);
+    setRecentSearches(updated);
+    localStorage.setItem('commandPaletteRecent', JSON.stringify(updated));
+    
+    command.action();
+  }, [searchTerm, recentSearches]);
+
   // Navegação por teclado
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -282,15 +292,6 @@ const CommandPalette: React.FC<CommandPaletteProps> = ({ isOpen, onClose, onNavi
       }
     }
   }, [selectedIndex]);
-
-  const executeCommand = useCallback((command: CommandItem) => {
-    // Salvar nos recentes
-    const updated = [searchTerm, ...recentSearches.filter(s => s !== searchTerm)].slice(0, 5);
-    setRecentSearches(updated);
-    localStorage.setItem('commandPaletteRecent', JSON.stringify(updated));
-    
-    command.action();
-  }, [searchTerm, recentSearches]);
 
   const categoryLabels: Record<string, string> = {
     navigation: '🧭 Navegação',

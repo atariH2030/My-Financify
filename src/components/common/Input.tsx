@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import './Input.css';
 
 interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
@@ -23,7 +23,8 @@ const Input: React.FC<InputProps> = ({
   id,
   ...props
 }) => {
-  const inputId = id || `input-${Math.random().toString(36).substr(2, 9)}`;
+  const generatedIdRef = useRef(`input-${Math.random().toString(36).substr(2, 9)}`);
+  const inputId = id || generatedIdRef.current;
   const hasError = Boolean(error);
 
   const containerClass = [
