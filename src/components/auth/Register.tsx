@@ -13,7 +13,7 @@ interface RegisterProps {
   onSwitchToLogin?: () => void;
 }
 
-const Register: React.FC<RegisterProps> = ({ onSuccess, onSwitchToLogin }) => {
+const Register: React.FC<RegisterProps> = ({ onSuccess: _onSuccess, onSwitchToLogin }) => {
   const { signUp } = useAuth();
   const [formData, setFormData] = useState({
     fullName: '',

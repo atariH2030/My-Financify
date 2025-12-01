@@ -4,7 +4,7 @@ import Card from '../common/Card';
 import Button from '../common/Button';
 import Input from '../common/Input';
 import { useToast } from '../common/Toast';
-import SettingsService, { type AppSettings, type CustomCategory } from '../../services/settings.service';
+import SettingsService, { type AppSettings } from '../../services/settings.service';
 import './Settings.css';
 
 type Tab = 'profile' | 'notifications' | 'preferences' | 'categories' | 'data';

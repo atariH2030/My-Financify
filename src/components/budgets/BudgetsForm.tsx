@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import './BudgetsForm.css';
 import Button from '../common/Button';
 import Input from '../common/Input';

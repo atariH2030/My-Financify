@@ -207,7 +207,7 @@ const ItemModal: React.FC<ModalProps> = ({ isOpen, onClose, onSave, title, editi
 };
 
 // Main Dashboard Component (estrutura idêntica à pagina_home.html)
-const Dashboard: React.FC<{ className?: string }> = ({ className }) => {
+const Dashboard: React.FC<{ className?: string }> = ({ className: _className }) => {
   const [financialData, setFinancialData] = useState<FinancialData>({
     income: [],
     fixedExpenses: [],

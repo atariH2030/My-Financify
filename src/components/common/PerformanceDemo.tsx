@@ -1,5 +1,5 @@
 import React, { useState, useMemo, useCallback } from 'react';
-import { Card, Button, Input, SkeletonLoader, SkeletonPresets } from '../common';
+import { Card, Button, Input, SkeletonLoader } from '../common';
 import {
   useDebounce,
   useMediaQuery,
@@ -7,7 +7,7 @@ import {
   useAsync,
   useIntersectionObserver
 } from '../../utils/hooks';
-import { debounce, formatCurrencyString, formatDateRelative } from '../../utils/performance';
+import { formatCurrencyString } from '../../utils/performance';
 
 /**
  * PerformanceDemo - Demonstração de otimizações
