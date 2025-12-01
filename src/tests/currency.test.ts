@@ -12,7 +12,7 @@ import {
   getCurrencySymbol,
   getCurrencyName,
   isValidCurrency,
-  type CurrencyCode,
+  type CurrencyCode as _CurrencyCode,
 } from '../utils/currency';
 
 describe('Currency Formatter', () => {

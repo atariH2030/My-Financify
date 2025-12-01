@@ -76,7 +76,7 @@ const Reports: React.FC<ReportsProps> = ({ className }) => {
         filterEndDate = now.toISOString().split('T')[0];
       }
       
-      const [transactionsData, summaryData] = await Promise.all([
+      const [transactionsData, _summaryData] = await Promise.all([
         transactionsService.getTransactions(),
         transactionsService.getFinancialSummary()
       ]);

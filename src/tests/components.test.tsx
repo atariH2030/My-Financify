@@ -6,7 +6,7 @@
  */
 
 import { describe, it, expect, vi } from 'vitest';
-import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import Button from '../components/common/Button';
 import Card from '../components/common/Card';
@@ -41,13 +41,13 @@ describe('Button Component', () => {
   });
 
   it('deve aplicar variante correta', () => {
-    const { container } = render(<Button variant="primary">Primary</Button>);
-    expect(container.querySelector('.btn-primary')).toBeInTheDocument();
+    const { container: _container } = render(<Button variant="primary">Primary</Button>);
+    expect(_container.querySelector('.btn-primary')).toBeInTheDocument();
   });
 
   it('deve aplicar tamanho correto', () => {
-    const { container } = render(<Button size="lg">Grande</Button>);
-    expect(container.querySelector('.btn-lg')).toBeInTheDocument();
+    const { container: _container } = render(<Button size="lg">Grande</Button>);
+    expect(_container.querySelector('.btn-lg')).toBeInTheDocument();
   });
 });
 
@@ -68,13 +68,13 @@ describe('Card Component', () => {
   });
 
   it('deve renderizar card sem header quando não houver título', () => {
-    const { container } = render(<Card>Conteúdo</Card>);
-    expect(container.querySelector('.card-header')).not.toBeInTheDocument();
+    const { container: _container } = render(<Card>Conteúdo</Card>);
+    expect(_container.querySelector('.card-header')).not.toBeInTheDocument();
   });
 
   it('deve aplicar padding correto', () => {
-    const { container } = render(<Card padding="lg">Conteúdo</Card>);
-    expect(container.querySelector('.card-padding-lg')).toBeInTheDocument();
+    const { container: _container } = render(<Card padding="lg">Conteúdo</Card>);
+    expect(_container.querySelector('.card-padding-lg')).toBeInTheDocument();
   });
 });
 
@@ -105,8 +105,8 @@ describe('Input Component', () => {
   });
 
   it('deve aplicar estado de erro visualmente', () => {
-    const { container } = render(<Input label="Email" error="Email inválido" />);
-    expect(container.querySelector('.input-error')).toBeInTheDocument();
+    const { container: _container } = render(<Input label="Email" error="Email inválido" />);
+    expect(_container.querySelector('.input-error')).toBeInTheDocument();
   });
 
   it('deve estar desabilitado quando disabled=true', () => {
@@ -137,7 +137,7 @@ describe('Modal Component', () => {
 
   it('deve chamar onClose ao clicar no backdrop', async () => {
     const handleClose = vi.fn();
-    const { container } = render(
+    const { container: _container } = render(
       <Modal isOpen={true} onClose={handleClose}>
         <div>Conteúdo</div>
       </Modal>
@@ -173,7 +173,7 @@ describe('Modal Component', () => {
   });
 
   it('deve aplicar tamanho correto', () => {
-    const { container } = render(
+    const { container: _container } = render(
       <Modal isOpen={true} onClose={() => {}} size="lg">
         <div>Conteúdo</div>
       </Modal>

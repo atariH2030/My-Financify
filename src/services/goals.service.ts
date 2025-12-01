@@ -277,7 +277,7 @@ class GoalsService {
     for (const item of queue) {
       try {
         if (item.action === 'create' && item.goal.id.startsWith('offline_')) {
-          const { id, user_id, ...goalData } = item.goal;
+          const { id, user_id: _user_id, ...goalData } = item.goal;
           const { data, error } = await supabase
             .from('goals')
             .insert([{ ...goalData, user_id: await this.getUserId() }])
@@ -289,7 +289,7 @@ class GoalsService {
           await this.replaceOfflineId(id, data.id);
           logService.info('✅ Meta sincronizada', { oldId: id, newId: data.id });
         } else if (item.action === 'update') {
-          const { id, user_id, ...updates } = item.goal;
+          const { id, user_id: _user_id, ...updates } = item.goal;
           await this.updateGoal(id, updates);
         }
 

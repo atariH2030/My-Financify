@@ -314,7 +314,7 @@ class RecurringTransactionsService {
     for (const item of queue) {
       try {
         if (item.action === 'create' && item.recurring.id.startsWith('offline_')) {
-          const { id, user_id, ...recurringData } = item.recurring;
+          const { id, user_id: _user_id, ...recurringData } = item.recurring;
           const { data, error } = await supabase
             .from('recurring_transactions')
             .insert([{ ...recurringData, user_id: await this.getUserId() }])
@@ -326,7 +326,7 @@ class RecurringTransactionsService {
           await this.replaceOfflineId(id, data.id);
           logService.info('✅ Recorrente sincronizada', { oldId: id, newId: data.id });
         } else if (item.action === 'update') {
-          const { id, user_id, ...updates } = item.recurring;
+          const { id, user_id: _user_id, ...updates } = item.recurring;
           await this.updateRecurring(id, updates);
         }
 

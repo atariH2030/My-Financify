@@ -244,7 +244,7 @@ class BudgetsService {
     for (const item of queue) {
       try {
         if (item.action === 'create' && item.budget.id.startsWith('offline_')) {
-          const { id, user_id, ...budgetData } = item.budget;
+          const { id, user_id: _user_id, ...budgetData } = item.budget;
           const { data, error } = await supabase
             .from('budgets')
             .insert([{ ...budgetData, user_id: await this.getUserId() }])
@@ -256,7 +256,7 @@ class BudgetsService {
           await this.replaceOfflineId(id, data.id);
           logService.info('✅ Orçamento sincronizado', { oldId: id, newId: data.id });
         } else if (item.action === 'update') {
-          const { id, user_id, ...updates } = item.budget;
+          const { id, user_id: _user_id, ...updates } = item.budget;
           await this.updateBudget(id, updates);
         }
 

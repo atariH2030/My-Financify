@@ -5,12 +5,12 @@
  * @author DEV - Rickson (TQM)
  */
 
-import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { describe, it, expect, vi, beforeEach as _beforeEach } from 'vitest';
 import {
   debounce,
   throttle,
   memoize,
-  formatCurrencyString,
+  formatCurrencyString as _formatCurrencyString,
   truncateString,
   generateId,
   deepClone,

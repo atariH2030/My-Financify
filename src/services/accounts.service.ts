@@ -295,7 +295,7 @@ class AccountsService {
           await this.replaceOfflineId(id, data.id);
           logService.info('✅ Conta sincronizada', { oldId: id, newId: data.id });
         } else if (item.action === 'update') {
-          const { id, user_id, ...updates } = item.account;
+          const { id, user_id: _user_id, ...updates } = item.account;
           await this.updateAccount(id, updates);
         }
 

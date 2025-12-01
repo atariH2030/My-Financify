@@ -20,7 +20,7 @@ const Transactions: React.FC = () => {
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [editingTransaction, setEditingTransaction] = useState<Transaction | undefined>();
-  const [loading, setLoading] = useState(true);
+  const [_loading, setLoading] = useState(true);
   const { showToast } = useToast();
 
   const loadTransactions = useCallback(async () => {

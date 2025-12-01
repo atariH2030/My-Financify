@@ -26,7 +26,7 @@ interface CropState {
 }
 
 const AvatarUpload: React.FC<AvatarUploadProps> = ({ onClose, onSave, currentAvatar }) => {
-  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [_selectedFile, setSelectedFile] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string>(currentAvatar || '');
   const [croppedImageUrl, setCroppedImageUrl] = useState<string>('');
   const [step, setStep] = useState<'select' | 'crop' | 'preview'>('select');
@@ -46,11 +46,11 @@ const AvatarUpload: React.FC<AvatarUploadProps> = ({ onClose, onSave, currentAva
   // Limites de tamanho
   const MAX_FILE_SIZE = 2 * 1024 * 1024; // 2MB
   const MIN_DIMENSION = 200; // 200x200 pixels mínimo
-  const MAX_DIMENSION = 4096; // 4096x4096 pixels máximo (padrão web)
+  const _MAX_DIMENSION = 4096; // 4096x4096 pixels máximo (padrão web)
   const CROP_SIZE = 280; // Tamanho da área de crop
 
   // Calcular zoom mínimo para cobrir toda área de crop
-  const calculateMinZoom = (imgWidth: number, imgHeight: number): number => {
+  const _calculateMinZoom = (imgWidth: number, imgHeight: number): number => {
     // Zoom mínimo é o necessário para que a imagem cubra toda a área de crop
     const minZoomWidth = CROP_SIZE / imgWidth;
     const minZoomHeight = CROP_SIZE / imgHeight;
@@ -63,7 +63,7 @@ const AvatarUpload: React.FC<AvatarUploadProps> = ({ onClose, onSave, currentAva
   };
 
   // Calcular zoom máximo baseado no tamanho da imagem
-  const calculateMaxZoom = (imgWidth: number, imgHeight: number): number => {
+  const _calculateMaxZoom = (imgWidth: number, imgHeight: number): number => {
     // Para imagens pequenas, permitir mais zoom
     // Para imagens grandes, limitar o zoom
     const avgDimension = (imgWidth + imgHeight) / 2;
@@ -141,7 +141,7 @@ const AvatarUpload: React.FC<AvatarUploadProps> = ({ onClose, onSave, currentAva
   const handleDragMove = useCallback((e: MouseEvent) => {
     if (!isDragging || !containerRef.current || !imageRef.current) return;
 
-    const container = containerRef.current.getBoundingClientRect();
+    const _container = containerRef.current.getBoundingClientRect();
     const image = imageRef.current;
     const scaledWidth = image.naturalWidth * crop.scale;
     const scaledHeight = image.naturalHeight * crop.scale;
