@@ -144,7 +144,7 @@ const PerformanceDemo: React.FC = () => {
           fullWidth
         />
         <p style={{ marginTop: '0.5rem', color: 'var(--text-secondary)' }}>
-          Busca ativa: "<strong>{debouncedSearch}</strong>"
+          Busca ativa: &quot;<strong>{debouncedSearch}</strong>&quot;
         </p>
       </Card>
       

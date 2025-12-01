@@ -338,7 +338,7 @@ const DashboardCustomizer: React.FC<DashboardCustomizerProps> = ({ isOpen, onClo
                 </li>
                 <li>
                   <i className="fas fa-save"></i>
-                  <strong>Salvar:</strong> Clique em "Salvar" para aplicar as mudanças
+                  <strong>Salvar:</strong> Clique em &quot;Salvar&quot; para aplicar as mudanças
                 </li>
               </ul>
             </div>

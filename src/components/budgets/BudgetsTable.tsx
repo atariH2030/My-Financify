@@ -95,7 +95,7 @@ const BudgetsTable: React.FC<BudgetsTableProps> = ({ budgets, onEdit, onDelete }
       <div className="empty-state">
         <div className="empty-state-icon">💰</div>
         <div className="empty-state-text">Nenhum orçamento cadastrado</div>
-        <div className="empty-state-hint">Clique em "Novo Orçamento" para começar a controlar seus gastos</div>
+        <div className="empty-state-hint">Clique em &quot;Novo Orçamento&quot; para começar a controlar seus gastos</div>
       </div>
     );
   }
