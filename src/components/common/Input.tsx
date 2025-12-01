@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React, { useState } from 'react';
 import './Input.css';
 
 interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
@@ -23,8 +23,8 @@ const Input: React.FC<InputProps> = ({
   id,
   ...props
 }) => {
-  const generatedIdRef = useRef(`input-${Math.random().toString(36).substr(2, 9)}`);
-  const inputId = id || generatedIdRef.current;
+  const [generatedId] = useState(() => `input-${Math.random().toString(36).substr(2, 9)}`);
+  const inputId = id || generatedId;
   const hasError = Boolean(error);
 
   const containerClass = [
