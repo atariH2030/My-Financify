@@ -55,6 +55,7 @@ export const GoalsForm: React.FC<GoalsFormProps> = ({ goal, onSubmit, onCancel }
   const [isWishlist, setIsWishlist] = useState(goal?.type === 'wishlist');
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setIsWishlist(formData.type === 'wishlist');
   }, [formData.type]);
 

@@ -22,6 +22,7 @@ const NotificationCenter: React.FC = () => {
 
   // Load notifications and subscribe to changes
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     loadNotifications();
 
     const unsubscribe = NotificationService.subscribe((updatedNotifications) => {

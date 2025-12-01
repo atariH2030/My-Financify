@@ -72,10 +72,10 @@ const ReportsAdvanced: React.FC = () => {
       const key = date.toLocaleDateString('pt-BR', { month: 'short', year: 'numeric' });
       
       if (monthlyMap.has(key)) {
-        const data = monthlyMap.get(key)!;
-        if (t.type === 'income') {
+        const data = monthlyMap.get(key);
+        if (data && t.type === 'income') {
           data.income += t.amount;
-        } else {
+        } else if (data) {
           data.expenses += t.amount;
         }
       }

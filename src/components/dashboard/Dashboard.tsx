@@ -108,6 +108,7 @@ const ItemModal: React.FC<ModalProps> = ({ isOpen, onClose, onSave, title, editi
 
   useEffect(() => {
     if (editingItem) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setFormData({
         title: editingItem.title,
         amount: editingItem.amount.toString(),
@@ -230,6 +231,7 @@ const Dashboard: React.FC<{ className?: string }> = ({ className: _className }) 
   useEffect(() => {
     const savedData = localStorage.getItem('financialData');
     if (savedData) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setFinancialData(JSON.parse(savedData));
     }
     

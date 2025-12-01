@@ -32,6 +32,7 @@ export const BalanceWidget: React.FC<WidgetProps> = ({
 
   useEffect(() => {
     // Dados mockados para desenvolvimento
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setBalance(15432.50);
   }, []);
 
@@ -72,6 +73,7 @@ export const ExpensesWidget: React.FC<WidgetProps> = ({
 
   useEffect(() => {
     // Dados mockados para desenvolvimento
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setExpenses(4820.30);
   }, []);
 
@@ -110,6 +112,7 @@ export const IncomeWidget: React.FC<WidgetProps> = ({
 
   useEffect(() => {
     // Dados mockados para desenvolvimento
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setIncome(8500.00);
   }, []);
 

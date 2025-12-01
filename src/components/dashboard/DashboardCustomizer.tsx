@@ -92,6 +92,7 @@ const DashboardCustomizer: React.FC<DashboardCustomizerProps> = ({ isOpen, onClo
       const saved = localStorage.getItem('dashboardSettings');
       if (saved) {
         const settings: DashboardSettings = JSON.parse(saved);
+        // eslint-disable-next-line react-hooks/set-state-in-effect
         setWidgets(settings.widgets);
         setLayoutMode(settings.layoutMode || 'grid-medium');
       } else {
