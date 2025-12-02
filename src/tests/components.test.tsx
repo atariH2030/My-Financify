@@ -137,7 +137,7 @@ describe('Modal Component', () => {
 
   it('deve chamar onClose ao clicar no backdrop', async () => {
     const handleClose = vi.fn();
-    const { container: _container } = render(
+    const { container } = render(
       <Modal isOpen={true} onClose={handleClose}>
         <div>Conteúdo</div>
       </Modal>
@@ -173,7 +173,7 @@ describe('Modal Component', () => {
   });
 
   it('deve aplicar tamanho correto', () => {
-    const { container: _container } = render(
+    const { container } = render(
       <Modal isOpen={true} onClose={() => {}} size="lg">
         <div>Conteúdo</div>
       </Modal>
