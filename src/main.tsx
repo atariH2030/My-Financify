@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { lazy, Suspense } from 'react';
 import { createRoot } from 'react-dom/client';
 import './styles/globals.css';
 import './styles/smooth-transitions.css';
@@ -10,21 +10,23 @@ import UserHeader from './components/auth/UserHeader';
 import OnlineStatus from './components/common/OnlineStatus';
 import SyncIndicator from './components/common/SyncIndicator';
 
-// App Components
-import DashboardV2 from './components/dashboard/DashboardV2';
-import Transactions from './components/transactions/Transactions';
-import Reports from './components/reports/Reports';
-import ReportsAdvanced from './components/reports/ReportsAdvanced';
-import Goals from './components/goals/Goals';
-import Budgets from './components/budgets/Budgets';
-import Settings from './components/settings/Settings';
-import ProfilePage from './components/profile/ProfilePage';
-import NotificationCenter from './components/notifications/NotificationCenter';
-import Accounts from './components/accounts/Accounts';
-import RecurringTransactions from './components/recurring/RecurringTransactions';
+// Core Components (carregados imediatamente)
 import { ErrorBoundary, ToastProvider, ToastEnhancedProvider, useKeyboardShortcuts, KeyboardShortcutsHelp, type KeyboardShortcut } from './components/common';
 import CommandPalette from './components/common/CommandPalette';
-import Fase2Example from './components/common/Fase2Example';
+
+// Lazy Loading Components (carregados sob demanda)
+const DashboardV2 = lazy(() => import('./components/dashboard/DashboardV2'));
+const Transactions = lazy(() => import('./components/transactions/Transactions'));
+const Reports = lazy(() => import('./components/reports/Reports'));
+const ReportsAdvanced = lazy(() => import('./components/reports/ReportsAdvanced'));
+const Goals = lazy(() => import('./components/goals/Goals'));
+const Budgets = lazy(() => import('./components/budgets/Budgets'));
+const Settings = lazy(() => import('./components/settings/Settings'));
+const ProfilePage = lazy(() => import('./components/profile/ProfilePage'));
+const NotificationCenter = lazy(() => import('./components/notifications/NotificationCenter'));
+const Accounts = lazy(() => import('./components/accounts/Accounts'));
+const RecurringTransactions = lazy(() => import('./components/recurring/RecurringTransactions'));
+const Fase2Example = lazy(() => import('./components/common/Fase2Example'));
 
 import Logger from './services/logger.service';
 import Seeder from './services/seeder.service';
@@ -228,32 +230,62 @@ const App: React.FC = () => {
   useKeyboardShortcuts({ shortcuts });
 
   const renderPage = () => {
-    switch (currentPage) {
-      case 'dashboard':
-        return <DashboardV2 />;
-      case 'transactions':
-        return <Transactions />;
-      case 'accounts':
-        return <Accounts />;
-      case 'recurring':
-        return <RecurringTransactions />;
-      case 'goals':
-        return <Goals />;
-      case 'budgets':
-        return <Budgets />;
-      case 'reports':
-        return <Reports />;
-      case 'reports-advanced':
-        return <ReportsAdvanced />;
-      case 'settings':
-        return <Settings />;
-      case 'profile':
-        return <ProfilePage />;
-      case 'fase2-demo':
-        return <Fase2Example />;
-      default:
-        return <DashboardV2 />;
-    }
+    // Loading fallback para componentes lazy
+    const LoadingFallback = () => (
+      <div style={{
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        height: '60vh',
+        flexDirection: 'column',
+        gap: '1rem'
+      }}>
+        <div className="spinner" style={{
+          width: '48px',
+          height: '48px',
+          border: '4px solid var(--border-color)',
+          borderTopColor: 'var(--primary-color)',
+          borderRadius: '50%',
+          animation: 'spin 1s linear infinite'
+        }}></div>
+        <p style={{ color: 'var(--text-secondary)' }}>Carregando...</p>
+      </div>
+    );
+
+    const pageContent = () => {
+      switch (currentPage) {
+        case 'dashboard':
+          return <DashboardV2 />;
+        case 'transactions':
+          return <Transactions />;
+        case 'accounts':
+          return <Accounts />;
+        case 'recurring':
+          return <RecurringTransactions />;
+        case 'goals':
+          return <Goals />;
+        case 'budgets':
+          return <Budgets />;
+        case 'reports':
+          return <Reports />;
+        case 'reports-advanced':
+          return <ReportsAdvanced />;
+        case 'settings':
+          return <Settings />;
+        case 'profile':
+          return <ProfilePage />;
+        case 'fase2-demo':
+          return <Fase2Example />;
+        default:
+          return <DashboardV2 />;
+      }
+    };
+
+    return (
+      <Suspense fallback={<LoadingFallback />}>
+        {pageContent()}
+      </Suspense>
+    );
   };
 
   return (

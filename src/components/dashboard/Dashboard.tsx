@@ -283,6 +283,26 @@ const Dashboard: React.FC<{ className?: string }> = ({ className: _className }) 
     return () => clearInterval(interval);
   }, []);
 
+  // Atalhos de teclado
+  useEffect(() => {
+    const handleKeyboard = (event: KeyboardEvent) => {
+      // Ctrl/Cmd + K: Abrir chat IA
+      if ((event.ctrlKey || event.metaKey) && event.key === 'k') {
+        event.preventDefault();
+        setIsChatOpen(true);
+      }
+      
+      // Esc: Fechar chat IA
+      if (event.key === 'Escape' && isChatOpen) {
+        event.preventDefault();
+        setIsChatOpen(false);
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyboard);
+    return () => window.removeEventListener('keydown', handleKeyboard);
+  }, [isChatOpen]);
+
   // Construir contexto financeiro para IA
   const buildAIContext = useCallback((): AIContext => {
     const totalIncome = financialData.income.reduce((sum, item) => sum + item.amount, 0);
@@ -447,6 +467,11 @@ const Dashboard: React.FC<{ className?: string }> = ({ className: _className }) 
             </h3>
             <p>Saldo Atual</p>
           </div>
+        </div>
+
+        {/* AI Insights Widget */}
+        <div className="ai-insights-section">
+          <AIInsights onOpenChat={() => setIsChatOpen(true)} />
         </div>
       </div>
 

@@ -1530,3 +1530,17 @@
     height: 100vh;
   }
 }
+
+/* ===== AI INSIGHTS SECTION ===== */
+.ai-insights-section {
+  width: 100%;
+  margin-bottom: 2rem;
+  animation: fadeInUp 0.6s ease-out;
+}
+
+/* Responsivo: AIInsights já tem estilos próprios, apenas wrapper */
+@media (max-width: 768px) {
+  .ai-insights-section {
+    margin-bottom: 1.5rem;
+  }
+}
