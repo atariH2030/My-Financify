@@ -117,6 +117,12 @@
         "react-hooks/rules-of-hooks": "off",
         "react-hooks/purity": "off"
       }
+    },
+    {
+      "files": ["src/services/ai.service.ts"],
+      "rules": {
+        "no-await-in-loop": "off"
+      }
     }
   ]
 }
