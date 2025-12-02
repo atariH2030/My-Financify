@@ -7,6 +7,7 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import './AIChat.css';
 import AIService from '../../services/ai.service';
+import AnalyticsService from '../../services/analytics.service';
 import type { AIMessage, AIContext } from '../../types/ai.types';
 
 interface AIChatProps {
@@ -21,6 +22,14 @@ const AIChat: React.FC<AIChatProps> = ({ context, onClose }) => {
   const [isConfigured, setIsConfigured] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+
+  // Iniciar sessão de analytics ao abrir chat
+  useEffect(() => {
+    AnalyticsService.startChatSession();
+    return () => {
+      AnalyticsService.endChatSession();
+    };
+  }, []);
 
   // Verificar se IA está configurada
   useEffect(() => {
@@ -56,6 +65,9 @@ const AIChat: React.FC<AIChatProps> = ({ context, onClose }) => {
 
   const handleSend = useCallback(async () => {
     if (!input.trim() || isLoading || !isConfigured) return;
+
+    // Track mensagem enviada
+    AnalyticsService.trackMessage();
 
     const userMessage: AIMessage = {
       id: `msg_${Date.now()}`,

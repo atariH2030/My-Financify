@@ -13,6 +13,7 @@ import SyncIndicator from './components/common/SyncIndicator';
 // Core Components (carregados imediatamente)
 import { ErrorBoundary, ToastProvider, ToastEnhancedProvider, useKeyboardShortcuts, KeyboardShortcutsHelp, type KeyboardShortcut } from './components/common';
 import CommandPalette from './components/common/CommandPalette';
+import GlobalCommandPalette from './components/common/GlobalCommandPalette';
 
 // Lazy Loading Components (carregados sob demanda)
 const DashboardV2 = lazy(() => import('./components/dashboard/DashboardV2'));
@@ -60,6 +61,7 @@ const App: React.FC = () => {
   const [currentPage, setCurrentPage] = React.useState('dashboard');
   const [showShortcutsHelp, setShowShortcutsHelp] = React.useState(false);
   const [showCommandPalette, setShowCommandPalette] = React.useState(false);
+  const [showGlobalCommandPalette, setShowGlobalCommandPalette] = React.useState(false);
   const [theme, setTheme] = React.useState(() => {
     return localStorage.getItem('theme') || 'light';
   });
@@ -212,6 +214,13 @@ const App: React.FC = () => {
       category: 'general',
     },
     {
+      key: 'p',
+      ctrl: true,
+      description: 'Abrir Command Palette',
+      action: () => setShowGlobalCommandPalette(true),
+      category: 'general',
+    },
+    {
       key: 'h',
       ctrl: true,
       description: 'Ajuda - Atalhos de Teclado',
@@ -221,7 +230,10 @@ const App: React.FC = () => {
     {
       key: 'Escape',
       description: 'Fechar Modal/Diálogos',
-      action: () => setShowShortcutsHelp(false),
+      action: () => {
+        setShowShortcutsHelp(false);
+        setShowGlobalCommandPalette(false);
+      },
       category: 'general',
     },
   ];
@@ -562,6 +574,18 @@ const App: React.FC = () => {
         onNavigate={(page) => {
           setCurrentPage(page);
           setShowCommandPalette(false);
+        }}
+      />
+
+      {/* Global Command Palette - Navegação Rápida (Ctrl+P) */}
+      <GlobalCommandPalette
+        isOpen={showGlobalCommandPalette}
+        onClose={() => setShowGlobalCommandPalette(false)}
+        onNavigate={(page) => {
+          setCurrentPage(page);
+          if (window.innerWidth <= 768) {
+            setSidebarActive(false);
+          }
         }}
       />
     </>
