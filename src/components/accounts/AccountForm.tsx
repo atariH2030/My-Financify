@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import Button from '../common/Button';
 import Input from '../common/Input';
-import type { Account, AccountType, CardBrand } from '../../types/financial.types';
+import type { Account, CardBrand } from '../../types/financial.types';
 
 interface AccountFormProps {
   initialData?: Account;

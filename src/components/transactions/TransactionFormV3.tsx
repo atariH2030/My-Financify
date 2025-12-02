@@ -12,9 +12,7 @@ import { motion } from 'framer-motion';
 import Card from '../common/Card';
 import Button from '../common/Button';
 import Input from '../common/Input';
-import Tooltip from '../common/Tooltip';
 import { transactionSchema } from '../../utils/validation';
-import { formatCurrency } from '../../utils/performance';
 import type { Transaction, ExpenseType, PaymentMethod } from '../../types/financial.types';
 import { 
   SECTIONS_CONFIG, 
@@ -79,7 +77,7 @@ const TransactionFormV3: React.FC<TransactionFormV3Props> = ({
         setFormData(prev => ({ ...prev, section: '' }));
       }
     }
-  }, [formData.type]);
+  }, [formData.type, formData.section]);
 
   // Atualiza categorias quando sessão muda
   useEffect(() => {
@@ -95,7 +93,7 @@ const TransactionFormV3: React.FC<TransactionFormV3Props> = ({
       setAvailableCategories([]);
       setFormData(prev => ({ ...prev, category: '', subcategory: '' }));
     }
-  }, [formData.section]);
+  }, [formData.section, formData.category]);
 
   // Atualiza subcategorias quando categoria muda
   useEffect(() => {
@@ -115,7 +113,7 @@ const TransactionFormV3: React.FC<TransactionFormV3Props> = ({
       setAvailableSubcategories([]);
       setFormData(prev => ({ ...prev, subcategory: '' }));
     }
-  }, [formData.category, formData.section, availableCategories]);
+  }, [formData.category, formData.section, formData.subcategory, availableCategories]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     const { name, value, type } = e.target;
@@ -175,6 +173,7 @@ const TransactionFormV3: React.FC<TransactionFormV3Props> = ({
       // Submeter com Date convertida
       await onSubmit({
         ...result.data,
+        section: result.data.section || 'Geral', // Garantir section nunca é undefined
         date: new Date(result.data.date),
         recurring: result.data.recurring ? {
           ...result.data.recurring,
@@ -193,8 +192,8 @@ const TransactionFormV3: React.FC<TransactionFormV3Props> = ({
   };
 
   // Busca informações da sessão/categoria selecionada
-  const selectedSection = getSectionById(formData.section);
-  const selectedCategory = availableCategories.find(c => c.id === formData.category);
+  const _selectedSection = getSectionById(formData.section);
+  const _selectedCategory = availableCategories.find(c => c.id === formData.category);
 
   return (
     <motion.div

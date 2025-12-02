@@ -1,6 +1,5 @@
 import React from 'react';
-import { useToast } from '../common';
-import { Button, Card } from '../common';
+import { useToast, Button, Card } from '../common';
 
 /**
  * Exemplo de uso do sistema de notificações Toast

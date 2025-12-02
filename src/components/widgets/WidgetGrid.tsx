@@ -14,10 +14,10 @@ import {
   RecurringWidget,
   RecentTransactionsWidget,
   AccountsWidget,
-} from './WidgetTypes.tsx';
+} from './WidgetTypes';
 import WidgetService from '../../services/widget.service';
+import Logger from '../../services/logger.service';
 import './Widgets.css';
-
 interface WidgetGridProps {
   onCustomize?: () => void;
 }
@@ -29,41 +29,38 @@ const WidgetGrid: React.FC<WidgetGridProps> = ({ onCustomize }) => {
   const [expandedWidgets, setExpandedWidgets] = React.useState<Set<string>>(new Set());
   const [listViewMode, setListViewMode] = React.useState<'collapsed' | 'expanded' | 'all'>('collapsed');
 
-  React.useEffect(() => {
-    loadWidgets();
-    loadLayoutSettings();
-    
-    // Listener para detectar mudanças no localStorage
-    const handleStorageChange = () => {
-      loadWidgets();
-      loadLayoutSettings();
-      setUpdateKey(prev => prev + 1);
-    };
-    
-    window.addEventListener('storage', handleStorageChange);
-    
-    return () => {
-      window.removeEventListener('storage', handleStorageChange);
-    };
-  }, []);
-
-  const loadLayoutSettings = () => {
+  const loadLayoutSettings = React.useCallback(() => {
     const saved = localStorage.getItem('dashboardSettings');
     if (saved) {
       try {
         const settings = JSON.parse(saved);
         const mode = settings.layoutMode || 'grid-medium';
-        console.log('Layout mode carregado:', mode);
+        Logger.debug('Layout mode carregado', { mode }, 'WIDGETS');
         setLayoutMode(mode);
       } catch (error) {
-        console.error('Error loading layout settings:', error);
+        Logger.error('Error loading layout settings', error as Error, 'WIDGETS');
       }
     } else {
-      console.log('Nenhuma configuração salva, usando padrão: grid-medium');
+      Logger.debug('Nenhuma configuração salva, usando padrão', { mode: 'grid-medium' }, 'WIDGETS');
     }
+  }, []);
+
+  const mapWidgetIdToType = (id: string): WidgetType => {
+    const typeMap: Record<string, WidgetType> = {
+      'balance': 'balance',
+      'expenses': 'expenses',
+      'income': 'income',
+      'goals': 'goals',
+      'budgets': 'budget',
+      'recurring': 'recurring',
+      'recent': 'recent-transactions',
+      'accounts': 'accounts',
+      'categories': 'budget', // Fallback
+    };
+    return typeMap[id] || 'balance';
   };
 
-  const loadWidgets = () => {
+  const loadWidgets = React.useCallback(() => {
     const saved = localStorage.getItem('dashboardSettings');
     if (saved) {
       try {
@@ -88,14 +85,32 @@ const WidgetGrid: React.FC<WidgetGridProps> = ({ onCustomize }) => {
           return;
         }
       } catch (error) {
-        console.error('Error loading custom widgets:', error);
+        Logger.error('Error loading custom widgets', error as Error, 'WIDGETS');
       }
     }
     
     // Fallback para widgets padrão
     const layout = WidgetService.getActiveLayout();
     setWidgets(layout.widgets.filter(w => w.isVisible).sort((a, b) => a.position - b.position));
-  };
+  }, []);
+
+  React.useEffect(() => {
+    loadWidgets();
+    loadLayoutSettings();
+    
+    // Listener para detectar mudanças no localStorage
+    const handleStorageChange = () => {
+      loadWidgets();
+      loadLayoutSettings();
+      setUpdateKey(prev => prev + 1);
+    };
+    
+    window.addEventListener('storage', handleStorageChange);
+    
+    return () => {
+      window.removeEventListener('storage', handleStorageChange);
+    };
+  }, [loadWidgets, loadLayoutSettings]);
 
   const mapWidgetIdToType = (id: string): WidgetType => {
     const typeMap: Record<string, WidgetType> = {

@@ -1,5 +1,5 @@
 import React, { useState, useMemo, useCallback } from 'react';
-import { Card, Button, Input, SkeletonLoader, SkeletonPresets } from '../common';
+import { Card, Button, Input, SkeletonLoader } from '../common';
 import {
   useDebounce,
   useMediaQuery,
@@ -7,7 +7,7 @@ import {
   useAsync,
   useIntersectionObserver
 } from '../../utils/hooks';
-import { debounce, formatCurrencyString, formatDateRelative } from '../../utils/performance';
+import { formatCurrencyString } from '../../utils/performance';
 
 /**
  * PerformanceDemo - Demonstração de otimizações
@@ -144,7 +144,7 @@ const PerformanceDemo: React.FC = () => {
           fullWidth
         />
         <p style={{ marginTop: '0.5rem', color: 'var(--text-secondary)' }}>
-          Busca ativa: "<strong>{debouncedSearch}</strong>"
+          Busca ativa: &quot;<strong>{debouncedSearch}</strong>&quot;
         </p>
       </Card>
       

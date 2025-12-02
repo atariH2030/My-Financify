@@ -52,19 +52,22 @@
 }
 
 /* Layout Modes - Diferentes visualizações */
-/* Grid Grande: 2 colunas FIXAS - widgets espaçosos */
+/* Grid Grande: 2 colunas responsivas - widgets espaçosos */
 .widget-grid-grid-large {
   grid-template-columns: repeat(2, 1fr);
+  max-width: 100%;
 }
 
-/* Grid Médio: 3 colunas FIXAS - tamanho balanceado */
+/* Grid Médio: 3 colunas responsivas - tamanho balanceado */
 .widget-grid-grid-medium {
   grid-template-columns: repeat(3, 1fr);
+  max-width: 100%;
 }
 
-/* Grid Pequeno: 4 colunas FIXAS - widgets compactos */
+/* Grid Pequeno: 4 colunas responsivas - widgets compactos */
 .widget-grid-grid-small {
   grid-template-columns: repeat(4, 1fr);
+  max-width: 100%;
 }
 
 /* Lista: 1 coluna larga */
@@ -809,11 +812,20 @@
 /* ===== RESPONSIVE DESIGN ===== */
 
 /* Desktop Large (>1200px) - Mantém configurações originais */
+/* grid-large = 2 colunas, grid-medium = 3 colunas, grid-small = 4 colunas */
 
-/* Desktop (900px - 1200px) */
+/* Desktop (900px - 1200px) - Reduz uma coluna */
 @media (max-width: 1200px) {
   .widget-grid-grid-large {
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(2, 1fr); /* Mantém 2 colunas */
+  }
+  
+  .widget-grid-grid-medium {
+    grid-template-columns: repeat(2, 1fr); /* 3 → 2 colunas */
+  }
+  
+  .widget-grid-grid-small {
+    grid-template-columns: repeat(3, 1fr); /* 4 → 3 colunas */
   }
 }
 

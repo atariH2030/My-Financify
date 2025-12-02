@@ -1,8 +1,9 @@
-import React from 'react';
-import { useState } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import Button from '../common/Button';
 import ExportModal from '../export/ExportModal';
 import { formatCurrency, formatPercentage } from '../../utils/currency';
+import { transactionsService } from '../../services/transactions.service';
+import type { Transaction } from '../../types/financial.types';
 
 interface KPICardProps {
   title: string;
@@ -31,6 +32,96 @@ interface ReportsProps {
 
 const Reports: React.FC<ReportsProps> = ({ className }) => {
   const [showExportModal, setShowExportModal] = useState(false);
+  const [transactions, setTransactions] = useState<Transaction[]>([]);
+  const [summary, setSummary] = useState({
+    income: 0,
+    expenses: 0,
+    balance: 0,
+    transactionCount: 0
+  });
+  const [loading, setLoading] = useState(true);
+  
+  // Filtros
+  const [period, setPeriod] = useState<'month' | '3months' | '6months' | 'year' | 'custom'>('month');
+  const [categoryFilter, setCategoryFilter] = useState<'all' | 'income' | 'expense'>('all');
+  const [startDate, setStartDate] = useState('');
+  const [endDate, setEndDate] = useState('');
+
+  const loadData = useCallback(async () => {
+    try {
+      setLoading(true);
+      
+      // Calcular datas baseadas no período
+      const now = new Date();
+      let filterStartDate = startDate;
+      let filterEndDate = endDate;
+      
+      if (period !== 'custom') {
+        const start = new Date();
+        switch (period) {
+          case 'month':
+            start.setMonth(start.getMonth() - 1);
+            break;
+          case '3months':
+            start.setMonth(start.getMonth() - 3);
+            break;
+          case '6months':
+            start.setMonth(start.getMonth() - 6);
+            break;
+          case 'year':
+            start.setFullYear(start.getFullYear() - 1);
+            break;
+        }
+        filterStartDate = start.toISOString().split('T')[0];
+        filterEndDate = now.toISOString().split('T')[0];
+      }
+      
+      const [transactionsData, _summaryData] = await Promise.all([
+        transactionsService.getTransactions(),
+        transactionsService.getFinancialSummary()
+      ]);
+      
+      // Aplicar filtros
+      let filtered = transactionsData || [];
+      
+      // Filtro de data
+      if (filterStartDate && filterEndDate) {
+        const start = new Date(filterStartDate);
+        const end = new Date(filterEndDate);
+        end.setHours(23, 59, 59, 999);
+        
+        filtered = filtered.filter(t => {
+          const date = new Date(t.date);
+          return date >= start && date <= end;
+        });
+      }
+      
+      // Filtro de categoria
+      if (categoryFilter !== 'all') {
+        filtered = filtered.filter(t => t.type === categoryFilter);
+      }
+      
+      // Recalcular summary com dados filtrados
+      const filteredSummary = {
+        income: filtered.filter(t => t.type === 'income').reduce((sum, t) => sum + t.amount, 0),
+        expenses: filtered.filter(t => t.type === 'expense').reduce((sum, t) => sum + t.amount, 0),
+        balance: 0,
+        transactionCount: filtered.length
+      };
+      filteredSummary.balance = filteredSummary.income - filteredSummary.expenses;
+      
+      setTransactions(filtered);
+      setSummary(filteredSummary);
+    } catch (error) {
+      console.error('Error loading data:', error);
+    } finally {
+      setLoading(false);
+    }
+  }, [period, categoryFilter, startDate, endDate]);
+
+  useEffect(() => {
+    loadData();
+  }, [loadData]);
 
   return (
     <div className={`reports-module ${className || ''}`}>
@@ -41,30 +132,42 @@ const Reports: React.FC<ReportsProps> = ({ className }) => {
           <div className="filter-controls">
             <div className="filter-group">
               <label>Período</label>
-              <select>
-                <option>Último mês</option>
-                <option>Últimos 3 meses</option>
-                <option>Últimos 6 meses</option>
-                <option>Último ano</option>
+              <select value={period} onChange={(e) => setPeriod(e.target.value as any)}>
+                <option value="month">Último mês</option>
+                <option value="3months">Últimos 3 meses</option>
+                <option value="6months">Últimos 6 meses</option>
+                <option value="year">Último ano</option>
+                <option value="custom">Personalizado</option>
               </select>
             </div>
             <div className="filter-group">
               <label>Categoria</label>
-              <select>
-                <option>Todas as categorias</option>
-                <option>Receitas</option>
-                <option>Despesas</option>
-                <option>Investimentos</option>
+              <select value={categoryFilter} onChange={(e) => setCategoryFilter(e.target.value as any)}>
+                <option value="all">Todas as categorias</option>
+                <option value="income">📈 Receitas</option>
+                <option value="expense">📉 Despesas</option>
               </select>
             </div>
-            <div className="filter-group">
-              <label>Data Inicial</label>
-              <input type="date" />
-            </div>
-            <div className="filter-group">
-              <label>Data Final</label>
-              <input type="date" />
-            </div>
+            {period === 'custom' && (
+              <>
+                <div className="filter-group">
+                  <label>Data Inicial</label>
+                  <input 
+                    type="date" 
+                    value={startDate}
+                    onChange={(e) => setStartDate(e.target.value)}
+                  />
+                </div>
+                <div className="filter-group">
+                  <label>Data Final</label>
+                  <input 
+                    type="date"
+                    value={endDate}
+                    onChange={(e) => setEndDate(e.target.value)}
+                  />
+                </div>
+              </>
+            )}
           </div>
         </div>
       </div>
@@ -89,30 +192,30 @@ const Reports: React.FC<ReportsProps> = ({ className }) => {
       <div className="kpi-grid">
         <KPICard
           title="Receita Total"
-          value={formatCurrency(45230)}
+          value={formatCurrency(summary.income)}
           icon="💰"
-          trend="+12,5% vs mês anterior"
+          trend={loading ? 'Carregando...' : `${summary.transactionCount} transações`}
           trendType="positive"
         />
         <KPICard
           title="Despesas Totais"
-          value={formatCurrency(32150)}
+          value={formatCurrency(summary.expenses)}
           icon="💸"
-          trend="+3,2% vs mês anterior"
+          trend={loading ? 'Carregando...' : 'Total do mês'}
           trendType="negative"
         />
         <KPICard
-          title="Lucro Líquido"
-          value={formatCurrency(13080)}
+          title="Saldo"
+          value={formatCurrency(summary.balance)}
           icon="📈"
-          trend="+28,7% vs mês anterior"
-          trendType="positive"
+          trend={summary.balance >= 0 ? 'Positivo' : 'Atenção'}
+          trendType={summary.balance >= 0 ? 'positive' : 'negative'}
         />
         <KPICard
-          title="ROI Investimentos"
-          value={formatPercentage(8.4)}
+          title="Taxa de Economia"
+          value={formatPercentage(summary.income > 0 ? (summary.balance / summary.income) * 100 : 0)}
           icon="🎯"
-          trend="Estável"
+          trend={loading ? 'Carregando...' : 'Do rendimento'}
           trendType="neutral"
         />
       </div>
@@ -173,7 +276,7 @@ const Reports: React.FC<ReportsProps> = ({ className }) => {
         <div className="table-header">
           <div className="table-title">📋 Transações Recentes</div>
           <div className="table-actions">
-            <button className="btn-export">Exportar</button>
+            <button className="btn-export" onClick={() => setShowExportModal(true)}>Exportar</button>
           </div>
         </div>
         <table className="data-table">
@@ -187,41 +290,31 @@ const Reports: React.FC<ReportsProps> = ({ className }) => {
             </tr>
           </thead>
           <tbody>
-            <tr>
-              <td>15/01/2024</td>
-              <td>Salário Janeiro</td>
-              <td>Renda</td>
-              <td className="money-positive">{formatCurrency(8500)}</td>
-              <td>Receita</td>
-            </tr>
-            <tr>
-              <td>14/01/2024</td>
-              <td>Aluguel Apartamento</td>
-              <td>Moradia</td>
-              <td className="money-negative">{formatCurrency(-2200)}</td>
-              <td>Despesa</td>
-            </tr>
-            <tr>
-              <td>12/01/2024</td>
-              <td>Supermercado</td>
-              <td>Alimentação</td>
-              <td className="money-negative">{formatCurrency(-345.50)}</td>
-              <td>Despesa</td>
-            </tr>
-            <tr>
-              <td>10/01/2024</td>
-              <td>Investimento CDB</td>
-              <td>Investimento</td>
-              <td className="money-neutral">{formatCurrency(1000)}</td>
-              <td>Aplicação</td>
-            </tr>
-            <tr>
-              <td>08/01/2024</td>
-              <td>Freelance Design</td>
-              <td>Renda Extra</td>
-              <td className="money-positive">{formatCurrency(1200)}</td>
-              <td>Receita</td>
-            </tr>
+            {loading ? (
+              <tr>
+                <td colSpan={5} style={{ textAlign: 'center', padding: '2rem' }}>
+                  Carregando transações...
+                </td>
+              </tr>
+            ) : transactions.length === 0 ? (
+              <tr>
+                <td colSpan={5} style={{ textAlign: 'center', padding: '2rem' }}>
+                  Nenhuma transação encontrada
+                </td>
+              </tr>
+            ) : (
+              transactions.slice(0, 10).map((transaction) => (
+                <tr key={transaction.id}>
+                  <td>{new Date(transaction.date).toLocaleDateString('pt-BR')}</td>
+                  <td>{transaction.description}</td>
+                  <td>{transaction.category}</td>
+                  <td className={transaction.type === 'income' ? 'money-positive' : 'money-negative'}>
+                    {formatCurrency(transaction.type === 'income' ? transaction.amount : -transaction.amount)}
+                  </td>
+                  <td>{transaction.type === 'income' ? 'Receita' : 'Despesa'}</td>
+                </tr>
+              ))
+            )}
           </tbody>
         </table>
       </div>

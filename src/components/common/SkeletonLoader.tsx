@@ -73,6 +73,7 @@ const SkeletonLoader: React.FC<SkeletonLoaderProps> = ({
 /**
  * Skeleton presets para casos comuns
  */
+// eslint-disable-next-line react-refresh/only-export-components
 export const SkeletonPresets = {
   /**
    * KPI Card loading

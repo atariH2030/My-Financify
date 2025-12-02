@@ -5,14 +5,14 @@
  * @author DEV - Rickson (TQM)
  */
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import GoalsForm from './GoalsForm';
 import GoalsTable from './GoalsTable';
 import Button from '../common/Button';
 import Modal from '../common/Modal';
 import { useToast } from '../common/Toast';
-import StorageService from '../../services/storage.service';
+import { goalsService } from '../../services/goals.service';
 import Logger from '../../services/logger.service';
 import { formatCurrency } from '../../utils/currency';
 import type { FinancialGoal } from '../../types/financial.types';
@@ -25,133 +25,82 @@ const Goals: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const { showToast } = useToast();
 
-  // Carregar metas
-  useEffect(() => {
-    loadGoals();
-  }, []);
-
-  const loadGoals = async () => {
+  const loadGoals = useCallback(async () => {
     try {
       setLoading(true);
-      const data = await StorageService.load<FinancialGoal[]>('goals');
-      setGoals(data || []);
-      Logger.info('Metas carregadas', { count: (data || []).length }, 'GOALS');
+      const data = await goalsService.getGoals();
+      // Converter string para Date no deadline
+      const goalsWithDateConversion = (data || []).map(goal => ({
+        ...goal,
+        deadline: new Date(goal.deadline)
+      })) as FinancialGoal[];
+      setGoals(goalsWithDateConversion);
+      Logger.info('Metas carregadas', { count: goalsWithDateConversion.length }, 'GOALS');
     } catch (error) {
       Logger.error('Erro ao carregar metas', error as Error, 'GOALS');
       showToast('Erro ao carregar metas', 'error');
     } finally {
       setLoading(false);
     }
-  };
+  }, [showToast]);
 
-  const saveGoals = async (data: FinancialGoal[]) => {
+  // Carregar metas
+  useEffect(() => {
+    loadGoals();
+  }, [loadGoals]);
+
+  const handleCreate = async (data: Omit<FinancialGoal, 'id' | 'createdAt' | 'updatedAt' | 'completedAt'>) => {
     try {
-      await StorageService.save('goals', data);
-      setGoals(data);
-      Logger.info('Metas salvas', { count: data.length }, 'GOALS');
-    } catch (error) {
-      Logger.error('Erro ao salvar metas', error as Error, 'GOALS');
-      throw error;
-    }
-  };
-
-  const handleCreate = (data: Omit<FinancialGoal, 'id' | 'createdAt' | 'updatedAt' | 'completedAt'>) => {
-    try {
-      const newGoal: FinancialGoal = {
-        ...data,
-        id: `goal_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString(),
-      };
-
-      const updated = [newGoal, ...goals];
-      saveGoals(updated);
-
-      showToast(
-        `Meta "${data.title}" criada com sucesso! 🎯`,
-        'success'
-      );
-
+      await goalsService.createGoal(data as any);
+      await loadGoals();
+      showToast(`Meta "${data.title}" criada com sucesso! 🎯`, 'success');
       setIsFormOpen(false);
-      Logger.info('Meta criada', { id: newGoal.id, type: newGoal.type }, 'GOALS');
+      Logger.info('Meta criada', { type: data.type }, 'GOALS');
     } catch (error) {
       showToast('Erro ao criar meta', 'error');
       Logger.error('Erro ao criar meta', error as Error, 'GOALS');
     }
   };
 
-  const handleUpdate = (data: Omit<FinancialGoal, 'id' | 'createdAt' | 'updatedAt' | 'completedAt'>) => {
+  const handleUpdate = async (data: Omit<FinancialGoal, 'id' | 'createdAt' | 'updatedAt' | 'completedAt'>) => {
     if (!editingGoal) return;
 
     try {
-      const updatedGoal: FinancialGoal = {
-        ...editingGoal,
-        ...data,
-        updatedAt: new Date().toISOString(),
-        completedAt:
-          data.status === 'completed' && editingGoal.status !== 'completed'
-            ? new Date().toISOString()
-            : editingGoal.completedAt,
-      };
-
-      const updated = goals.map((g) => (g.id === editingGoal.id ? updatedGoal : g));
-      saveGoals(updated);
-
+      await goalsService.updateGoal(editingGoal.id, data as any);
+      await loadGoals();
       showToast(`Meta "${data.title}" atualizada! ✅`, 'success');
-
       setIsFormOpen(false);
       setEditingGoal(undefined);
-      Logger.info('Meta atualizada', { id: updatedGoal.id }, 'GOALS');
+      Logger.info('Meta atualizada', { id: editingGoal.id }, 'GOALS');
     } catch (error) {
       showToast('Erro ao atualizar meta', 'error');
       Logger.error('Erro ao atualizar meta', error as Error, 'GOALS');
     }
   };
 
-  const handleDelete = (goalId: string) => {
+  const handleDelete = async (goalId: string) => {
     const goal = goals.find((g) => g.id === goalId);
     if (!goal) return;
 
-    if (window.confirm(`Tem certeza que deseja excluir a meta "${goal.title}"?`)) {
-      try {
-        const updated = goals.filter((g) => g.id !== goalId);
-        saveGoals(updated);
+    if (!window.confirm(`Tem certeza que deseja excluir a meta "${goal.title}"?`)) return;
 
-        showToast('Meta excluída com sucesso', 'success');
-        Logger.info('Meta excluída', { id: goalId }, 'GOALS');
-      } catch (error) {
-        showToast('Erro ao excluir meta', 'error');
-        Logger.error('Erro ao excluir meta', error as Error, 'GOALS');
-      }
+    try {
+      await goalsService.deleteGoal(goalId);
+      await loadGoals();
+      showToast('Meta excluída com sucesso', 'success');
+      Logger.info('Meta excluída', { id: goalId }, 'GOALS');
+    } catch (error) {
+      showToast('Erro ao excluir meta', 'error');
+      Logger.error('Erro ao excluir meta', error as Error, 'GOALS');
     }
   };
 
-  const handleAddProgress = (goalId: string, amount: number) => {
-    const goal = goals.find((g) => g.id === goalId);
-    if (!goal) return;
-
+  const handleAddProgress = async (goalId: string, amount: number) => {
     try {
-      const newCurrent = goal.currentAmount + amount;
-      const isCompleting = newCurrent >= goal.targetAmount && goal.status === 'active';
-
-      const updatedGoal: FinancialGoal = {
-        ...goal,
-        currentAmount: Math.min(newCurrent, goal.targetAmount),
-        status: isCompleting ? 'completed' : goal.status,
-        updatedAt: new Date().toISOString(),
-        completedAt: isCompleting ? new Date().toISOString() : goal.completedAt,
-      };
-
-      const updated = goals.map((g) => (g.id === goalId ? updatedGoal : g));
-      saveGoals(updated);
-
-      if (isCompleting) {
-        showToast(`🎉 Parabéns! Meta "${goal.title}" concluída!`, 'success');
-      } else {
-        showToast(`💰 ${formatCurrency(amount)} adicionado à meta "${goal.title}"`, 'success');
-      }
-
-      Logger.info('Progresso adicionado', { id: goalId, amount, completed: isCompleting }, 'GOALS');
+      await goalsService.addContribution(goalId, amount);
+      await loadGoals();
+      showToast(`💰 ${formatCurrency(amount)} adicionado à meta!`, 'success');
+      Logger.info('Progresso adicionado', { id: goalId, amount }, 'GOALS');
     } catch (error) {
       showToast('Erro ao adicionar progresso', 'error');
       Logger.error('Erro ao adicionar progresso', error as Error, 'GOALS');

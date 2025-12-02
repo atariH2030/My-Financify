@@ -126,7 +126,7 @@ const AuthDemoContent: React.FC = () => {
               <code>Email: teste@exemplo.com</code>
               <code>Senha: Teste123</code>
               <p className="small">
-                (Crie esta conta primeiro via "Criar Conta Nova")
+                (Crie esta conta primeiro via &quot;Criar Conta Nova&quot;)
               </p>
             </div>
           </Card>

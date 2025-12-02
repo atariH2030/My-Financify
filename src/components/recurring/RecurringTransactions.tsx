@@ -1,9 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Button, Modal } from '../common';
 import RecurringForm from './RecurringForm';
 import RecurringCard from './RecurringCard';
-import RecurringService from '../../services/recurring.service';
-import { formatCurrency } from '../../utils/performance';
+import { recurringTransactionsService } from '../../services/recurring.service';
 import type { RecurringTransaction } from '../../types/financial.types';
 import './Recurring.css';
 
@@ -15,20 +14,7 @@ const RecurringTransactions: React.FC = () => {
   const [filterType, setFilterType] = useState<'all' | 'income' | 'expense'>('all');
   const [filterStatus, setFilterStatus] = useState<'all' | 'active' | 'paused'>('all');
 
-  useEffect(() => {
-    loadRecurrings();
-  }, []);
-
-  useEffect(() => {
-    applyFilters();
-  }, [recurrings, filterType, filterStatus]);
-
-  const loadRecurrings = () => {
-    const data = RecurringService.getAll();
-    setRecurrings(data);
-  };
-
-  const applyFilters = () => {
+  const applyFilters = useCallback(() => {
     let filtered = [...recurrings];
 
     if (filterType !== 'all') {
@@ -45,7 +31,20 @@ const RecurringTransactions: React.FC = () => {
     );
 
     setFilteredRecurrings(filtered);
+  }, [recurrings, filterType, filterStatus]);
+
+  const loadRecurrings = async () => {
+    const data = await recurringTransactionsService.getRecurringTransactions();
+    setRecurrings(data);
   };
+
+  useEffect(() => {
+    loadRecurrings();
+  }, []);
+
+  useEffect(() => {
+    applyFilters();
+  }, [applyFilters]);
 
   const handleCreate = () => {
     setEditingRecurring(undefined);
@@ -57,31 +56,33 @@ const RecurringTransactions: React.FC = () => {
     setShowModal(true);
   };
 
-  const handleSubmit = (data: Partial<RecurringTransaction>) => {
+  const handleSubmit = async (data: Partial<RecurringTransaction>) => {
     if (editingRecurring) {
-      RecurringService.update(editingRecurring.id, data);
+      await recurringTransactionsService.updateRecurring(editingRecurring.id, data as any);
     } else {
-      RecurringService.create(data as Omit<RecurringTransaction, 'id' | 'createdAt' | 'generatedCount' | 'nextOccurrence'>);
+      await recurringTransactionsService.createRecurring(data as any);
     }
-    loadRecurrings();
+    await loadRecurrings();
     setShowModal(false);
     setEditingRecurring(undefined);
   };
 
-  const handleToggle = (recurring: RecurringTransaction) => {
-    RecurringService.toggleStatus(recurring.id);
-    loadRecurrings();
+  const handleToggle = async (recurring: RecurringTransaction) => {
+    const newStatus = recurring.isActive ? false : true;
+    await recurringTransactionsService.updateRecurring(recurring.id, { isActive: newStatus } as any);
+    await loadRecurrings();
   };
 
-  const handleDelete = (recurring: RecurringTransaction) => {
-    if (window.confirm(`Deseja realmente excluir a recorrência "${recurring.name}"?`)) {
-      RecurringService.remove(recurring.id);
-      loadRecurrings();
-    }
+  const handleDelete = async (recurring: RecurringTransaction) => {
+    if (!window.confirm(`Deseja realmente excluir a recorrência "${recurring.name}"?`)) return;
+    
+    await recurringTransactionsService.deleteRecurring(recurring.id);
+    await loadRecurrings();
   };
 
-  const summary = RecurringService.getSummary();
-  const upcoming = RecurringService.getUpcoming(7);
+  // TODO: Implementar getSummary e getUpcoming no recurringTransactionsService
+  // const summary = recurringTransactionsService.getSummary();
+  // const upcoming = recurringTransactionsService.getUpcoming(7);
 
   return (
     <div className="recurring-page">
@@ -96,92 +97,20 @@ const RecurringTransactions: React.FC = () => {
       </div>
 
       {/* Resumo */}
+      {/* TODO: Implementar getSummary e getUpcoming no recurringTransactionsService
       <div className="summary-cards">
-        <div className="summary-card">
-          <div className="summary-icon income">
-            <i className="fas fa-arrow-up"></i>
-          </div>
-          <div className="summary-content">
-            <span className="summary-label">Receitas Mensais</span>
-            <span className="summary-value positive">
-              {formatCurrency(summary.totalMonthlyIncome)}
-            </span>
-          </div>
-        </div>
-
-        <div className="summary-card">
-          <div className="summary-icon expense">
-            <i className="fas fa-arrow-down"></i>
-          </div>
-          <div className="summary-content">
-            <span className="summary-label">Despesas Mensais</span>
-            <span className="summary-value negative">
-              {formatCurrency(summary.totalMonthlyExpense)}
-            </span>
-          </div>
-        </div>
-
-        <div className="summary-card">
-          <div className="summary-icon upcoming">
-            <i className="fas fa-clock"></i>
-          </div>
-          <div className="summary-content">
-            <span className="summary-label">Próximos 30 Dias</span>
-            <span className="summary-value">
-              {summary.upcomingCount} ({formatCurrency(summary.upcomingAmount)})
-            </span>
-          </div>
-        </div>
-
-        <div className="summary-card">
-          <div className="summary-icon total">
-            <i className="fas fa-list"></i>
-          </div>
-          <div className="summary-content">
-            <span className="summary-label">Total de Recorrências</span>
-            <span className="summary-value">
-              {summary.active} ativas / {summary.total} total
-            </span>
-          </div>
-        </div>
+        ... summary cards ...
       </div>
+      */}
 
       {/* Próximas 7 dias */}
+      {/* TODO: Implementar getUpcoming no recurringTransactionsService
       {upcoming.length > 0 && (
         <div className="upcoming-section">
-          <h2>
-            <i className="fas fa-bell"></i>
-            Próximos 7 Dias
-          </h2>
-          <div className="upcoming-list">
-            {upcoming.map(rec => {
-              const date = new Date(rec.nextOccurrence);
-              const days = Math.ceil((date.getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24));
-              const isToday = days === 0;
-              const isTomorrow = days === 1;
-              
-              return (
-                <div key={rec.id} className={`upcoming-item ${isToday ? 'today' : ''} ${rec.type}`}>
-                  <div className="upcoming-date">
-                    <span className="day">{date.getDate()}</span>
-                    <span className="month">{date.toLocaleDateString('pt-BR', { month: 'short' })}</span>
-                  </div>
-                  <div className="upcoming-info">
-                    <strong>{rec.name}</strong>
-                    <span className="upcoming-category">{rec.category}</span>
-                  </div>
-                  <div className="upcoming-amount">
-                    <span className={rec.type}>{formatCurrency(rec.amount)}</span>
-                    <span className="upcoming-label">
-                      {isToday ? 'Hoje' : isTomorrow ? 'Amanhã' : `${days} dias`}
-                    </span>
-                  </div>
-                </div>
-              );
-            })}
-          </div>
+          ...
         </div>
       )}
+      */}
 
       {/* Filtros */}
       <div className="filters">

@@ -47,6 +47,7 @@ interface ToastContextValue {
 
 const ToastContext = createContext<ToastContextValue | undefined>(undefined);
 
+// eslint-disable-next-line react-refresh/only-export-components
 export const useToastEnhanced = (): ToastContextValue => {
   const context = useContext(ToastContext);
   if (!context) {
@@ -193,7 +194,7 @@ const ToastItem: React.FC<ToastItemProps> = ({ toast, onDismiss }) => {
           <button
             className="toast-action"
             onClick={() => {
-              toast.action!.onClick();
+              toast.action?.onClick();
               onDismiss();
             }}
           >

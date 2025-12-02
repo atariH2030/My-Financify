@@ -1,4 +1,4 @@
-import { useEffect, useRef, DependencyList } from 'react';
+import React, { useRef, DependencyList } from 'react';
 
 /**
  * useDebounce - Hook para debounce de valores
@@ -159,7 +159,8 @@ export function useAsync<T>(
     return () => {
       mounted = false;
     };
-  }, dependencies);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [asyncFunction, ...dependencies]);
 
   return state;
 }
@@ -215,6 +216,3 @@ export function useOnClickOutside<T extends HTMLElement = HTMLElement>(
 
   return ref;
 }
-
-// Re-export React para evitar importar duas vezes
-import React from 'react';

@@ -1,7 +1,6 @@
 import React, { useState, useMemo } from 'react';
 import './BudgetsTable.css';
 import Card from '../common/Card';
-import Button from '../common/Button';
 import Tooltip from '../common/Tooltip';
 import { formatCurrency, formatPercentage } from '../../utils/currency';
 import type { Budget } from '../../types/financial.types';
@@ -96,7 +95,7 @@ const BudgetsTable: React.FC<BudgetsTableProps> = ({ budgets, onEdit, onDelete }
       <div className="empty-state">
         <div className="empty-state-icon">💰</div>
         <div className="empty-state-text">Nenhum orçamento cadastrado</div>
-        <div className="empty-state-hint">Clique em "Novo Orçamento" para começar a controlar seus gastos</div>
+        <div className="empty-state-hint">Clique em &quot;Novo Orçamento&quot; para começar a controlar seus gastos</div>
       </div>
     );
   }

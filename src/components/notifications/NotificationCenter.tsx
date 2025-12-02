@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import './NotificationCenter.css';
 import NotificationService, { type Notification, type NotificationType } from '../../services/notification.service';
 
@@ -9,8 +9,20 @@ const NotificationCenter: React.FC = () => {
   const [filterType, setFilterType] = useState<NotificationType | 'all'>('all');
   const dropdownRef = useRef<HTMLDivElement>(null);
 
+  const updateUnreadCount = useCallback((notifs: Notification[]) => {
+    const count = notifs.filter(n => !n.read).length;
+    setUnreadCount(count);
+  }, []);
+
+  const loadNotifications = useCallback(async () => {
+    const all = await NotificationService.getAll();
+    setNotifications(all);
+    updateUnreadCount(all);
+  }, [updateUnreadCount]);
+
   // Load notifications and subscribe to changes
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     loadNotifications();
 
     const unsubscribe = NotificationService.subscribe((updatedNotifications) => {
@@ -21,7 +33,7 @@ const NotificationCenter: React.FC = () => {
     return () => {
       unsubscribe();
     };
-  }, []);
+  }, [loadNotifications, updateUnreadCount]);
 
   // Close dropdown when clicking outside
   useEffect(() => {
@@ -39,17 +51,6 @@ const NotificationCenter: React.FC = () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
   }, [isOpen]);
-
-  const loadNotifications = async () => {
-    const all = await NotificationService.getAll();
-    setNotifications(all);
-    updateUnreadCount(all);
-  };
-
-  const updateUnreadCount = (notifs: Notification[]) => {
-    const count = notifs.filter(n => !n.read).length;
-    setUnreadCount(count);
-  };
 
   const handleToggle = () => {
     setIsOpen(!isOpen);

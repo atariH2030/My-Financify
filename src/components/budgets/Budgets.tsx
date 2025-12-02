@@ -1,54 +1,50 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import './Budgets.css';
 import BudgetsForm from './BudgetsForm';
 import BudgetsTable from './BudgetsTable';
 import Modal from '../common/Modal';
 import Button from '../common/Button';
 import { useToast } from '../common/Toast';
-import StorageService from '../../services/storage.service';
+import { budgetsService } from '../../services/budgets.service';
+import { transactionsService } from '../../services/transactions.service';
 import NotificationService from '../../services/notification.service';
 import type { Budget, Transaction } from '../../types/financial.types';
 
 const Budgets: React.FC = () => {
   const [budgets, setBudgets] = useState<Budget[]>([]);
-  const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingBudget, setEditingBudget] = useState<Budget | undefined>();
   const [isLoading, setIsLoading] = useState(true);
   const { showToast } = useToast();
 
-  // Load budgets and transactions
-  useEffect(() => {
-    loadData();
-  }, []);
-
-  const loadData = async () => {
+  const loadData = useCallback(async () => {
     try {
-      const loadedBudgets = await StorageService.load<Budget[]>('budgets') || [];
-      const loadedTransactions = await StorageService.load<Transaction[]>('transactions') || [];
+      const [loadedBudgets, loadedTransactions] = await Promise.all([
+        budgetsService.getBudgets(),
+        transactionsService.getTransactions()
+      ]);
       
-      // Calculate current spent for each budget
-      const updatedBudgets = loadedBudgets.map((budget: Budget) => {
-        const spent = calculateSpentForBudget(budget, loadedTransactions);
-        return { ...budget, currentSpent: spent };
-      });
-
-      setBudgets(updatedBudgets);
-      setTransactions(loadedTransactions);
+      setBudgets(loadedBudgets);
+      setTransactions(loadedTransactions || []);
     } catch (error) {
       console.error('Error loading data:', error);
       showToast('Erro ao carregar orçamentos', 'error');
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [showToast]);
+
+  // Load budgets and transactions
+  useEffect(() => {
+    loadData();
+  }, [loadData]);
 
   // Calculate spent amount for a budget based on transactions
-  const calculateSpentForBudget = (budget: Budget, allTransactions: Transaction[]): number => {
+  const _calculateSpentForBudget = (budget: Budget, allTransactions: Transaction[]): number => {
     if (budget.status !== 'active') return budget.currentSpent || 0;
 
     const startDate = new Date(budget.startDate);
-    let endDate = new Date(startDate);
+    const endDate = new Date(startDate);
 
     // Calculate end date based on period
     switch (budget.period) {
@@ -80,7 +76,7 @@ const Budgets: React.FC = () => {
   };
 
   // Check budget alerts and notify if necessary
-  const checkBudgetAlerts = (updatedBudgets: Budget[]) => {
+  const _checkBudgetAlerts = (updatedBudgets: Budget[]) => {
     updatedBudgets.forEach(budget => {
       if (budget.status !== 'active') return;
 
@@ -99,71 +95,42 @@ const Budgets: React.FC = () => {
     });
   };
 
-  // Recalculate all budgets when transactions change
-  const recalculateBudgets = async () => {
-    const loadedTransactions = await StorageService.load<Transaction[]>('transactions') || [];
-    const updatedBudgets = budgets.map(budget => {
-      const spent = calculateSpentForBudget(budget, loadedTransactions);
-      return { ...budget, currentSpent: spent };
-    });
-    setBudgets(updatedBudgets);
-    setTransactions(loadedTransactions);
-    
-    // Check alerts for updated budgets
-    checkBudgetAlerts(updatedBudgets);
-    
-    // Save updated budgets
-    await StorageService.save('budgets', updatedBudgets);
-  };
-
   const handleCreate = async (budgetData: Omit<Budget, 'id' | 'createdAt' | 'updatedAt'>) => {
-    const newBudget: Budget = {
-      ...budgetData,
-      id: crypto.randomUUID(),
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString()
-    };
-
-    // Calculate initial spent
-    newBudget.currentSpent = calculateSpentForBudget(newBudget, transactions);
-
-    const updatedBudgets = [...budgets, newBudget];
-    await StorageService.save('budgets', updatedBudgets);
-    setBudgets(updatedBudgets);
-    setIsModalOpen(false);
-    showToast('Orçamento criado com sucesso! 💰', 'success');
+    try {
+      await budgetsService.createBudget(budgetData as any);
+      await loadData();
+      setIsModalOpen(false);
+      showToast(`Orçamento para "${budgetData.category}" criado!`, 'success');
+    } catch (error) {
+      showToast('Erro ao criar orçamento', 'error');
+    }
   };
 
   const handleUpdate = async (budgetData: Omit<Budget, 'id' | 'createdAt' | 'updatedAt'>) => {
     if (!editingBudget) return;
 
-    const updatedBudget: Budget = {
-      ...budgetData,
-      id: editingBudget.id,
-      createdAt: editingBudget.createdAt,
-      updatedAt: new Date().toISOString()
-    };
-
-    // Recalculate spent
-    updatedBudget.currentSpent = calculateSpentForBudget(updatedBudget, transactions);
-
-    const updatedBudgets = budgets.map(b =>
-      b.id === updatedBudget.id ? updatedBudget : b
-    );
-
-    await StorageService.save('budgets', updatedBudgets);
-    setBudgets(updatedBudgets);
-    setIsModalOpen(false);
-    setEditingBudget(undefined);
-    showToast('Orçamento atualizado! ✅', 'success');
+    try {
+      await budgetsService.updateBudget(editingBudget.id, budgetData as any);
+      await loadData();
+      setIsModalOpen(false);
+      setEditingBudget(undefined);
+      showToast('Orçamento atualizado! ✅', 'success');
+    } catch (error) {
+      showToast('Erro ao atualizar orçamento', 'error');
+    }
   };
 
   const handleDelete = async (id: string) => {
     const budget = budgets.find(b => b.id === id);
-    const updatedBudgets = budgets.filter(b => b.id !== id);
-    await StorageService.save('budgets', updatedBudgets);
-    setBudgets(updatedBudgets);
-    showToast(`Orçamento "${budget?.category}" excluído 🗑️`, 'success');
+    if (!confirm(`Tem certeza que deseja excluir o orçamento "${budget?.category}"?`)) return;
+
+    try {
+      await budgetsService.deleteBudget(id);
+      await loadData();
+      showToast(`Orçamento "${budget?.category}" excluído 🗑️`, 'success');
+    } catch (error) {
+      showToast('Erro ao excluir orçamento', 'error');
+    }
   };
 
   const handleEdit = (budget: Budget) => {
@@ -182,7 +149,7 @@ const Budgets: React.FC = () => {
   };
 
   const handleRefresh = () => {
-    recalculateBudgets();
+    loadData();
     showToast('Orçamentos atualizados! 🔄', 'success');
   };
 

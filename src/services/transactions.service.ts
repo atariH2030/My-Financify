@@ -61,7 +61,8 @@ class TransactionsService {
   async createTransaction(data: TransactionInput): Promise<Transaction> {
     const userId = await this.getUserId();
     
-    const transaction: Omit<Transaction, 'id'> = {
+    const transaction: any = {
+      user_id: userId,
       type: data.type,
       amount: data.amount,
       description: data.description,
@@ -338,6 +339,17 @@ class TransactionsService {
   /**
    * Sincronizar transações pendentes
    */
+  /**
+   * Sincronizar transações pendentes (método público)
+   */
+  public async syncPending(): Promise<number> {
+    const queue = await this.getSyncQueue();
+    if (queue.length === 0) return 0;
+    
+    await this.syncPendingTransactions();
+    return queue.length;
+  }
+  
   private async syncPendingTransactions(): Promise<void> {
     const queue = await this.getSyncQueue();
     

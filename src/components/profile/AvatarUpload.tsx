@@ -7,12 +7,18 @@ import React, { useState, useRef, useCallback } from 'react';
 import { Button } from '../common';
 import './AvatarUpload.css';
 
+// Helper para debug logs (apenas em desenvolvimento)
+const debugLog = (...args: any[]) => {
+  if (import.meta.env.VITE_DEBUG_MODE === 'true') {
+    debugLog(...args);
+  }
+};
+
 interface AvatarUploadProps {
   onClose: () => void;
   onSave: (avatarUrl: string) => void;
   currentAvatar?: string;
 }
-
 interface CropState {
   x: number;
   y: number;
@@ -20,7 +26,7 @@ interface CropState {
 }
 
 const AvatarUpload: React.FC<AvatarUploadProps> = ({ onClose, onSave, currentAvatar }) => {
-  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [_selectedFile, setSelectedFile] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string>(currentAvatar || '');
   const [croppedImageUrl, setCroppedImageUrl] = useState<string>('');
   const [step, setStep] = useState<'select' | 'crop' | 'preview'>('select');
@@ -40,24 +46,24 @@ const AvatarUpload: React.FC<AvatarUploadProps> = ({ onClose, onSave, currentAva
   // Limites de tamanho
   const MAX_FILE_SIZE = 2 * 1024 * 1024; // 2MB
   const MIN_DIMENSION = 200; // 200x200 pixels mínimo
-  const MAX_DIMENSION = 4096; // 4096x4096 pixels máximo (padrão web)
+  const _MAX_DIMENSION = 4096; // 4096x4096 pixels máximo (padrão web)
   const CROP_SIZE = 280; // Tamanho da área de crop
 
   // Calcular zoom mínimo para cobrir toda área de crop
-  const calculateMinZoom = (imgWidth: number, imgHeight: number): number => {
+  const _calculateMinZoom = (imgWidth: number, imgHeight: number): number => {
     // Zoom mínimo é o necessário para que a imagem cubra toda a área de crop
     const minZoomWidth = CROP_SIZE / imgWidth;
     const minZoomHeight = CROP_SIZE / imgHeight;
     const calculatedMinZoom = Math.max(minZoomWidth, minZoomHeight);
     
-    console.log('📏 Dimensões da imagem:', imgWidth, 'x', imgHeight);
-    console.log('📐 Zoom mínimo calculado:', calculatedMinZoom.toFixed(2));
+    debugLog('📏 Dimensões da imagem:', imgWidth, 'x', imgHeight);
+    debugLog('📐 Zoom mínimo calculado:', calculatedMinZoom.toFixed(2));
     
     return Math.max(0.1, calculatedMinZoom); // Mínimo absoluto de 0.1
   };
 
   // Calcular zoom máximo baseado no tamanho da imagem
-  const calculateMaxZoom = (imgWidth: number, imgHeight: number): number => {
+  const _calculateMaxZoom = (imgWidth: number, imgHeight: number): number => {
     // Para imagens pequenas, permitir mais zoom
     // Para imagens grandes, limitar o zoom
     const avgDimension = (imgWidth + imgHeight) / 2;
@@ -72,7 +78,7 @@ const AvatarUpload: React.FC<AvatarUploadProps> = ({ onClose, onSave, currentAva
     const file = e.target.files?.[0];
     if (!file) return;
 
-    console.log('📁 Arquivo selecionado:', file.name, file.type, file.size, 'bytes');
+    debugLog('📁 Arquivo selecionado:', file.name, file.type, file.size, 'bytes');
     setError('');
 
     // Validar tipo
@@ -95,10 +101,10 @@ const AvatarUpload: React.FC<AvatarUploadProps> = ({ onClose, onSave, currentAva
     // Validar dimensões
     const img = new Image();
     const objectUrl = URL.createObjectURL(file);
-    console.log('🖼️ Blob URL criada:', objectUrl);
+    debugLog('🖼️ Blob URL criada:', objectUrl);
 
     img.onload = () => {
-      console.log('✅ Imagem carregada:', img.width, 'x', img.height, 'pixels');
+      debugLog('✅ Imagem carregada:', img.width, 'x', img.height, 'pixels');
       
       if (img.width < MIN_DIMENSION || img.height < MIN_DIMENSION) {
         setError(`Imagem muito pequena. Mínimo: ${MIN_DIMENSION}x${MIN_DIMENSION}px`);
@@ -107,7 +113,7 @@ const AvatarUpload: React.FC<AvatarUploadProps> = ({ onClose, onSave, currentAva
       }
 
       // Tudo OK - definir arquivo e preview
-      console.log('✅ Definindo arquivo e preview URL');
+      debugLog('✅ Definindo arquivo e preview URL');
       setSelectedFile(file);
       setPreviewUrl(objectUrl);
       setStep('crop');
@@ -115,7 +121,7 @@ const AvatarUpload: React.FC<AvatarUploadProps> = ({ onClose, onSave, currentAva
     };
 
     img.onerror = () => {
-      console.error('❌ Erro ao carregar imagem');
+      debugLog('❌ Erro ao carregar imagem');
       setError('Erro ao carregar imagem');
       URL.revokeObjectURL(objectUrl);
     };
@@ -135,7 +141,7 @@ const AvatarUpload: React.FC<AvatarUploadProps> = ({ onClose, onSave, currentAva
   const handleDragMove = useCallback((e: MouseEvent) => {
     if (!isDragging || !containerRef.current || !imageRef.current) return;
 
-    const container = containerRef.current.getBoundingClientRect();
+    const _container = containerRef.current.getBoundingClientRect();
     const image = imageRef.current;
     const scaledWidth = image.naturalWidth * crop.scale;
     const scaledHeight = image.naturalHeight * crop.scale;
@@ -237,17 +243,17 @@ const AvatarUpload: React.FC<AvatarUploadProps> = ({ onClose, onSave, currentAva
 
   // Função para recortar imagem (Etapa 1: Crop)
   const handleCropImage = async () => {
-    console.log('✂️ Iniciando recorte da imagem...');
+    debugLog('✂️ Iniciando recorte da imagem...');
     setLoading(true);
     setError('');
 
     try {
       const croppedUrl = await getCroppedImage();
-      console.log('✅ Imagem recortada com sucesso:', croppedUrl.substring(0, 50) + '...');
+      debugLog('✅ Imagem recortada com sucesso:', croppedUrl.substring(0, 50) + '...');
       setCroppedImageUrl(croppedUrl);
       setStep('preview');
     } catch (err) {
-      console.error('❌ Erro ao recortar imagem:', err);
+      debugLog('❌ Erro ao recortar imagem:', err);
       setError('Erro ao recortar imagem. Tente novamente.');
     } finally {
       setLoading(false);
@@ -256,7 +262,7 @@ const AvatarUpload: React.FC<AvatarUploadProps> = ({ onClose, onSave, currentAva
 
   // Função para escolher nova imagem
   const handleChooseNew = () => {
-    console.log('🔄 Escolhendo nova imagem...');
+    debugLog('🔄 Escolhendo nova imagem...');
     
     // Limpar URLs anteriores
     if (previewUrl && previewUrl.startsWith('blob:')) {
@@ -279,10 +285,10 @@ const AvatarUpload: React.FC<AvatarUploadProps> = ({ onClose, onSave, currentAva
 
   // Função para salvar avatar (Etapa 2: Preview)
   const handleSave = async () => {
-    console.log('💾 Tentando salvar avatar...');
+    debugLog('💾 Tentando salvar avatar...');
     
     if (!croppedImageUrl) {
-      console.log('⚠️ Nenhuma imagem recortada');
+      debugLog('⚠️ Nenhuma imagem recortada');
       setError('Recorte a imagem primeiro');
       return;
     }
@@ -291,7 +297,7 @@ const AvatarUpload: React.FC<AvatarUploadProps> = ({ onClose, onSave, currentAva
     setError('');
 
     try {
-      console.log('🔄 Convertendo imagem recortada para base64...');
+      debugLog('🔄 Convertendo imagem recortada para base64...');
       
       // Converter blob URL para base64
       const response = await fetch(croppedImageUrl);
@@ -307,11 +313,11 @@ const AvatarUpload: React.FC<AvatarUploadProps> = ({ onClose, onSave, currentAva
         reader.readAsDataURL(blob);
       });
 
-      console.log('✅ Base64 gerado:', base64String.substring(0, 50) + '...');
+      debugLog('✅ Base64 gerado:', base64String.substring(0, 50) + '...');
 
       // Salvar no localStorage
       localStorage.setItem('user_avatar', base64String);
-      console.log('💾 Avatar salvo no localStorage');
+      debugLog('💾 Avatar salvo no localStorage');
 
       // Limpar URLs temporárias
       if (croppedImageUrl.startsWith('blob:')) {
@@ -323,13 +329,13 @@ const AvatarUpload: React.FC<AvatarUploadProps> = ({ onClose, onSave, currentAva
 
       // Chamar callback
       onSave(base64String);
-      console.log('📡 Callback onSave chamado');
+      debugLog('📡 Callback onSave chamado');
 
       // Fechar modal
       onClose();
-      console.log('✅ Modal fechado');
+      debugLog('✅ Modal fechado');
     } catch (err) {
-      console.error('❌ Erro ao salvar avatar:', err);
+      debugLog('❌ Erro ao salvar avatar:', err);
       setError('Erro ao salvar imagem. Tente novamente.');
     } finally {
       setLoading(false);
@@ -389,9 +395,9 @@ const AvatarUpload: React.FC<AvatarUploadProps> = ({ onClose, onSave, currentAva
                     cursor: isDragging ? 'grabbing' : 'grab',
                   }}
                   onMouseDown={handleDragStart}
-                  onLoad={() => console.log('✅ Imagem carregada com sucesso:', previewUrl)}
+                  onLoad={() => debugLog('✅ Imagem carregada com sucesso:', previewUrl)}
                   onError={(e) => {
-                    console.error('❌ Erro ao carregar imagem:', e);
+                    debugLog('❌ Erro ao carregar imagem:', e);
                     setError('Erro ao carregar imagem. Tente novamente.');
                   }}
                   draggable={false}

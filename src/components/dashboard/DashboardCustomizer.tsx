@@ -1,12 +1,11 @@
 /**
  * @file DashboardCustomizer.tsx
  * @description Modal de personalização do dashboard
- * @version 1.0.0
+ * @version 2.0.0 - Otimizado para performance
  * @author DEV - Rickson (TQM)
  */
 
 import React, { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
 import './DashboardCustomizer.css';
 
 interface Widget {
@@ -93,6 +92,7 @@ const DashboardCustomizer: React.FC<DashboardCustomizerProps> = ({ isOpen, onClo
       const saved = localStorage.getItem('dashboardSettings');
       if (saved) {
         const settings: DashboardSettings = JSON.parse(saved);
+        // eslint-disable-next-line react-hooks/set-state-in-effect
         setWidgets(settings.widgets);
         setLayoutMode(settings.layoutMode || 'grid-medium');
       } else {
@@ -225,18 +225,12 @@ const DashboardCustomizer: React.FC<DashboardCustomizerProps> = ({ isOpen, onClo
   const enabledCount = widgets.filter(w => w.enabled).length;
 
   return (
-    <AnimatePresence>
-      <div className="customizer-overlay" onClick={onClose}>
-        <motion.div
-          className="customizer-modal"
-          onClick={(e) => e.stopPropagation()}
-          initial={{ opacity: 0, scale: 0.9, y: 20 }}
-          animate={{ opacity: 1, scale: 1, y: 0 }}
-          exit={{ opacity: 0, scale: 0.9, y: 20 }}
-          transition={{ type: 'spring', duration: 0.3 }}
-        >
-          {/* Header */}
-          <div className="customizer-header">
+    <div className="customizer-overlay" onClick={onClose}>
+      <div
+        className="customizer-modal"
+        onClick={(e) => e.stopPropagation()}>
+        {/* Header */}
+        <div className="customizer-header">
             <div className="header-content">
               <h2>
                 <i className="fas fa-sliders-h"></i> Personalizar Dashboard
@@ -345,7 +339,7 @@ const DashboardCustomizer: React.FC<DashboardCustomizerProps> = ({ isOpen, onClo
                 </li>
                 <li>
                   <i className="fas fa-save"></i>
-                  <strong>Salvar:</strong> Clique em "Salvar" para aplicar as mudanças
+                  <strong>Salvar:</strong> Clique em &quot;Salvar&quot; para aplicar as mudanças
                 </li>
               </ul>
             </div>
@@ -365,9 +359,8 @@ const DashboardCustomizer: React.FC<DashboardCustomizerProps> = ({ isOpen, onClo
               </button>
             </div>
           </div>
-        </motion.div>
+        </div>
       </div>
-    </AnimatePresence>
   );
 };
 

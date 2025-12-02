@@ -3,7 +3,7 @@
  * v3.0.0 - CRUD Completo com nova estrutura hierárquica + Tabela Híbrida
  */
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import TransactionFormV3 from './TransactionFormV3';
 import TransactionsTable from './TransactionsTable';
@@ -20,15 +20,10 @@ const Transactions: React.FC = () => {
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [editingTransaction, setEditingTransaction] = useState<Transaction | undefined>();
-  const [loading, setLoading] = useState(true);
+  const [_loading, setLoading] = useState(true);
   const { showToast } = useToast();
 
-  // Carregar transações
-  useEffect(() => {
-    loadTransactions();
-  }, []);
-
-  const loadTransactions = async () => {
+  const loadTransactions = useCallback(async () => {
     try {
       setLoading(true);
       const data = await transactionsService.getTransactions();
@@ -40,7 +35,12 @@ const Transactions: React.FC = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [showToast]);
+
+  // Carregar transações
+  useEffect(() => {
+    loadTransactions();
+  }, [loadTransactions]);
 
   const handleCreate = async (data: Omit<Transaction, 'id' | 'createdAt' | 'updatedAt'>) => {
     try {

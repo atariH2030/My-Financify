@@ -171,7 +171,7 @@ const ComponentsExample: React.FC = () => {
         </p>
         <ul>
           <li>✅ <strong>Manutenibilidade:</strong> Código limpo e desacoplado</li>
-          <li>✅ <strong>Reutilização:</strong> DRY (Don't Repeat Yourself)</li>
+          <li>✅ <strong>Reutilização:</strong> DRY (Don&apos;t Repeat Yourself)</li>
           <li>✅ <strong>Acessibilidade:</strong> ARIA labels, keyboard navigation</li>
           <li>✅ <strong>Performance:</strong> CSS otimizado, transições suaves</li>
           <li>✅ <strong>Responsividade:</strong> Mobile-first design</li>

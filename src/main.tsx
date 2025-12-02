@@ -8,9 +8,9 @@ import { AuthProvider } from './contexts/AuthContext';
 import ProtectedRoute from './components/auth/ProtectedRoute';
 import UserHeader from './components/auth/UserHeader';
 import OnlineStatus from './components/common/OnlineStatus';
+import SyncIndicator from './components/common/SyncIndicator';
 
 // App Components
-import Dashboard from './components/dashboard/Dashboard';
 import DashboardV2 from './components/dashboard/DashboardV2';
 import Transactions from './components/transactions/Transactions';
 import Reports from './components/reports/Reports';
@@ -22,9 +22,7 @@ import ProfilePage from './components/profile/ProfilePage';
 import NotificationCenter from './components/notifications/NotificationCenter';
 import Accounts from './components/accounts/Accounts';
 import RecurringTransactions from './components/recurring/RecurringTransactions';
-import { ErrorBoundary, ToastProvider } from './components/common';
-import { ToastEnhancedProvider } from './components/common';
-import { useKeyboardShortcuts, KeyboardShortcutsHelp, type KeyboardShortcut } from './components/common';
+import { ErrorBoundary, ToastProvider, ToastEnhancedProvider, useKeyboardShortcuts, KeyboardShortcutsHelp, type KeyboardShortcut } from './components/common';
 import CommandPalette from './components/common/CommandPalette';
 import Fase2Example from './components/common/Fase2Example';
 
@@ -262,6 +260,9 @@ const App: React.FC = () => {
     <>
       {/* Notification Center - Fixo no canto superior direito */}
       <NotificationCenter />
+      
+      {/* Sync Indicator - Status de sincronização */}
+      <SyncIndicator />
 
       {/* Keyboard Shortcuts Button - Fixo ao lado do NotificationCenter */}
       <button 
@@ -499,8 +500,10 @@ const App: React.FC = () => {
           <OnlineStatus 
             pendingOperations={0}
             onSync={async () => {
-              // TODO: Integrar com ResilientStorage.syncPending()
-              console.log('Sincronizando operações pendentes...');
+              // Sincronização já é feita automaticamente pelo SyncService
+              if (import.meta.env.VITE_DEBUG_MODE === 'true') {
+                console.log('Sincronizando operações pendentes...');
+              }
             }}
           />
         </div>

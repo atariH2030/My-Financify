@@ -1,10 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { motion } from 'framer-motion';
 import Card from '../common/Card';
 import Button from '../common/Button';
 import Input from '../common/Input';
 import { useToast } from '../common/Toast';
-import SettingsService, { type AppSettings, type CustomCategory } from '../../services/settings.service';
+import SettingsService, { type AppSettings } from '../../services/settings.service';
 import './Settings.css';
 
 type Tab = 'profile' | 'notifications' | 'preferences' | 'categories' | 'data';
@@ -16,12 +16,7 @@ const Settings: React.FC = () => {
   const [stats, setStats] = useState<any>(null);
   const { showToast } = useToast();
 
-  useEffect(() => {
-    loadSettings();
-    loadStats();
-  }, []);
-
-  const loadSettings = async () => {
+  const loadSettings = useCallback(async () => {
     try {
       const data = await SettingsService.getSettings();
       setSettings(data);
@@ -30,12 +25,17 @@ const Settings: React.FC = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [showToast]);
 
   const loadStats = async () => {
     const data = await SettingsService.getSystemStats();
     setStats(data);
   };
+
+  useEffect(() => {
+    loadSettings();
+    loadStats();
+  }, [loadSettings]);
 
   const handleProfileSave = async (e: React.FormEvent) => {
     e.preventDefault();

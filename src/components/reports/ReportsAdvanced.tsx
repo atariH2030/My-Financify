@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, LineElement, PointElement, Title, Tooltip, Legend, ArcElement } from 'chart.js';
+import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, LineElement, PointElement, Title, Tooltip, Legend, ArcElement, Filler } from 'chart.js';
 import { Bar, Line, Doughnut } from 'react-chartjs-2';
 import Card from '../common/Card';
 import Button from '../common/Button';
@@ -9,7 +9,7 @@ import { formatCurrency, formatPercentage } from '../../utils/currency';
 import type { Transaction, Budget, FinancialGoal } from '../../types/financial.types';
 import './ReportsAdvanced.css';
 
-ChartJS.register(CategoryScale, LinearScale, BarElement, LineElement, PointElement, Title, Tooltip, Legend, ArcElement);
+ChartJS.register(CategoryScale, LinearScale, BarElement, LineElement, PointElement, Title, Tooltip, Legend, ArcElement, Filler);
 
 interface MonthlyData {
   month: string;
@@ -31,7 +31,7 @@ const ReportsAdvanced: React.FC = () => {
   const [budgets, setBudgets] = useState<Budget[]>([]);
   const [goals, setGoals] = useState<FinancialGoal[]>([]);
   const [period, setPeriod] = useState<'6months' | '12months' | 'all'>('6months');
-  const [selectedCategory, setSelectedCategory] = useState<string>('all');
+  const [_selectedCategory, _setSelectedCategory] = useState<string>('all');
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -72,10 +72,10 @@ const ReportsAdvanced: React.FC = () => {
       const key = date.toLocaleDateString('pt-BR', { month: 'short', year: 'numeric' });
       
       if (monthlyMap.has(key)) {
-        const data = monthlyMap.get(key)!;
-        if (t.type === 'income') {
+        const data = monthlyMap.get(key);
+        if (data && t.type === 'income') {
           data.income += t.amount;
-        } else {
+        } else if (data) {
           data.expenses += t.amount;
         }
       }

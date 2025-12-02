@@ -8,7 +8,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import Card from '../common/Card';
 import Button from '../common/Button';
 import Input from '../common/Input';
-import { formatCurrency } from '../../utils/performance';
+import { formatCurrency } from '../../utils/currency';
 import { formatRelativeDate } from '../../utils/date';
 import type { Transaction } from '../../types/financial.types';
 import './TransactionList.css';

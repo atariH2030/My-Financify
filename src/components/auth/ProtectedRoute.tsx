@@ -3,7 +3,7 @@
  * Componente que protege rotas, permitindo acesso apenas para usuários autenticados
  */
 
-import React, { useEffect } from 'react';
+import React from 'react';
 import { useAuth } from '../../contexts/AuthContext';
 import Login from '../auth/Login';
 import './ProtectedRoute.css';

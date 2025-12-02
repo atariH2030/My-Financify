@@ -5,7 +5,7 @@
  * @author DEV - Rickson (TQM)
  */
 
-import React, { useState, useEffect, useRef, useMemo } from 'react';
+import React, { useState, useEffect, useRef, useMemo, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import './CommandPalette.css';
 
@@ -237,6 +237,16 @@ const CommandPalette: React.FC<CommandPaletteProps> = ({ isOpen, onClose, onNavi
     }
   }, [isOpen]);
 
+  // Executar comando e salvar histórico
+  const executeCommand = useCallback((command: CommandItem) => {
+    // Salvar nos recentes
+    const updated = [searchTerm, ...recentSearches.filter(s => s !== searchTerm)].slice(0, 5);
+    setRecentSearches(updated);
+    localStorage.setItem('commandPaletteRecent', JSON.stringify(updated));
+    
+    command.action();
+  }, [searchTerm, recentSearches]);
+
   // Navegação por teclado
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -268,7 +278,7 @@ const CommandPalette: React.FC<CommandPaletteProps> = ({ isOpen, onClose, onNavi
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [isOpen, filteredCommands, selectedIndex, onClose]);
+  }, [isOpen, filteredCommands, selectedIndex, onClose, executeCommand]);
 
   // Scroll automático para item selecionado
   useEffect(() => {
@@ -282,15 +292,6 @@ const CommandPalette: React.FC<CommandPaletteProps> = ({ isOpen, onClose, onNavi
       }
     }
   }, [selectedIndex]);
-
-  const executeCommand = (command: CommandItem) => {
-    // Salvar nos recentes
-    const updated = [searchTerm, ...recentSearches.filter(s => s !== searchTerm)].slice(0, 5);
-    setRecentSearches(updated);
-    localStorage.setItem('commandPaletteRecent', JSON.stringify(updated));
-    
-    command.action();
-  };
 
   const categoryLabels: Record<string, string> = {
     navigation: '🧭 Navegação',
@@ -342,7 +343,7 @@ const CommandPalette: React.FC<CommandPaletteProps> = ({ isOpen, onClose, onNavi
                 return (
                   <div key={category} className="command-palette-category">
                     <div className="category-label">{categoryLabels[category]}</div>
-                    {items.map((command, index) => {
+                    {items.map((command, _index) => {
                       const globalIndex = filteredCommands.indexOf(command);
                       return (
                         <div

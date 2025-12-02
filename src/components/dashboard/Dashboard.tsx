@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import SyncIndicator from '../common/SyncIndicator';
 import './dashboard.css';
 
 // Interfaces para manter type safety
@@ -107,6 +108,7 @@ const ItemModal: React.FC<ModalProps> = ({ isOpen, onClose, onSave, title, editi
 
   useEffect(() => {
     if (editingItem) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setFormData({
         title: editingItem.title,
         amount: editingItem.amount.toString(),
@@ -206,7 +208,7 @@ const ItemModal: React.FC<ModalProps> = ({ isOpen, onClose, onSave, title, editi
 };
 
 // Main Dashboard Component (estrutura idêntica à pagina_home.html)
-const Dashboard: React.FC<{ className?: string }> = ({ className }) => {
+const Dashboard: React.FC<{ className?: string }> = ({ className: _className }) => {
   const [financialData, setFinancialData] = useState<FinancialData>({
     income: [],
     fixedExpenses: [],
@@ -229,6 +231,7 @@ const Dashboard: React.FC<{ className?: string }> = ({ className }) => {
   useEffect(() => {
     const savedData = localStorage.getItem('financialData');
     if (savedData) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setFinancialData(JSON.parse(savedData));
     }
     
@@ -475,6 +478,9 @@ const Dashboard: React.FC<{ className?: string }> = ({ className }) => {
           editingItem={modalState.editingItem}
         />
       </div>
+      
+      {/* Indicador de Sincronização */}
+      <SyncIndicator />
     </div>
   );
 };

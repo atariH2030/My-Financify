@@ -9,7 +9,6 @@ import React, { useState, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Button from '../common/Button';
 import Card from '../common/Card';
-import { Tooltip } from '../common';
 import type { FinancialGoal, GoalType } from '../../types/financial.types';
 import { formatCurrency, formatPercentage } from '../../utils/currency';
 import { formatDate } from '../../utils/date';

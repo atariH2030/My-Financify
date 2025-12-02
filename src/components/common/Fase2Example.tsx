@@ -132,16 +132,16 @@ export const Fase2Example: React.FC = () => {
               title="Nenhuma transação encontrada"
               description="Comece criando sua primeira transação para acompanhar suas finanças de forma organizada."
               primaryAction={{
-                label: "Nova Transação",
+                label: 'Nova Transação',
                 onClick: handleCreate
               }}
               secondaryAction={{
-                label: "Importar planilha",
+                label: 'Importar planilha',
                 onClick: () => toast.info('Funcionalidade em desenvolvimento')
               }}
               helpLink={{
-                label: "Como funciona?",
-                href: "#"
+                label: 'Como funciona?',
+                href: '#'
               }}
             />
           ) : (

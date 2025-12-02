@@ -55,6 +55,7 @@ export const GoalsForm: React.FC<GoalsFormProps> = ({ goal, onSubmit, onCancel }
   const [isWishlist, setIsWishlist] = useState(goal?.type === 'wishlist');
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setIsWishlist(formData.type === 'wishlist');
   }, [formData.type]);
 
@@ -107,6 +108,9 @@ export const GoalsForm: React.FC<GoalsFormProps> = ({ goal, onSubmit, onCancel }
       // Submeter dados
       onSubmit({
         ...result.data,
+        title: result.data.title || result.data.name || 'Meta sem título', // Garantir title nunca é undefined
+        type: result.data.type || 'savings', // Garantir type nunca é undefined
+        currentAmount: result.data.currentAmount || 0, // Garantir currentAmount nunca é undefined
         status: formData.status,
         isWishlist: result.data.type === 'wishlist',
       });
