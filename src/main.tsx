@@ -9,11 +9,13 @@ import ProtectedRoute from './components/auth/ProtectedRoute';
 import UserHeader from './components/auth/UserHeader';
 import OnlineStatus from './components/common/OnlineStatus';
 import SyncIndicator from './components/common/SyncIndicator';
+import OfflineIndicator from './components/common/OfflineIndicator';
 
 // Core Components (carregados imediatamente)
 import { ErrorBoundary, ToastProvider, ToastEnhancedProvider, useKeyboardShortcuts, KeyboardShortcutsHelp, type KeyboardShortcut } from './components/common';
 import CommandPalette from './components/common/CommandPalette';
 import GlobalCommandPalette from './components/common/GlobalCommandPalette';
+import ThemeCustomizer from './components/common/ThemeCustomizer';
 
 // Lazy Loading Components (carregados sob demanda)
 const DashboardV2 = lazy(() => import('./components/dashboard/DashboardV2'));
@@ -62,6 +64,7 @@ const App: React.FC = () => {
   const [showShortcutsHelp, setShowShortcutsHelp] = React.useState(false);
   const [showCommandPalette, setShowCommandPalette] = React.useState(false);
   const [showGlobalCommandPalette, setShowGlobalCommandPalette] = React.useState(false);
+  const [showThemeCustomizer, setShowThemeCustomizer] = React.useState(false);
   const [theme, setTheme] = React.useState(() => {
     return localStorage.getItem('theme') || 'light';
   });
@@ -205,6 +208,14 @@ const App: React.FC = () => {
       action: toggleTheme,
       category: 'actions',
     },
+    {
+      key: 't',
+      ctrl: true,
+      shift: true,
+      description: 'Abrir Customizador de Tema',
+      action: () => setShowThemeCustomizer(true),
+      category: 'actions',
+    },
     // Geral
     {
       key: '/',
@@ -233,6 +244,7 @@ const App: React.FC = () => {
       action: () => {
         setShowShortcutsHelp(false);
         setShowGlobalCommandPalette(false);
+        setShowThemeCustomizer(false);
       },
       category: 'general',
     },
@@ -588,6 +600,15 @@ const App: React.FC = () => {
           }
         }}
       />
+
+      {/* Theme Customizer - Personalização de Temas (Ctrl+Shift+T) */}
+      <ThemeCustomizer
+        isOpen={showThemeCustomizer}
+        onClose={() => setShowThemeCustomizer(false)}
+      />
+
+      {/* Offline Indicator - Status de conexão e sync */}
+      <OfflineIndicator />
     </>
   );
 };

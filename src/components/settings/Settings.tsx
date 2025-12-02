@@ -6,6 +6,7 @@ import Input from '../common/Input';
 import { useToast } from '../common/Toast';
 import SettingsService, { type AppSettings } from '../../services/settings.service';
 import AIService from '../../services/ai.service';
+import SettingsBackupService from '../../services/settings-backup.service';
 import type { AIProviderConfig } from '../../types/ai.types';
 import './Settings.css';
 
@@ -516,27 +517,88 @@ const Settings: React.FC = () => {
               {/* Actions */}
               <div className="data-actions">
                 <div className="action-group">
-                  <h3>Backup dos Dados</h3>
-                  <p>Exporte todos os seus dados para um arquivo JSON</p>
-                  <Button onClick={handleExportData} variant="primary">
-                    <i className="fas fa-download"></i> Exportar Backup
+                  <h3>🔐 Backup Completo (Configurações)</h3>
+                  <p>Exporte todas as suas configurações e preferências (sem dados financeiros)</p>
+                  <Button onClick={async () => {
+                    try {
+                      await SettingsBackupService.downloadBackup(false);
+                      showToast('Backup de configurações baixado!', 'success');
+                    } catch (error) {
+                      showToast('Erro ao exportar configurações', 'error');
+                    }
+                  }} variant="primary">
+                    <i className="fas fa-download"></i> Exportar Configurações
                   </Button>
                 </div>
 
                 <div className="action-group">
-                  <h3>Restaurar Backup</h3>
-                  <p>Importe um arquivo de backup anteriormente exportado</p>
+                  <h3>💾 Backup Completo (Tudo)</h3>
+                  <p>Exporte TODAS configurações E dados financeiros (contas, budgets, metas)</p>
+                  <Button onClick={async () => {
+                    try {
+                      await SettingsBackupService.downloadBackup(true);
+                      showToast('Backup completo baixado!', 'success');
+                    } catch (error) {
+                      showToast('Erro ao exportar dados', 'error');
+                    }
+                  }} variant="primary">
+                    <i className="fas fa-download"></i> Exportar Tudo
+                  </Button>
+                </div>
+
+                <div className="action-group">
+                  <h3>📤 Restaurar Backup</h3>
+                  <p>Importe um arquivo de backup (configurações ou completo)</p>
                   <label className="file-input-label">
                     <input
                       type="file"
                       accept=".json"
-                      onChange={handleImportData}
+                      onChange={async (e) => {
+                        const file = e.target.files?.[0];
+                        if (!file) return;
+                        
+                        try {
+                          await SettingsBackupService.uploadBackup(file);
+                          showToast('Backup restaurado com sucesso!', 'success');
+                          setTimeout(() => window.location.reload(), 1500);
+                        } catch (error) {
+                          showToast('Erro ao restaurar backup: ' + (error as Error).message, 'error');
+                        }
+                      }}
                       style={{ display: 'none' }}
                     />
                     <Button variant="secondary">
                       <i className="fas fa-upload"></i> Importar Backup
                     </Button>
                   </label>
+                </div>
+
+                <div className="action-group">
+                  <h3>⚡ Backup Automático Local</h3>
+                  <p>Restaurar última versão salva automaticamente no navegador</p>
+                  <Button onClick={async () => {
+                    try {
+                      const success = await SettingsBackupService.restoreAutoBackup();
+                      if (success) {
+                        showToast('Backup automático restaurado!', 'success');
+                        setTimeout(() => window.location.reload(), 1500);
+                      } else {
+                        showToast('Nenhum backup automático encontrado', 'warning');
+                      }
+                    } catch (error) {
+                      showToast('Erro ao restaurar backup automático', 'error');
+                    }
+                  }} variant="secondary">
+                    <i className="fas fa-history"></i> Restaurar Auto-Backup
+                  </Button>
+                </div>
+
+                <div className="action-group">
+                  <h3>📊 Backup de Dados Brutos (JSON)</h3>
+                  <p>Exportar dados financeiros para análise externa (formato antigo)</p>
+                  <Button onClick={handleExportData} variant="secondary">
+                    <i className="fas fa-file-code"></i> Exportar JSON
+                  </Button>
                 </div>
 
                 <div className="action-group danger">
