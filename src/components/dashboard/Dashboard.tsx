@@ -1,5 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import SyncIndicator from '../common/SyncIndicator';
+import AIFloatingButton from '../ai/AIFloatingButton';
+import AIChat from '../ai/AIChat';
+import AIInsights from '../ai/AIInsights';
+import AIService from '../../services/ai.service';
+import type { AIContext } from '../../types/ai.types';
 import './dashboard.css';
 
 // Interfaces para manter type safety
@@ -227,6 +232,11 @@ const Dashboard: React.FC<{ className?: string }> = ({ className: _className }) 
     editingItem: null as FinancialItem | null
   });
 
+  // Estados da IA
+  const [isChatOpen, setIsChatOpen] = useState(false);
+  const [showInsights, setShowInsights] = useState(false);
+  const [hasNewInsights, setHasNewInsights] = useState(false);
+
   // Load data from localStorage on mount (implementação do base.js)
   useEffect(() => {
     const savedData = localStorage.getItem('financialData');
@@ -249,6 +259,70 @@ const Dashboard: React.FC<{ className?: string }> = ({ className: _className }) 
   // Save data to localStorage whenever financialData changes (como no base.js)
   useEffect(() => {
     localStorage.setItem('financialData', JSON.stringify(financialData));
+  }, [financialData]);
+
+  // Verificar insights da IA periodicamente
+  useEffect(() => {
+    const checkInsights = async () => {
+      try {
+        const isConfigured = await AIService.isConfigured();
+        if (isConfigured) {
+          const insights = await AIService.getInsights();
+          const unreadInsights = insights.filter(i => 
+            i.priority === 'high' || i.priority === 'medium'
+          );
+          setHasNewInsights(unreadInsights.length > 0);
+        }
+      } catch (error) {
+        console.error('Erro ao verificar insights:', error);
+      }
+    };
+
+    checkInsights();
+    const interval = setInterval(checkInsights, 60000); // A cada minuto
+    return () => clearInterval(interval);
+  }, []);
+
+  // Construir contexto financeiro para IA
+  const buildAIContext = useCallback((): AIContext => {
+    const totalIncome = financialData.income.reduce((sum, item) => sum + item.amount, 0);
+    const totalFixedExpenses = financialData.fixedExpenses.reduce((sum, item) => sum + item.amount, 0);
+    const totalVariableExpenses = financialData.variableExpenses.reduce((sum, item) => sum + item.amount, 0);
+    const totalExpenses = totalFixedExpenses + totalVariableExpenses;
+
+    const byCategory: Record<string, number> = {};
+    [...financialData.fixedExpenses, ...financialData.variableExpenses].forEach(item => {
+      const category = item.title.split(' ')[0]; // Categoria simplificada
+      byCategory[category] = (byCategory[category] || 0) + item.amount;
+    });
+
+    return {
+      userId: 'current_user',
+      timeRange: {
+        start: new Date(new Date().getFullYear(), new Date().getMonth(), 1).toISOString(),
+        end: new Date().toISOString(),
+      },
+      transactions: {
+        total: financialData.income.length + financialData.fixedExpenses.length + financialData.variableExpenses.length,
+        income: totalIncome,
+        expenses: totalExpenses,
+        byCategory,
+      },
+      budgets: {
+        total: totalIncome,
+        used: totalExpenses,
+        percentage: totalIncome > 0 ? (totalExpenses / totalIncome) * 100 : 0,
+        alerts: totalExpenses > totalIncome * 0.8 ? 1 : 0,
+      },
+      patterns: {
+        topCategories: Object.entries(byCategory)
+          .sort(([, a], [, b]) => b - a)
+          .slice(0, 3)
+          .map(([cat]) => cat),
+        avgMonthlySpending: totalExpenses,
+        recurringTransactions: financialData.fixedExpenses.length,
+      },
+    };
   }, [financialData]);
 
   const openModal = (type: 'income' | 'fixedExpenses' | 'variableExpenses', editingItem?: FinancialItem) => {
@@ -481,6 +555,33 @@ const Dashboard: React.FC<{ className?: string }> = ({ className: _className }) 
       
       {/* Indicador de Sincronização */}
       <SyncIndicator />
+
+      {/* Botão Flutuante da IA */}
+      <AIFloatingButton 
+        onClick={() => setIsChatOpen(true)}
+        hasNewInsights={hasNewInsights}
+      />
+
+      {/* Modal de Chat IA */}
+      {isChatOpen && (
+        <div className="ai-modal-overlay" onClick={(e) => {
+          if (e.target === e.currentTarget) setIsChatOpen(false);
+        }}>
+          <div className="ai-modal-content">
+            <AIChat 
+              context={buildAIContext()}
+              onClose={() => setIsChatOpen(false)}
+            />
+          </div>
+        </div>
+      )}
+
+      {/* Widget de Insights (opcional, pode ser adicionado no grid depois) */}
+      {showInsights && (
+        <div className="ai-insights-container">
+          <AIInsights onOpenChat={() => setIsChatOpen(true)} />
+        </div>
+      )}
     </div>
   );
 };
