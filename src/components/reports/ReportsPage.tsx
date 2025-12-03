@@ -16,6 +16,7 @@ import { transactionsService } from '../../services/transactions.service';
 import { budgetsService } from '../../services/budgets.service';
 import { formatCurrency } from '../../utils/currency';
 import Logger from '../../services/logger.service';
+import ExportService from '../../services/export.service';
 import type { Transaction, Budget } from '../../types/financial.types';
 import './ReportsPage.css';
 
@@ -24,6 +25,7 @@ const ReportsPage: React.FC = () => {
   const [budgets, setBudgets] = useState<Budget[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedPeriod, setSelectedPeriod] = useState<'3m' | '6m' | '12m'>('6m');
+  const [isExporting, setIsExporting] = useState(false);
 
   useEffect(() => {
     loadData();
@@ -187,6 +189,60 @@ const ReportsPage: React.FC = () => {
     return { income, expense, balance, savingsRate };
   };
 
+  /**
+   * Exporta relatório em PDF
+   */
+  const handleExportPDF = async () => {
+    try {
+      setIsExporting(true);
+      Logger.info('Iniciando exportação de PDF', {}, 'REPORTS');
+
+      const result = await ExportService.export({
+        format: 'pdf',
+        dataType: 'transactions',
+        includeMetadata: true,
+        fileName: `relatorio-${new Date().toISOString().split('T')[0]}.pdf`,
+      });
+
+      if (result.success) {
+        Logger.info('PDF exportado com sucesso', result, 'REPORTS');
+      } else {
+        Logger.error('Erro ao exportar PDF', new Error(result.error || 'Unknown error'), 'REPORTS');
+      }
+    } catch (error) {
+      Logger.error('Erro ao exportar PDF', error as Error, 'REPORTS');
+    } finally {
+      setIsExporting(false);
+    }
+  };
+
+  /**
+   * Exporta relatório em Excel
+   */
+  const handleExportExcel = async () => {
+    try {
+      setIsExporting(true);
+      Logger.info('Iniciando exportação de Excel', {}, 'REPORTS');
+
+      const result = await ExportService.export({
+        format: 'excel',
+        dataType: 'transactions',
+        includeMetadata: true,
+        fileName: `relatorio-${new Date().toISOString().split('T')[0]}.xlsx`,
+      });
+
+      if (result.success) {
+        Logger.info('Excel exportado com sucesso', result, 'REPORTS');
+      } else {
+        Logger.error('Erro ao exportar Excel', new Error(result.error || 'Unknown error'), 'REPORTS');
+      }
+    } catch (error) {
+      Logger.error('Erro ao exportar Excel', error as Error, 'REPORTS');
+    } finally {
+      setIsExporting(false);
+    }
+  };
+
   if (loading) {
     return (
       <div className="reports-loading">
@@ -293,16 +349,26 @@ const ReportsPage: React.FC = () => {
 
       {/* Export Actions */}
       <div className="export-actions">
-        <button className="export-btn" disabled>
-          📄 Exportar PDF
+        <button 
+          className="export-btn" 
+          onClick={handleExportPDF}
+          disabled={isExporting || transactions.length === 0}
+        >
+          📄 {isExporting ? 'Exportando...' : 'Exportar PDF'}
         </button>
-        <button className="export-btn" disabled>
-          📊 Exportar Excel
+        <button 
+          className="export-btn" 
+          onClick={handleExportExcel}
+          disabled={isExporting || transactions.length === 0}
+        >
+          📊 {isExporting ? 'Exportando...' : 'Exportar Excel'}
         </button>
         <button className="export-btn" disabled>
           📧 Enviar por Email
         </button>
-        <p className="export-note">💡 Exportação disponível na próxima feature</p>
+        {transactions.length === 0 && (
+          <p className="export-note">💡 Adicione transações para exportar relatórios</p>
+        )}
       </div>
     </motion.div>
   );
