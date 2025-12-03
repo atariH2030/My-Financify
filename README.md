@@ -2,13 +2,22 @@
 
 Sistema completo de gestão financeira pessoal com dashboard interativo, relatórios avançados e integração Azure.
 
+**Versão Atual**: `v3.12.0` | **Status**: ✅ Produção
+
 ## 🚀 Tech Stack Moderna
 
 ### Frontend
-- **React 18** + **TypeScript 5.3** - Type safety e performance
-- **Vite 7.2** - Build tool ultra-rápida com HMR
-- **Chart.js 4.5** - Visualizações financeiras interativas
+- **React 18** + **TypeScript 5.9** - Type safety e performance
+- **Vite 7.2** - Build tool ultra-rápida com HMR (< 12s)
+- **Chart.js 4.5** + **Recharts** - Visualizações financeiras interativas
+- **Framer Motion** - Animações fluidas e profissionais
 - **CSS Variables** - Design system profissional e responsivo
+
+### Backend & Storage
+- **Supabase** (PostgreSQL) - Database gerenciado
+- **IndexedDB (Dexie)** - Cache local e offline-first
+- **Web Push API** - Notificações em tempo real
+- **Service Worker** - PWA com precache otimizado (2.1 MB)
 
 ### Design System
 - 🎨 **16 cores profissionais** migradas do sistema legacy
@@ -20,17 +29,43 @@ Sistema completo de gestão financeira pessoal com dashboard interativo, relató
 
 ## 📊 Funcionalidades
 
-### Dashboard Principal
+### Dashboard Principal (v3.12.0)
 - **KPI Cards** com métricas financeiras em tempo real
-- **Gráficos interativos** de receitas, despesas e investimentos
+- **Gráficos interativos com drill-down** (Sprint 6.2)
+- **Widgets customizáveis** com drag & drop (Sprint 6.1)
 - **Overview de contas** com saldos atualizados
 - **Quick actions** para transações rápidas
 
-### Módulo de Relatórios
-- **Filtros avançados** por período, categoria e tipo
+### Módulo de Relatórios Avançados
+- **Filtros avançados** com query builder (Sprint 6.3)
+- **Export PDF** com 5 templates profissionais (Sprint 6.4)
+  - Relatório de Transações
+  - Análise de Orçamentos
+  - Progresso de Metas
+  - Tendências por Categoria
+  - Comparativo Mensal (Receitas vs Despesas)
 - **Export Excel/CSV** para análise externa
-- **Integração Power BI** para dashboards corporativos
 - **Tabelas de transações** com busca e ordenação
+
+### Sistema Multi-idioma (v3.11.0)
+- 🇧🇷 **Português (pt-BR)** - Padrão
+- 🇺🇸 **English (en-US)**
+- 🇪🇸 **Español (es-ES)**
+- Formatação automática de moeda, data e números
+- Detecção automática do idioma do navegador
+
+### Notificações Push (v3.11.0)
+- 📊 **Alertas de orçamento** (quando ultrapassar 80%)
+- 🎯 **Metas alcançadas** com celebração visual
+- 🔄 **Transações recorrentes** (lembretes automáticos)
+- 💡 **Insights financeiros** (análises da IA)
+- ✅ **Confirmação de sync** com Supabase
+
+### Analytics com IA (v3.11.0)
+- Dashboard dedicado com métricas de uso
+- Top 5 features mais utilizadas
+- Insights por prioridade (alta/média/baixa)
+- Histórico de 30 dias de interações
 
 ### 🎛️ Sistema de Navegação Avançado
 - **Sidebar Responsivo** com estados inteligentes:
@@ -168,7 +203,14 @@ npm run lint
 - `feature/*` - Novas funcionalidades
 - `hotfix/*` - Correções urgentes
 
-## ⚡ Melhorias de Performance & UX
+## ⚡ Melhorias de Performance & UX (Sprint 6.5)
+
+### Performance Optimization
+- **React.memo**: Componentes otimizados (InteractiveChart)
+- **useMemo**: Cálculos pesados memoizados (5 em ReportsAdvanced)
+- **useCallback**: Event handlers estáveis (11 callbacks aplicados)
+- **Build Time**: 11.98s (otimizado)
+- **Bundle Size**: 610.87 kB (171.62 kB gzipped)
 
 ### Sistema Layout Responsivo
 - **3 breakpoints otimizados**: Desktop (≥1200px), Médio (769-1199px), Mobile (≤768px)
@@ -185,8 +227,9 @@ npm run lint
 ### Developer Experience
 - **Hot Module Replacement**: Atualizações instantâneas durante desenvolvimento
 - **Type Safety**: TypeScript strict com interfaces completas
-- **Build otimizado**: Bundle final de apenas 205KB (minified)
+- **Build otimizado**: Bundle final de 610 KB (171 KB gzipped)
 - **Error handling**: Sistema robusto de tratamento de erros
+- **0 TypeScript errors**: Build sempre limpo
 
 ## 📄 Licença
 

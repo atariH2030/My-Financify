@@ -1,6 +1,6 @@
 {
   "name": "financy-life",
-  "version": "3.11.7",
+  "version": "3.12.0",
   "description": "Sistema de gestão financeira pessoal com arquitetura moderna, robusta e otimizada",
   "type": "module",
   "scripts": {
