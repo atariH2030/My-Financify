@@ -17,6 +17,7 @@ import CommandPalette from './components/common/CommandPalette';
 import GlobalCommandPalette from './components/common/GlobalCommandPalette';
 import ThemeCustomizer from './components/common/ThemeCustomizer';
 import LanguageSelector from './components/common/LanguageSelector';
+import WidgetCustomizer from './components/dashboard/WidgetCustomizer';
 
 // Lazy Loading Components (carregados sob demanda)
 const DashboardV2 = lazy(() => import('./components/dashboard/DashboardV2'));
@@ -67,6 +68,7 @@ const App: React.FC = () => {
   const [showCommandPalette, setShowCommandPalette] = React.useState(false);
   const [showGlobalCommandPalette, setShowGlobalCommandPalette] = React.useState(false);
   const [showThemeCustomizer, setShowThemeCustomizer] = React.useState(false);
+  const [showWidgetCustomizer, setShowWidgetCustomizer] = React.useState(false);
   const [theme, setTheme] = React.useState(() => {
     return localStorage.getItem('theme') || 'light';
   });
@@ -223,6 +225,13 @@ const App: React.FC = () => {
       shift: true,
       description: 'Abrir Customizador de Tema',
       action: () => setShowThemeCustomizer(true),
+      category: 'actions',
+    },
+    {
+      key: 'w',
+      ctrl: true,
+      description: 'Customizar Widgets do Dashboard',
+      action: () => setShowWidgetCustomizer(true),
       category: 'actions',
     },
     // Geral
@@ -634,6 +643,18 @@ const App: React.FC = () => {
       <ThemeCustomizer
         isOpen={showThemeCustomizer}
         onClose={() => setShowThemeCustomizer(false)}
+      />
+
+      {/* Widget Customizer - Sprint 6.1 (Ctrl+W) */}
+      <WidgetCustomizer
+        isOpen={showWidgetCustomizer}
+        onClose={() => setShowWidgetCustomizer(false)}
+        onApply={() => {
+          // Refresh dashboard widgets
+          if (currentPage === 'dashboard') {
+            window.location.reload();
+          }
+        }}
       />
 
       {/* Offline Indicator - Status de conexão e sync */}
