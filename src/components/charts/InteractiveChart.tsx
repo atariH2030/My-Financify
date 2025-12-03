@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import './InteractiveChart.css';
 
@@ -10,6 +10,11 @@ import './InteractiveChart.css';
  * - Navegação entre níveis (breadcrumb)
  * - Animações suaves
  * - Suporte a múltiplos níveis de detalhe
+ * 
+ * PERFORMANCE OPTIMIZATION (Sprint 6.5):
+ * - React.memo para evitar re-renders desnecessários
+ * - useMemo para cálculos de máximo valor
+ * - useCallback para funções de evento
  */
 
 export interface ChartDataPoint {
@@ -28,7 +33,7 @@ interface InteractiveChartProps {
   onDrillDown?: (dataPoint: ChartDataPoint, level: number) => void;
 }
 
-const InteractiveChart: React.FC<InteractiveChartProps> = ({
+const InteractiveChart: React.FC<InteractiveChartProps> = React.memo(({
   data,
   title,
   type = 'bar',
@@ -39,7 +44,12 @@ const InteractiveChart: React.FC<InteractiveChartProps> = ({
     { label: title, data },
   ]);
 
-  const handleDrillDown = (dataPoint: ChartDataPoint) => {
+  // Memoize max value calculation para evitar recalcular em cada render
+  const maxValue = useMemo(() => {
+    return Math.max(...currentData.map((d) => d.value));
+  }, [currentData]);
+
+  const handleDrillDown = useCallback((dataPoint: ChartDataPoint) => {
     if (!dataPoint.children || dataPoint.children.length === 0) return;
 
     const newBreadcrumb = [...breadcrumb, { label: dataPoint.label, data: dataPoint.children }];
@@ -49,15 +59,13 @@ const InteractiveChart: React.FC<InteractiveChartProps> = ({
     if (onDrillDown) {
       onDrillDown(dataPoint, breadcrumb.length);
     }
-  };
+  }, [breadcrumb, onDrillDown]);
 
-  const handleBreadcrumbClick = (index: number) => {
+  const handleBreadcrumbClick = useCallback((index: number) => {
     const newBreadcrumb = breadcrumb.slice(0, index + 1);
-    setCurrentData(newBreadcrumb[index].data);
+    setCurrentData(newBreadcrumb[newBreadcrumb.length - 1].data);
     setBreadcrumb(newBreadcrumb);
-  };
-
-  const maxValue = Math.max(...currentData.map((d) => d.value));
+  }, [breadcrumb]);
 
   return (
     <div className="interactive-chart">
@@ -176,6 +184,8 @@ const InteractiveChart: React.FC<InteractiveChartProps> = ({
       )}
     </div>
   );
-};
+});
+
+InteractiveChart.displayName = 'InteractiveChart';
 
 export default InteractiveChart;

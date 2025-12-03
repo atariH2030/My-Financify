@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { WidgetLayoutService, Widget } from '../../services/widget-layout.service';
 import './WidgetCustomizer.css';
@@ -32,11 +32,11 @@ const WidgetCustomizer: React.FC<WidgetCustomizerProps> = ({ isOpen, onClose, on
     }
   }, [isOpen, widgetService]);
 
-  const handleDragStart = (index: number) => {
+  const handleDragStart = useCallback((index: number) => {
     setDraggedIndex(index);
-  };
+  }, []);
 
-  const handleDragOver = (e: React.DragEvent, index: number) => {
+  const handleDragOver = useCallback((e: React.DragEvent, index: number) => {
     e.preventDefault();
     
     if (draggedIndex === null || draggedIndex === index) return;
@@ -55,29 +55,29 @@ const WidgetCustomizer: React.FC<WidgetCustomizerProps> = ({ isOpen, onClose, on
     setWidgets(newWidgets);
     setDraggedIndex(index);
     setHasChanges(true);
-  };
+  }, [draggedIndex, widgets]);
 
-  const handleDragEnd = () => {
+  const handleDragEnd = useCallback(() => {
     setDraggedIndex(null);
-  };
+  }, []);
 
-  const handleToggle = (widgetId: Widget['id']) => {
+  const handleToggle = useCallback((widgetId: Widget['id']) => {
     const newWidgets = widgets.map((w) =>
       w.id === widgetId ? { ...w, enabled: !w.enabled } : w
     );
     setWidgets(newWidgets);
     setHasChanges(true);
-  };
+  }, [widgets]);
 
-  const handleReset = () => {
+  const handleReset = useCallback(() => {
     if (confirm('Resetar widgets para o padrão? Todas as customizações serão perdidas.')) {
       widgetService.resetToDefault();
       setWidgets(widgetService.getAllWidgets());
       setHasChanges(true);
     }
-  };
+  }, [widgetService]);
 
-  const handleApply = () => {
+  const handleApply = useCallback(() => {
     const layout = {
       widgets,
       lastUpdated: new Date(),
@@ -85,9 +85,9 @@ const WidgetCustomizer: React.FC<WidgetCustomizerProps> = ({ isOpen, onClose, on
     widgetService.saveLayout(layout);
     onApply();
     onClose();
-  };
+  }, [widgets, widgetService, onApply, onClose]);
 
-  const handleCancel = () => {
+  const handleCancel = useCallback(() => {
     if (hasChanges) {
       if (confirm('Descartar alterações?')) {
         onClose();
@@ -95,11 +95,11 @@ const WidgetCustomizer: React.FC<WidgetCustomizerProps> = ({ isOpen, onClose, on
     } else {
       onClose();
     }
-  };
+  }, [hasChanges, onClose]);
 
   if (!isOpen) return null;
 
-  const enabledCount = widgets.filter((w) => w.enabled).length;
+  const enabledCount = useMemo(() => widgets.filter((w) => w.enabled).length, [widgets]);
 
   return (
     <AnimatePresence>
