@@ -7,7 +7,7 @@
 
 import Logger from './logger.service';
 
-interface AIAnalyticsEvent {
+export interface AIAnalyticsEvent {
   id: string;
   timestamp: Date;
   eventType: 'chat_open' | 'chat_close' | 'message_sent' | 'insight_viewed' | 'insight_dismissed' | 'feature_used';
@@ -20,7 +20,7 @@ interface AIAnalyticsEvent {
   };
 }
 
-interface AIUsageStats {
+export interface AIUsageStats {
   totalChatSessions: number;
   totalMessages: number;
   totalInsightsViewed: number;
@@ -275,4 +275,5 @@ class AnalyticsService {
   }
 }
 
+export { AnalyticsService };
 export default AnalyticsService.getInstance();

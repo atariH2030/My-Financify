@@ -16,6 +16,7 @@ import { ErrorBoundary, ToastProvider, ToastEnhancedProvider, useKeyboardShortcu
 import CommandPalette from './components/common/CommandPalette';
 import GlobalCommandPalette from './components/common/GlobalCommandPalette';
 import ThemeCustomizer from './components/common/ThemeCustomizer';
+import LanguageSelector from './components/common/LanguageSelector';
 
 // Lazy Loading Components (carregados sob demanda)
 const DashboardV2 = lazy(() => import('./components/dashboard/DashboardV2'));
@@ -30,6 +31,7 @@ const NotificationCenter = lazy(() => import('./components/notifications/Notific
 const Accounts = lazy(() => import('./components/accounts/Accounts'));
 const RecurringTransactions = lazy(() => import('./components/recurring/RecurringTransactions'));
 const Fase2Example = lazy(() => import('./components/common/Fase2Example'));
+const AIAnalyticsDashboard = lazy(() => import('./components/analytics/AIAnalyticsDashboard'));
 
 import Logger from './services/logger.service';
 import Seeder from './services/seeder.service';
@@ -172,6 +174,13 @@ const App: React.FC = () => {
       category: 'navigation',
     },
     {
+      key: 'a',
+      ctrl: true,
+      description: 'Ir para Analytics IA',
+      action: () => setCurrentPage('analytics'),
+      category: 'navigation',
+    },
+    {
       key: 'b',
       ctrl: true,
       description: 'Ir para Orçamentos',
@@ -294,6 +303,8 @@ const App: React.FC = () => {
           return <Reports />;
         case 'reports-advanced':
           return <ReportsAdvanced />;
+        case 'analytics':
+          return <AIAnalyticsDashboard />;
         case 'settings':
           return <Settings />;
         case 'profile':
@@ -366,6 +377,7 @@ const App: React.FC = () => {
             <button className="sidebar-toggle" onClick={toggleSidebar} title="Alternar sidebar">
               <i className="fas fa-chevron-left"></i>
             </button>
+            <LanguageSelector />
             <button className="theme-toggle" onClick={toggleTheme} title="Alternar tema">
               <i className={theme === 'dark' ? 'fas fa-sun' : 'fas fa-moon'}></i>
             </button>
@@ -423,6 +435,23 @@ const App: React.FC = () => {
               >
                 <i className="fas fa-chart-line"></i>
                 <span>Análise Avançada</span>
+              </a>
+            </li>
+            <li>
+              <a 
+                href="#" 
+                className={`nav-item ${currentPage === 'analytics' ? 'active' : ''}`}
+                onClick={(e) => {
+                  e.preventDefault();
+                  setCurrentPage('analytics');
+                  // Fecha sidebar apenas no mobile
+                  if (window.innerWidth <= 768) {
+                    setSidebarActive(false);
+                  }
+                }}
+              >
+                <i className="fas fa-brain"></i>
+                <span>Analytics IA</span>
               </a>
             </li>
             <li>

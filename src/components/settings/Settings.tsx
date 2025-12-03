@@ -7,6 +7,7 @@ import { useToast } from '../common/Toast';
 import SettingsService, { type AppSettings } from '../../services/settings.service';
 import AIService from '../../services/ai.service';
 import SettingsBackupService from '../../services/settings-backup.service';
+import PushNotificationSettings from './PushNotificationSettings';
 import type { AIProviderConfig } from '../../types/ai.types';
 import './Settings.css';
 
@@ -381,6 +382,11 @@ const Settings: React.FC = () => {
                 <i className="fas fa-save"></i> Salvar Preferências
               </Button>
             </Card>
+          )}
+
+          {/* Push Notifications - Sprint 5.3 */}
+          {activeTab === 'notifications' && (
+            <PushNotificationSettings />
           )}
 
           {/* Preferences Tab */}
