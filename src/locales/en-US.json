@@ -1,0 +1,163 @@
+{
+  "common": {
+    "loading": "Loading...",
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "edit": "Edit",
+    "add": "Add",
+    "search": "Search",
+    "filter": "Filter",
+    "all": "All",
+    "yes": "Yes",
+    "no": "No",
+    "close": "Close",
+    "apply": "Apply",
+    "reset": "Reset",
+    "export": "Export",
+    "import": "Import",
+    "download": "Download",
+    "upload": "Upload",
+    "error": "Error",
+    "success": "Success",
+    "warning": "Warning",
+    "info": "Information"
+  },
+  "nav": {
+    "dashboard": "Dashboard",
+    "transactions": "Income & Expenses",
+    "accounts": "My Accounts",
+    "recurring": "Recurring Transactions",
+    "goals": "Goals & Objectives",
+    "budgets": "Budgets",
+    "reports": "Reports",
+    "reportsAdvanced": "Advanced Analysis",
+    "analytics": "AI Analytics",
+    "settings": "Settings",
+    "profile": "Profile",
+    "fase2Demo": "Phase 2 Demo"
+  },
+  "auth": {
+    "login": "Sign In",
+    "logout": "Sign Out",
+    "email": "Email",
+    "password": "Password",
+    "forgotPassword": "Forgot password?",
+    "noAccount": "Don't have an account?",
+    "signUp": "Sign Up",
+    "welcome": "Welcome to Financy Life",
+    "subtitle": "Intelligent Financial Management"
+  },
+  "dashboard": {
+    "title": "Dashboard",
+    "widgets": {
+      "balance": "Balance",
+      "income": "Income",
+      "expenses": "Expenses",
+      "budgets": "Budgets",
+      "goals": "Goals",
+      "incomeVsExpenses": "Income vs Expenses"
+    },
+    "greeting": {
+      "morning": "Good morning",
+      "afternoon": "Good afternoon",
+      "evening": "Good evening"
+    }
+  },
+  "transactions": {
+    "title": "Transactions",
+    "add": "Add New Transaction",
+    "edit": "Edit Transaction",
+    "delete": "Delete Transaction",
+    "description": "Description",
+    "amount": "Amount",
+    "date": "Date",
+    "category": "Category",
+    "subcategory": "Subcategory",
+    "section": "Section",
+    "type": "Type",
+    "income": "Income",
+    "expense": "Expenses",
+    "filters": {
+      "all": "All",
+      "income": "Income",
+      "expenses": "Expenses",
+      "date": "Date",
+      "today": "Today",
+      "week": "Last 7 days",
+      "month": "Last month",
+      "custom": "Custom",
+      "search": "Search by description, category..."
+    },
+    "empty": "No transactions found",
+    "emptyHint": "Try adjusting filters or add a new transaction"
+  },
+  "reports": {
+    "title": "Financial Reports",
+    "subtitle": "Complete visual analysis of your finances",
+    "exportPDF": "Export PDF",
+    "exportExcel": "Export Excel",
+    "exportEmail": "Send by Email",
+    "exporting": "Exporting...",
+    "noData": "Add transactions to export reports",
+    "period": {
+      "3months": "Last 3 months",
+      "6months": "Last 6 months",
+      "12months": "Last year"
+    }
+  },
+  "settings": {
+    "title": "Settings",
+    "language": "Language",
+    "theme": "Theme",
+    "notifications": "Notifications",
+    "account": "Account",
+    "privacy": "Privacy",
+    "about": "About"
+  },
+  "footer": {
+    "online": "Online",
+    "offline": "Offline",
+    "syncing": "Syncing...",
+    "lastSync": "Last sync",
+    "pendingOperations": "pending operations",
+    "aiChat": "AI Chat",
+    "aiChatHint": "Click to chat with AI",
+    "keyboardShortcuts": "Keyboard Shortcuts",
+    "connectionStatus": "Connection Status"
+  },
+  "shortcuts": {
+    "title": "Keyboard Shortcuts",
+    "navigation": "Navigation",
+    "actions": "Quick Actions",
+    "general": "General",
+    "dashboard": "Go to Dashboard",
+    "transactions": "Go to Transactions",
+    "goals": "Go to Goals",
+    "reports": "Go to Reports",
+    "analytics": "Go to AI Analytics",
+    "budgets": "Go to Budgets",
+    "settings": "Go to Settings",
+    "search": "Open Global Search (Command Palette)",
+    "toggleSidebar": "Toggle Sidebar",
+    "toggleTheme": "Toggle Theme (Light/Dark)",
+    "themeCustomizer": "Open Theme Customizer",
+    "widgetCustomizer": "Customize Dashboard Widgets",
+    "showShortcuts": "Show Keyboard Shortcuts",
+    "showHelp": "Show Help",
+    "commandPalette": "Open Command Palette",
+    "globalPalette": "Global Search (Command Palette)",
+    "help": "Help - Keyboard Shortcuts",
+    "closeModal": "Close Modal/Dialogs"
+  },
+  "aiChat": {
+    "title": "Financial AI Assistant",
+    "placeholder": "Ask anything about your finances...",
+    "suggestions": [
+      "How much did I spend this month?",
+      "How is my budget?",
+      "Suggestions to save money?",
+      "Analysis of last 3 months"
+    ]
+  }
+}

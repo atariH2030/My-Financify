@@ -1,75 +1,46 @@
-import React, { useState, useEffect } from 'react';
-import { I18nService, SupportedLanguage } from '../../services/i18n.service';
-import './LanguageSelector.css';
-
 /**
- * LanguageSelector - Sprint 5.2
- * 
- * Componente para alternar entre idiomas suportados
- * - Dropdown com bandeiras e nomes de idiomas
- * - Sincronização automática com localStorage
- * - Disparo de eventos para atualizar UI
+ * Language Selector Component
+ * v3.14.0 - Seletor de idioma com bandeiras
  */
 
+import React from 'react';
+import { useLanguage, type Language } from '../../contexts/LanguageContext';
+import './LanguageSelector.css';
+
 const LanguageSelector: React.FC = () => {
-  const i18n = I18nService.getInstance();
-  const [currentLang, setCurrentLang] = useState<SupportedLanguage>(i18n.getCurrentLanguage());
-  const [isOpen, setIsOpen] = useState(false);
-  const languages = i18n.getSupportedLanguages();
+  const { language, setLanguage } = useLanguage();
 
-  useEffect(() => {
-    // Listener para mudanças de idioma
-    const handleLanguageChange = (event: Event) => {
-      const customEvent = event as CustomEvent<{ language: SupportedLanguage }>;
-      setCurrentLang(customEvent.detail.language);
-    };
+  const languages: { code: Language; flag: string; name: string }[] = [
+    { code: 'pt-BR', flag: '🇧🇷', name: 'Português' },
+    { code: 'en-US', flag: '🇺🇸', name: 'English' },
+    { code: 'es-ES', flag: '🇪🇸', name: 'Español' },
+  ];
 
-    window.addEventListener('languageChange', handleLanguageChange);
-    return () => window.removeEventListener('languageChange', handleLanguageChange);
-  }, []);
-
-  const handleLanguageChange = (code: SupportedLanguage) => {
-    i18n.setLanguage(code);
-    setCurrentLang(code);
-    setIsOpen(false);
-  };
-
-  const currentLanguage = languages.find((lang) => lang.code === currentLang);
+  const currentLanguage = languages.find(l => l.code === language) || languages[0];
 
   return (
     <div className="language-selector">
       <button
-        className="language-selector-btn"
-        onClick={() => setIsOpen(!isOpen)}
+        className="language-button"
         aria-label="Selecionar idioma"
-        aria-expanded={isOpen}
+        title={`Idioma: ${currentLanguage.name}`}
       >
-        <span className="flag">{currentLanguage?.flag}</span>
-        <span className="lang-code">{currentLanguage?.code}</span>
-        <i className={`fas fa-chevron-${isOpen ? 'up' : 'down'}`}></i>
+        <span className="language-flag">{currentLanguage.flag}</span>
       </button>
-
-      {isOpen && (
-        <>
-          <div className="language-backdrop" onClick={() => setIsOpen(false)}></div>
-          <ul className="language-dropdown">
-            {languages.map((lang) => (
-              <li key={lang.code}>
-                <button
-                  className={`language-item ${currentLang === lang.code ? 'active' : ''}`}
-                  onClick={() => handleLanguageChange(lang.code)}
-                >
-                  <span className="flag">{lang.flag}</span>
-                  <span className="lang-name">{lang.name}</span>
-                  {currentLang === lang.code && (
-                    <i className="fas fa-check"></i>
-                  )}
-                </button>
-              </li>
-            ))}
-          </ul>
-        </>
-      )}
+      <div className="language-dropdown">
+        {languages.map((lang) => (
+          <button
+            key={lang.code}
+            className={`language-option ${language === lang.code ? 'active' : ''}`}
+            onClick={() => setLanguage(lang.code)}
+            aria-label={`Mudar idioma para ${lang.name}`}
+          >
+            <span className="language-flag">{lang.flag}</span>
+            <span className="language-name">{lang.name}</span>
+            {language === lang.code && <span className="language-check">✓</span>}
+          </button>
+        ))}
+      </div>
     </div>
   );
 };

@@ -2,14 +2,16 @@ import React, { lazy, Suspense } from 'react';
 import { createRoot } from 'react-dom/client';
 import './styles/globals.css';
 import './styles/smooth-transitions.css';
+import './utils/i18n-validator'; // ✅ Auto-valida traduções ao iniciar
 
 // ✅ APP NORMAL COM AUTENTICAÇÃO INTEGRADA
 import { AuthProvider } from './contexts/AuthContext';
+import { LanguageProvider, useTranslation } from './contexts/LanguageContext';
 import ProtectedRoute from './components/auth/ProtectedRoute';
 import UserHeader from './components/auth/UserHeader';
 import OnlineStatus from './components/common/OnlineStatus';
 import SyncIndicator from './components/common/SyncIndicator';
-import OfflineIndicator from './components/common/OfflineIndicator';
+import AIChatButton from './components/common/AIChatButton';
 
 // Core Components (carregados imediatamente)
 import { ErrorBoundary, ToastProvider, ToastEnhancedProvider, useKeyboardShortcuts, KeyboardShortcutsHelp, type KeyboardShortcut } from './components/common';
@@ -63,6 +65,14 @@ if (process.env.NODE_ENV === 'development') {
 
 // Componente App principal com sidebar
 const App: React.FC = () => {
+  // ============================================================================
+  // HOOKS DE TRADUÇÃO
+  // ============================================================================
+  const { t } = useTranslation();
+  
+  // ============================================================================
+  // ESTADOS
+  // ============================================================================
   const [currentPage, setCurrentPage] = React.useState('dashboard');
   const [showShortcutsHelp, setShowShortcutsHelp] = React.useState(false);
   const [showCommandPalette, setShowCommandPalette] = React.useState(false);
@@ -142,57 +152,57 @@ const App: React.FC = () => {
   };
 
   // ============================================================================
-  // KEYBOARD SHORTCUTS - Atalhos de teclado globais
+  // KEYBOARD SHORTCUTS - Atalhos de teclado globais com traduções
   // ============================================================================
   
-  const shortcuts: KeyboardShortcut[] = [
+  const shortcuts: KeyboardShortcut[] = React.useMemo(() => [
     // Navegação
     {
       key: 'd',
       ctrl: true,
-      description: 'Ir para Dashboard',
+      description: t('shortcuts.dashboard'),
       action: () => setCurrentPage('dashboard'),
       category: 'navigation',
     },
     {
       key: 't',
       ctrl: true,
-      description: 'Ir para Transações',
+      description: t('shortcuts.transactions'),
       action: () => setCurrentPage('transactions'),
       category: 'navigation',
     },
     {
       key: 'g',
       ctrl: true,
-      description: 'Ir para Metas',
+      description: t('shortcuts.goals'),
       action: () => setCurrentPage('goals'),
       category: 'navigation',
     },
     {
       key: 'r',
       ctrl: true,
-      description: 'Ir para Relatórios',
+      description: t('shortcuts.reports'),
       action: () => setCurrentPage('reports'),
       category: 'navigation',
     },
     {
       key: 'a',
       ctrl: true,
-      description: 'Ir para Analytics IA',
+      description: t('shortcuts.analytics'),
       action: () => setCurrentPage('analytics'),
       category: 'navigation',
     },
     {
       key: 'b',
       ctrl: true,
-      description: 'Ir para Orçamentos',
+      description: t('shortcuts.budgets'),
       action: () => setCurrentPage('budgets'),
       category: 'navigation',
     },
     {
       key: ',',
       ctrl: true,
-      description: 'Ir para Configurações',
+      description: t('shortcuts.settings'),
       action: () => setCurrentPage('settings'),
       category: 'navigation',
     },
@@ -200,7 +210,7 @@ const App: React.FC = () => {
     {
       key: 'k',
       ctrl: true,
-      description: 'Abrir Busca Global (Command Palette)',
+      description: t('shortcuts.commandPalette'),
       action: () => setShowCommandPalette(true),
       category: 'actions',
     },
@@ -208,14 +218,14 @@ const App: React.FC = () => {
       key: 'b',
       ctrl: true,
       shift: true,
-      description: 'Abrir/Fechar Sidebar',
+      description: t('shortcuts.toggleSidebar'),
       action: toggleSidebar,
       category: 'actions',
     },
     {
       key: 'l',
       ctrl: true,
-      description: 'Alternar Tema (Light/Dark)',
+      description: t('shortcuts.toggleTheme'),
       action: toggleTheme,
       category: 'actions',
     },
@@ -223,14 +233,14 @@ const App: React.FC = () => {
       key: 't',
       ctrl: true,
       shift: true,
-      description: 'Abrir Customizador de Tema',
+      description: t('shortcuts.themeCustomizer'),
       action: () => setShowThemeCustomizer(true),
       category: 'actions',
     },
     {
       key: 'w',
       ctrl: true,
-      description: 'Customizar Widgets do Dashboard',
+      description: t('shortcuts.widgetCustomizer'),
       action: () => setShowWidgetCustomizer(true),
       category: 'actions',
     },
@@ -238,27 +248,27 @@ const App: React.FC = () => {
     {
       key: '/',
       ctrl: true,
-      description: 'Mostrar Atalhos de Teclado',
+      description: t('shortcuts.showHelp'),
       action: () => setShowShortcutsHelp(true),
       category: 'general',
     },
     {
       key: 'p',
       ctrl: true,
-      description: 'Abrir Command Palette',
+      description: t('shortcuts.globalPalette'),
       action: () => setShowGlobalCommandPalette(true),
       category: 'general',
     },
     {
       key: 'h',
       ctrl: true,
-      description: 'Ajuda - Atalhos de Teclado',
+      description: t('shortcuts.help'),
       action: () => setShowShortcutsHelp(true),
       category: 'general',
     },
     {
       key: 'Escape',
-      description: 'Fechar Modal/Diálogos',
+      description: t('shortcuts.closeModal'),
       action: () => {
         setShowShortcutsHelp(false);
         setShowGlobalCommandPalette(false);
@@ -266,7 +276,7 @@ const App: React.FC = () => {
       },
       category: 'general',
     },
-  ];
+  ], [t, setCurrentPage, toggleSidebar, toggleTheme]);
 
   // Registrar atalhos
   useKeyboardShortcuts({ shortcuts });
@@ -334,20 +344,20 @@ const App: React.FC = () => {
 
   return (
     <>
-      {/* Notification Center - Fixo no canto superior direito */}
+      {/* Notification Center - Fixed top-right (unchanged) */}
       <NotificationCenter />
-      
-      {/* Sync Indicator - Status de sincronização */}
-      <SyncIndicator />
 
-      {/* Keyboard Shortcuts Button - Fixo ao lado do NotificationCenter */}
-      <button 
-        className="keyboard-shortcuts-btn"
-        onClick={() => setShowShortcutsHelp(true)}
-        title="Atalhos de Teclado (Ctrl+H)"
-      >
-        <i className="fas fa-keyboard"></i>
-      </button>
+      {/* Top-Right Controls - Language + Keyboard (ao lado esquerdo do sininho) */}
+      <div className="top-right-controls">
+        <LanguageSelector />
+        <button 
+          className="keyboard-shortcuts-btn"
+          onClick={() => setShowShortcutsHelp(true)}
+          title="Atalhos de Teclado (Ctrl+H)"
+        >
+          <i className="fas fa-keyboard"></i>
+        </button>
+      </div>
 
       {/* Botão flutuante para abrir sidebar quando fechado */}
       {!sidebarActive && (
@@ -386,7 +396,6 @@ const App: React.FC = () => {
             <button className="sidebar-toggle" onClick={toggleSidebar} title="Alternar sidebar">
               <i className="fas fa-chevron-left"></i>
             </button>
-            <LanguageSelector />
             <button className="theme-toggle" onClick={toggleTheme} title="Alternar tema">
               <i className={theme === 'dark' ? 'fas fa-sun' : 'fas fa-moon'}></i>
             </button>
@@ -409,7 +418,7 @@ const App: React.FC = () => {
                 }}
               >
                 <i className="fas fa-tachometer-alt"></i>
-                <span>Painel Principal</span>
+                <span>{t('nav.dashboard')}</span>
               </a>
             </li>
             <li>
@@ -426,7 +435,7 @@ const App: React.FC = () => {
                 }}
               >
                 <i className="fas fa-chart-bar"></i>
-                <span>Relatórios</span>
+                <span>{t('nav.reports')}</span>
               </a>
             </li>
             <li>
@@ -443,7 +452,7 @@ const App: React.FC = () => {
                 }}
               >
                 <i className="fas fa-chart-line"></i>
-                <span>Análise Avançada</span>
+                <span>{t('nav.reportsAdvanced')}</span>
               </a>
             </li>
             <li>
@@ -460,7 +469,7 @@ const App: React.FC = () => {
                 }}
               >
                 <i className="fas fa-brain"></i>
-                <span>Analytics IA</span>
+                <span>{t('nav.analytics')}</span>
               </a>
             </li>
             <li>
@@ -477,7 +486,7 @@ const App: React.FC = () => {
                 }}
               >
                 <i className="fas fa-wallet"></i>
-                <span>Receitas e Despesas</span>
+                <span>{t('nav.transactions')}</span>
               </a>
             </li>
             <li>
@@ -494,7 +503,7 @@ const App: React.FC = () => {
                 }}
               >
                 <i className="fas fa-credit-card"></i>
-                <span>Minhas Contas</span>
+                <span>{t('nav.accounts')}</span>
               </a>
             </li>
             <li>
@@ -511,7 +520,7 @@ const App: React.FC = () => {
                 }}
               >
                 <i className="fas fa-sync-alt"></i>
-                <span>Contas Recorrentes</span>
+                <span>{t('nav.recurring')}</span>
               </a>
             </li>
             <li>
@@ -528,7 +537,7 @@ const App: React.FC = () => {
                 }}
               >
                 <i className="fas fa-bullseye"></i>
-                <span>Metas e Objetivos</span>
+                <span>{t('nav.goals')}</span>
               </a>
             </li>
             <li>
@@ -545,7 +554,7 @@ const App: React.FC = () => {
                 }}
               >
                 <i className="fas fa-wallet"></i>
-                <span>Orçamentos</span>
+                <span>{t('nav.budgets')}</span>
               </a>
             </li>
             <li>
@@ -561,7 +570,7 @@ const App: React.FC = () => {
                 }}
               >
                 <i className="fas fa-cog"></i>
-                <span>Configurações</span>
+                <span>{t('nav.settings')}</span>
               </a>
             </li>
             {/* 🆕 Demo Fase 2 */}
@@ -590,16 +599,8 @@ const App: React.FC = () => {
         </nav>
         
         <div className="sidebar-footer">
-          {/* Indicador de Status Online/Offline */}
-          <OnlineStatus 
-            pendingOperations={0}
-            onSync={async () => {
-              // Sincronização já é feita automaticamente pelo SyncService
-              if (import.meta.env.VITE_DEBUG_MODE === 'true') {
-                console.log('Sincronizando operações pendentes...');
-              }
-            }}
-          />
+          {/* Sync Indicator - Status de conexão com opção de reconectar */}
+          <SyncIndicator />
         </div>
       </div>
 
@@ -657,8 +658,8 @@ const App: React.FC = () => {
         }}
       />
 
-      {/* Offline Indicator - Status de conexão e sync */}
-      <OfflineIndicator />
+      {/* AI Chat Button - Canto inferior direito */}
+      <AIChatButton />
     </>
   );
 };
@@ -675,15 +676,17 @@ const root = createRoot(container);
 root.render(
   <React.StrictMode>
     <ErrorBoundary>
-      <AuthProvider>
-        <ToastProvider>
-          <ToastEnhancedProvider position="top-right" maxToasts={5}>
-            <ProtectedRoute>
-              <App />
-            </ProtectedRoute>
-          </ToastEnhancedProvider>
-        </ToastProvider>
-      </AuthProvider>
+      <LanguageProvider>
+        <AuthProvider>
+          <ToastProvider>
+            <ToastEnhancedProvider position="top-right" maxToasts={5}>
+              <ProtectedRoute>
+                <App />
+              </ProtectedRoute>
+            </ToastEnhancedProvider>
+          </ToastProvider>
+        </AuthProvider>
+      </LanguageProvider>
     </ErrorBoundary>
   </React.StrictMode>
 );

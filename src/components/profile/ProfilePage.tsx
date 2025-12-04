@@ -47,7 +47,6 @@ const ProfilePage: React.FC = () => {
     setIsEditingAvatar(false);
     setAvatarUrl(avatarUrl);
     setSuccess('Avatar atualizado com sucesso!');
-    // Disparar evento para atualizar header
     window.dispatchEvent(new Event('avatarUpdated'));
   };
 
