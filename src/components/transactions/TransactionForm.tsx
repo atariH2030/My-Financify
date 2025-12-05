@@ -10,6 +10,7 @@ import Button from '../common/Button';
 import Input from '../common/Input';
 import { transactionSchema } from '../../utils/validation';
 import { formatCurrency } from '../../utils/currency';
+import { useTranslation } from '../../contexts/LanguageContext';
 import type { Transaction } from '../../types/financial.types';
 import './TransactionForm.css';
 
@@ -31,6 +32,7 @@ const categories = [
 ];
 
 const TransactionForm: React.FC<TransactionFormProps> = ({ transaction, onSubmit, onCancel }) => {
+  const { t } = useTranslation();
   const [formData, setFormData] = useState({
     type: transaction?.type || 'expense' as 'income' | 'expense',
     amount: transaction?.amount.toString() || '',
@@ -238,7 +240,7 @@ const TransactionForm: React.FC<TransactionFormProps> = ({ transaction, onSubmit
               onClick={onCancel}
               disabled={isSubmitting}
             >
-              Cancelar
+              {t('common.cancel')}
             </Button>
             <Button
               type="submit"
@@ -246,7 +248,7 @@ const TransactionForm: React.FC<TransactionFormProps> = ({ transaction, onSubmit
               loading={isSubmitting}
               disabled={isSubmitting}
             >
-              {transaction ? 'Atualizar' : 'Adicionar'} Transação
+              {transaction ? t('transactions.edit') : t('transactions.add')}
             </Button>
           </div>
         </form>

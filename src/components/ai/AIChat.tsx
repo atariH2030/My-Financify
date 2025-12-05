@@ -19,7 +19,7 @@ const AIChat: React.FC<AIChatProps> = ({ context, onClose }) => {
   const [messages, setMessages] = useState<AIMessage[]>([]);
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const [isConfigured, setIsConfigured] = useState(false);
+  const [showSetupBanner, setShowSetupBanner] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -31,11 +31,11 @@ const AIChat: React.FC<AIChatProps> = ({ context, onClose }) => {
     };
   }, []);
 
-  // Verificar se IA está configurada
+  // Verificar se IA está configurada para exibir banner
   useEffect(() => {
     const checkConfig = async () => {
       const configured = await AIService.isConfigured();
-      setIsConfigured(configured);
+      setShowSetupBanner(!configured);
     };
     checkConfig();
   }, []);
@@ -64,7 +64,7 @@ const AIChat: React.FC<AIChatProps> = ({ context, onClose }) => {
   }, []);
 
   const handleSend = useCallback(async () => {
-    if (!input.trim() || isLoading || !isConfigured) return;
+    if (!input.trim() || isLoading) return;
 
     // Track mensagem enviada
     AnalyticsService.trackMessage();
@@ -95,7 +95,7 @@ const AIChat: React.FC<AIChatProps> = ({ context, onClose }) => {
       const errorMessage: AIMessage = {
         id: `msg_${Date.now()}_error`,
         role: 'assistant',
-        content: `❌ Erro ao processar sua mensagem: ${(error as Error).message}. Verifique se sua API Key está configurada corretamente em Configurações > IA.`,
+        content: `❌ **Erro ao processar sua mensagem**\n\n${(error as Error).message}\n\n💡 **Possíveis soluções:**\n• Verifique sua conexão com a internet\n• Configure sua [API Key nas Configurações](/settings)\n• Tente novamente em alguns instantes`,
         timestamp: new Date().toISOString(),
       };
 
@@ -104,7 +104,7 @@ const AIChat: React.FC<AIChatProps> = ({ context, onClose }) => {
       setIsLoading(false);
       inputRef.current?.focus();
     }
-  }, [input, isLoading, isConfigured, context]);
+  }, [input, isLoading, context]);
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
     if (e.key === 'Enter' && !e.shiftKey) {
@@ -132,37 +132,18 @@ const AIChat: React.FC<AIChatProps> = ({ context, onClose }) => {
     'Qual categoria gasto mais?',
   ];
 
-  if (!isConfigured) {
-    return (
-      <div className="ai-chat-container">
-        <div className="ai-chat-header">
-          <div className="ai-chat-title">
-            <span className="ai-chat-icon">🤖</span>
-            <h3>Assistente IA</h3>
-          </div>
-          {onClose && (
-            <button className="ai-chat-close" onClick={onClose} title="Fechar">
-              ✕
-            </button>
-          )}
-        </div>
-
-        <div className="ai-chat-setup">
-          <div className="ai-chat-setup-icon">🔑</div>
-          <h4>Configure sua IA</h4>
-          <p>Para usar o assistente inteligente, você precisa configurar uma API Key do Google Gemini.</p>
-          <ol>
-            <li>Acesse <a href="https://aistudio.google.com/app/apikey" target="_blank" rel="noopener noreferrer">Google AI Studio</a></li>
-            <li>Crie uma API Key gratuita</li>
-            <li>Vá em Configurações &gt; IA e cole sua chave</li>
-          </ol>
-          <a href="/settings" className="ai-chat-setup-button">
-            Ir para Configurações
-          </a>
-        </div>
-      </div>
-    );
-  }
+  // Banner informativo ao invés de bloqueio total
+  const setupBanner = showSetupBanner ? (
+    <div className="ai-chat-demo-banner">
+      <div className="ai-chat-demo-badge">🎭 MODO DEMO</div>
+      <p>
+        Você está usando o assistente em <strong>modo limitado</strong>. 
+        <a href="/settings" onClick={(e) => { e.preventDefault(); window.location.href = '/settings'; }}>
+          Configure a API Key gratuita
+        </a> para análises personalizadas ilimitadas!
+      </p>
+    </div>
+  ) : null;
 
   return (
     <div className="ai-chat-container">
@@ -187,6 +168,8 @@ const AIChat: React.FC<AIChatProps> = ({ context, onClose }) => {
           )}
         </div>
       </div>
+
+      {setupBanner}
 
       <div className="ai-chat-messages">
         {messages.length === 0 ? (

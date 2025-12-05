@@ -7,6 +7,7 @@
 
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { motion } from 'framer-motion';
+import { useTranslation } from '../../contexts/LanguageContext';
 import { transactionsService } from '../../services/transactions.service';
 import Logger from '../../services/logger.service';
 import WidgetGrid from '../widgets/WidgetGrid';
@@ -21,6 +22,7 @@ interface DashboardStats {
 }
 
 export const DashboardV2: React.FC = () => {
+  const { t } = useTranslation();
   const [showCustomizer, setShowCustomizer] = useState(false);
   const [stats, setStats] = useState<DashboardStats>({
     income: 0,
@@ -80,7 +82,7 @@ export const DashboardV2: React.FC = () => {
         className="dashboard-header"
       >
         <div>
-          <h1>Dashboard</h1>
+          <h1>{t('dashboard.title')}</h1>
           <p className="dashboard-period">{currentMonth}</p>
         </div>
       </motion.div>
@@ -89,7 +91,7 @@ export const DashboardV2: React.FC = () => {
       {loading ? (
         <div className="dashboard-loading">
           <div className="spinner"></div>
-          <p>Carregando dados...</p>
+          <p>{t('common.loading')}</p>
         </div>
       ) : (
         <>
@@ -104,7 +106,7 @@ export const DashboardV2: React.FC = () => {
                 <i className="fas fa-arrow-up"></i>
               </div>
               <div className="card-content">
-                <span className="card-label">Receitas</span>
+                <span className="card-label">{t('dashboard.widgets.income')}</span>
                 <h2 className="card-value income">{formatCurrency(stats.income)}</h2>
               </div>
             </motion.div>
@@ -119,7 +121,7 @@ export const DashboardV2: React.FC = () => {
                 <i className="fas fa-arrow-down"></i>
               </div>
               <div className="card-content">
-                <span className="card-label">Despesas</span>
+                <span className="card-label">{t('dashboard.widgets.expenses')}</span>
                 <h2 className="card-value expense">{formatCurrency(stats.expenses)}</h2>
               </div>
             </motion.div>
@@ -134,7 +136,7 @@ export const DashboardV2: React.FC = () => {
                 <i className={`fas fa-${stats.balance >= 0 ? 'wallet' : 'exclamation-triangle'}`}></i>
               </div>
               <div className="card-content">
-                <span className="card-label">Saldo</span>
+                <span className="card-label">{t('dashboard.widgets.balance')}</span>
                 <h2 className={`card-value ${stats.balance >= 0 ? 'positive' : 'negative'}`}>
                   {formatCurrency(stats.balance)}
                 </h2>
@@ -151,7 +153,7 @@ export const DashboardV2: React.FC = () => {
                 <i className="fas fa-list"></i>
               </div>
               <div className="card-content">
-                <span className="card-label">Transações</span>
+                <span className="card-label">{t('transactions.title')}</span>
                 <h2 className="card-value">{stats.transactionCount}</h2>
               </div>
             </motion.div>

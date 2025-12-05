@@ -16,6 +16,7 @@ import {
   ResponsiveContainer
 } from 'recharts';
 import { formatCurrency } from '../../utils/currency';
+import { useTranslation } from '../../contexts/LanguageContext';
 import './Charts.css';
 
 interface DataPoint {
@@ -32,18 +33,19 @@ interface FinancialEvolutionChartProps {
 
 // Tooltip component (module-level para evitar re-criação)
 const CustomTooltip = ({ active, payload }: any) => {
+  const { t } = useTranslation();
   if (active && payload && payload.length) {
     return (
       <div className="custom-tooltip">
         <p className="label">{payload[0].payload.month}</p>
         <p className="income">
-          Receitas: <strong>{formatCurrency(payload[0].value)}</strong>
+          {t('dashboard.widgets.income')}: <strong>{formatCurrency(payload[0].value)}</strong>
         </p>
         <p className="expense">
-          Despesas: <strong>{formatCurrency(payload[1].value)}</strong>
+          {t('dashboard.widgets.expenses')}: <strong>{formatCurrency(payload[1].value)}</strong>
         </p>
         <p className="balance">
-          Saldo: <strong>{formatCurrency(payload[2].value)}</strong>
+          {t('dashboard.widgets.balance')}: <strong>{formatCurrency(payload[2].value)}</strong>
         </p>
       </div>
     );
@@ -56,6 +58,7 @@ const FinancialEvolutionChart: React.FC<FinancialEvolutionChartProps> = ({
   data, 
   height = 300 
 }) => {
+  const { t } = useTranslation();
   return (
     <div className="chart-container">
       <h3 className="chart-title">📈 Evolução Financeira</h3>
@@ -79,7 +82,7 @@ const FinancialEvolutionChart: React.FC<FinancialEvolutionChartProps> = ({
           <Line
             type="monotone"
             dataKey="income"
-            name="Receitas"
+            name={t('dashboard.widgets.income')}
             stroke="#10b981"
             strokeWidth={2}
             dot={{ fill: '#10b981', r: 4 }}
@@ -88,7 +91,7 @@ const FinancialEvolutionChart: React.FC<FinancialEvolutionChartProps> = ({
           <Line
             type="monotone"
             dataKey="expense"
-            name="Despesas"
+            name={t('dashboard.widgets.expenses')}
             stroke="#ef4444"
             strokeWidth={2}
             dot={{ fill: '#ef4444', r: 4 }}
@@ -97,7 +100,7 @@ const FinancialEvolutionChart: React.FC<FinancialEvolutionChartProps> = ({
           <Line
             type="monotone"
             dataKey="balance"
-            name="Saldo"
+            name={t('dashboard.widgets.balance')}
             stroke="#3b82f6"
             strokeWidth={2}
             strokeDasharray="5 5"

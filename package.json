@@ -21,12 +21,15 @@
     "test:health:headed": "playwright test health-check.spec.ts --headed",
     "test:mock": "playwright test auth-mock.spec.ts",
     "test:mock:headed": "playwright test auth-mock.spec.ts --headed",
-    "test:report": "playwright show-report test-results/playwright-report"
+    "test:report": "playwright show-report test-results/playwright-report",
+    "check:i18n": "tsx scripts/detect-untranslated.ts",
+    "check:i18n:report": "tsx scripts/detect-untranslated.ts && cat docs/UNTRANSLATED_REPORT_*.md"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.84.0",
     "@types/chart.js": "^2.9.41",
     "@types/lodash": "^4.14.202",
+    "@types/qrcode": "^1.5.6",
     "@types/react": "^19.2.4",
     "@types/react-dom": "^19.2.3",
     "@types/recharts": "^1.8.29",
@@ -38,6 +41,8 @@
     "jspdf": "^3.0.4",
     "jspdf-autotable": "^5.0.2",
     "lodash": "^4.17.21",
+    "otpauth": "^9.4.1",
+    "qrcode": "^1.5.4",
     "react": "^19.2.0",
     "react-chartjs-2": "^5.3.1",
     "react-dom": "^19.2.0",
@@ -64,6 +69,7 @@
     "jsdom": "^27.2.0",
     "prettier": "^3.6.2",
     "terser": "^5.44.1",
+    "tsx": "^4.21.0",
     "typescript": "^5.3.0",
     "vite": "^7.2.2",
     "vite-plugin-pwa": "^1.1.0",

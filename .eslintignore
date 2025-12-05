@@ -36,3 +36,6 @@ npm-debug.log*
 
 # Documentação (opcional - remover se quiser lint em .md)
 *.md
+
+# Scripts (executados via tsx, não precisam de lint rigoroso)
+scripts/
