@@ -2,6 +2,7 @@ import React, { lazy, Suspense } from 'react';
 import { createRoot } from 'react-dom/client';
 import './styles/globals.css';
 import './styles/smooth-transitions.css';
+import './styles/mobile-ux-fixes.css'; // ✅ Mobile UX Fixes v3.14.0 - WCAG 2.5.5 compliance
 import './utils/i18n-validator'; // ✅ Auto-valida traduções ao iniciar
 
 // ✅ APP NORMAL COM AUTENTICAÇÃO INTEGRADA
