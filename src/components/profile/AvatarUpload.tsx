@@ -343,7 +343,7 @@ const AvatarUpload: React.FC<AvatarUploadProps> = ({ onClose, onSave, currentAva
   };
 
   return (
-    <div className="avatar-upload-overlay" onClick={onClose}>
+    <div className="avatar-upload-overlay">
       <div className="avatar-upload-modal" onClick={(e) => e.stopPropagation()}>
         <div className="modal-header">
           <h2>Editar Foto de Perfil</h2>
@@ -395,7 +395,36 @@ const AvatarUpload: React.FC<AvatarUploadProps> = ({ onClose, onSave, currentAva
                     cursor: isDragging ? 'grabbing' : 'grab',
                   }}
                   onMouseDown={handleDragStart}
-                  onLoad={() => debugLog('✅ Imagem carregada com sucesso:', previewUrl)}
+                  onLoad={(e) => {
+                    debugLog('✅ Imagem carregada com sucesso:', previewUrl);
+                    const img = e.currentTarget;
+                    const imgWidth = img.naturalWidth;
+                    const imgHeight = img.naturalHeight;
+                    
+                    // Calcular zoom mínimo para caber na área de crop
+                    const minZoomWidth = CROP_SIZE / imgWidth;
+                    const minZoomHeight = CROP_SIZE / imgHeight;
+                    const calculatedMinZoom = Math.max(minZoomWidth, minZoomHeight);
+                    
+                    // Calcular zoom máximo baseado no tamanho
+                    const avgDimension = (imgWidth + imgHeight) / 2;
+                    let calculatedMaxZoom = 3;
+                    if (avgDimension <= 300) calculatedMaxZoom = 5;
+                    else if (avgDimension <= 600) calculatedMaxZoom = 4;
+                    else if (avgDimension <= 1200) calculatedMaxZoom = 3;
+                    else calculatedMaxZoom = 2;
+                    
+                    setImageDimensions({ width: imgWidth, height: imgHeight });
+                    setMinZoom(calculatedMinZoom);
+                    setMaxZoom(calculatedMaxZoom);
+                    
+                    // Definir zoom inicial como minZoom (imagem cabe perfeitamente)
+                    setCrop({ x: 0, y: 0, scale: calculatedMinZoom });
+                    
+                    debugLog('📏 Dimensões:', imgWidth, 'x', imgHeight);
+                    debugLog('🔍 Zoom mínimo:', calculatedMinZoom.toFixed(2));
+                    debugLog('🔍 Zoom máximo:', calculatedMaxZoom);
+                  }}
                   onError={(e) => {
                     debugLog('❌ Erro ao carregar imagem:', e);
                     setError('Erro ao carregar imagem. Tente novamente.');

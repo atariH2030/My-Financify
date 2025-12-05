@@ -1,10 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import { motion } from 'framer-motion';
 import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, LineElement, PointElement, Title, Tooltip, Legend, ArcElement, Filler } from 'chart.js';
 import { Bar, Line, Doughnut } from 'react-chartjs-2';
 import Card from '../common/Card';
 import Button from '../common/Button';
 import StorageService from '../../services/storage.service';
+import { PDFExportService } from '../../services/pdf-export.service';
 import { formatCurrency, formatPercentage } from '../../utils/currency';
 import type { Transaction, Budget, FinancialGoal } from '../../types/financial.types';
 import './ReportsAdvanced.css';
@@ -54,6 +55,136 @@ const ReportsAdvanced: React.FC = () => {
       setLoading(false);
     }
   };
+
+  const handleExportMonthlyComparison = useCallback(async () => {
+    try {
+      const monthlyData = getMonthlyData();
+      const dateRange = {
+        start: new Date(new Date().setMonth(new Date().getMonth() - (period === '6months' ? 6 : 12))),
+        end: new Date()
+      };
+
+      await PDFExportService.exportCustomReport({
+        type: 'income-vs-expense',
+        title: 'Relatório Comparativo Mensal',
+        dateRange,
+        data: monthlyData.map(m => ({
+          Mês: m.month,
+          Receitas: formatCurrency(m.income),
+          Despesas: formatCurrency(m.expenses),
+          Saldo: formatCurrency(m.balance)
+        })),
+        summary: {
+          'Período': period === '6months' ? 'Últimos 6 meses' : 'Últimos 12 meses',
+          'Total Receitas': formatCurrency(monthlyData.reduce((sum, m) => sum + m.income, 0)),
+          'Total Despesas': formatCurrency(monthlyData.reduce((sum, m) => sum + m.expenses, 0)),
+          'Saldo Acumulado': formatCurrency(monthlyData.reduce((sum, m) => sum + m.balance, 0))
+        }
+      });
+    } catch (error) {
+      console.error('Error exporting monthly comparison PDF:', error);
+      alert('Erro ao exportar PDF. Verifique o console.');
+    }
+  }, [period, transactions]);
+
+  const handleExportCategoryTrends = useCallback(async () => {
+    try {
+      const categoryTrends = getCategoryTrends();
+      const dateRange = {
+        start: new Date(new Date().setMonth(new Date().getMonth() - (period === '6months' ? 6 : 12))),
+        end: new Date()
+      };
+
+      await PDFExportService.exportCustomReport({
+        type: 'spending-by-category',
+        title: 'Relatório de Tendências por Categoria',
+        dateRange,
+        data: categoryTrends.map(t => ({
+          Categoria: t.category,
+          'Total Gasto': formatCurrency(t.total),
+          'Média Mensal': formatCurrency(t.average),
+          Tendência: t.trend === 'up' ? '📈 Subindo' : t.trend === 'down' ? '📉 Caindo' : '➡️ Estável'
+        })),
+        summary: {
+          'Período': period === '6months' ? 'Últimos 6 meses' : 'Últimos 12 meses',
+          'Total de Categorias': categoryTrends.length,
+          'Maior Gasto': categoryTrends[0]?.category || 'N/A',
+          'Valor': categoryTrends[0] ? formatCurrency(categoryTrends[0].total) : 'R$ 0,00'
+        }
+      });
+    } catch (error) {
+      console.error('Error exporting category trends PDF:', error);
+      alert('Erro ao exportar PDF. Verifique o console.');
+    }
+  }, [period, transactions]);
+
+  const handleExportBudgetPerformance = useCallback(async () => {
+    try {
+      const budgetPerf = getBudgetPerformance();
+      const activeBudgets = budgets.filter(b => b.status === 'active');
+
+      await PDFExportService.exportBudgetAnalysis({
+        type: 'budget-analysis',
+        title: 'Análise de Performance de Orçamentos',
+        dateRange: {
+          start: new Date(new Date().setMonth(new Date().getMonth() - 1)),
+          end: new Date()
+        },
+        data: activeBudgets.map(b => ({
+          Categoria: b.category,
+          Limite: formatCurrency(b.limitAmount),
+          Gasto: formatCurrency(b.currentSpent),
+          Restante: formatCurrency(b.limitAmount - b.currentSpent),
+          Utilização: formatPercentage((b.currentSpent / b.limitAmount) * 100)
+        })),
+        summary: {
+          'Total de Orçamentos': budgetPerf.totalBudgets,
+          'Total Orçado': formatCurrency(budgetPerf.totalBudgeted),
+          'Total Gasto': formatCurrency(budgetPerf.totalSpent),
+          'Saldo Restante': formatCurrency(budgetPerf.remaining),
+          'Dentro do Orçamento': `${budgetPerf.withinBudget}/${budgetPerf.totalBudgets}`
+        }
+      });
+    } catch (error) {
+      console.error('Error exporting budget performance PDF:', error);
+      alert('Erro ao exportar PDF. Verifique o console.');
+    }
+  }, [budgets]);
+
+  const handleExportGoalsProgress = useCallback(async () => {
+    try {
+      const goalsProgress = getGoalsProgress();
+      const activeGoals = goals.filter(g => g.status === 'active');
+
+      await PDFExportService.exportGoalsProgress({
+        type: 'goals-progress',
+        title: 'Relatório de Progresso de Metas',
+        dateRange: {
+          start: new Date(Math.min(...activeGoals.map(g => new Date(g.createdAt || Date.now()).getTime()))),
+          end: new Date()
+        },
+        data: activeGoals.map(g => ({
+          Meta: g.title,
+          'Valor Alvo': formatCurrency(g.targetAmount),
+          'Valor Atual': formatCurrency(g.currentAmount),
+          'Faltando': formatCurrency(g.targetAmount - g.currentAmount),
+          Progresso: formatPercentage((g.currentAmount / g.targetAmount) * 100),
+          Prazo: new Date(g.deadline).toLocaleDateString('pt-BR')
+        })),
+        summary: {
+          'Total de Metas': goalsProgress.totalGoals,
+          'Valor Total Alvo': formatCurrency(goalsProgress.totalTarget),
+          'Total Economizado': formatCurrency(goalsProgress.totalSaved),
+          'Restante': formatCurrency(goalsProgress.remaining),
+          'Progresso Médio': formatPercentage(goalsProgress.avgProgress),
+          'Metas Concluídas': goalsProgress.completed
+        }
+      });
+    } catch (error) {
+      console.error('Error exporting goals progress PDF:', error);
+      alert('Erro ao exportar PDF. Verifique o console.');
+    }
+  }, [goals]);
 
   // Get monthly data for comparison
   const getMonthlyData = (): MonthlyData[] => {
@@ -184,14 +315,15 @@ const ReportsAdvanced: React.FC = () => {
     };
   };
 
-  const monthlyData = getMonthlyData();
-  const categoryTrends = getCategoryTrends();
-  const prediction = predictNextMonth();
-  const budgetPerf = getBudgetPerformance();
-  const goalsProgress = getGoalsProgress();
+  // PERFORMANCE OPTIMIZATION (Sprint 6.5): Memoize heavy calculations
+  const monthlyData = useMemo(() => getMonthlyData(), [transactions, period]);
+  const categoryTrends = useMemo(() => getCategoryTrends(), [transactions, period]);
+  const prediction = useMemo(() => predictNextMonth(), [transactions, period]);
+  const budgetPerf = useMemo(() => getBudgetPerformance(), [budgets]);
+  const goalsProgress = useMemo(() => getGoalsProgress(), [goals]);
 
-  // Chart data
-  const monthlyComparisonChart = {
+  // Chart data - Memoized para evitar recriação em cada render
+  const monthlyComparisonChart = useMemo(() => ({
     labels: monthlyData.map(m => m.month),
     datasets: [
       {
@@ -209,9 +341,9 @@ const ReportsAdvanced: React.FC = () => {
         borderWidth: 2
       }
     ]
-  };
+  }), [monthlyData]);
 
-  const balanceTrendChart = {
+  const balanceTrendChart = useMemo(() => ({
     labels: monthlyData.map(m => m.month),
     datasets: [
       {
@@ -224,9 +356,9 @@ const ReportsAdvanced: React.FC = () => {
         tension: 0.4
       }
     ]
-  };
+  }), [monthlyData]);
 
-  const budgetDistributionChart = {
+  const budgetDistributionChart = useMemo(() => ({
     labels: budgets.filter(b => b.status === 'active').map(b => b.category),
     datasets: [
       {
@@ -235,7 +367,7 @@ const ReportsAdvanced: React.FC = () => {
         borderWidth: 0
       }
     ]
-  };
+  }), [budgets]);
 
   if (loading) {
     return (
@@ -262,10 +394,33 @@ const ReportsAdvanced: React.FC = () => {
             <option value="12months">Últimos 12 meses</option>
             <option value="all">Últimos 24 meses</option>
           </select>
-          <Button variant="primary" onClick={() => window.print()}>
-            <i className="fas fa-download"></i> Exportar PDF
-          </Button>
         </div>
+      </motion.div>
+
+      {/* Export Actions Row */}
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 0.2 }}
+        style={{ 
+          display: 'flex', 
+          gap: '0.75rem', 
+          marginBottom: '1.5rem',
+          flexWrap: 'wrap'
+        }}
+      >
+        <Button variant="secondary" onClick={handleExportMonthlyComparison}>
+          📊 Exportar Comparativo Mensal
+        </Button>
+        <Button variant="secondary" onClick={handleExportCategoryTrends}>
+          📈 Exportar Tendências por Categoria
+        </Button>
+        <Button variant="secondary" onClick={handleExportBudgetPerformance}>
+          💰 Exportar Performance de Orçamentos
+        </Button>
+        <Button variant="secondary" onClick={handleExportGoalsProgress}>
+          🎯 Exportar Progresso de Metas
+        </Button>
       </motion.div>
 
       {/* Summary Cards */}

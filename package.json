@@ -1,6 +1,6 @@
 {
   "name": "financy-life",
-  "version": "3.11.7",
+  "version": "3.12.0",
   "description": "Sistema de gestão financeira pessoal com arquitetura moderna, robusta e otimizada",
   "type": "module",
   "scripts": {
@@ -13,7 +13,15 @@
     "test": "vitest",
     "test:ui": "vitest --ui",
     "test:coverage": "vitest --coverage",
-    "test:run": "vitest run"
+    "test:run": "vitest run",
+    "test:e2e": "playwright test",
+    "test:e2e:ui": "playwright test --ui",
+    "test:e2e:debug": "playwright test --debug",
+    "test:health": "playwright test health-check.spec.ts",
+    "test:health:headed": "playwright test health-check.spec.ts --headed",
+    "test:mock": "playwright test auth-mock.spec.ts",
+    "test:mock:headed": "playwright test auth-mock.spec.ts --headed",
+    "test:report": "playwright show-report test-results/playwright-report"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.84.0",
@@ -27,6 +35,8 @@
     "dexie": "^4.2.1",
     "dexie-react-hooks": "^4.2.0",
     "framer-motion": "^12.23.24",
+    "jspdf": "^3.0.4",
+    "jspdf-autotable": "^5.0.2",
     "lodash": "^4.17.21",
     "react": "^19.2.0",
     "react-chartjs-2": "^5.3.1",
@@ -37,6 +47,7 @@
     "zod": "^4.1.12"
   },
   "devDependencies": {
+    "@playwright/test": "^1.57.0",
     "@testing-library/jest-dom": "^6.9.1",
     "@testing-library/react": "^16.3.0",
     "@testing-library/user-event": "^14.6.1",

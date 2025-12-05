@@ -3,6 +3,7 @@ import Button from '../common/Button';
 import ExportModal from '../export/ExportModal';
 import { formatCurrency, formatPercentage } from '../../utils/currency';
 import { transactionsService } from '../../services/transactions.service';
+import { PDFExportService } from '../../services/pdf-export.service';
 import type { Transaction } from '../../types/financial.types';
 
 interface KPICardProps {
@@ -46,6 +47,41 @@ const Reports: React.FC<ReportsProps> = ({ className }) => {
   const [categoryFilter, setCategoryFilter] = useState<'all' | 'income' | 'expense'>('all');
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
+
+  const handleExportPDF = async () => {
+    try {
+      const filteredTxns = transactions.filter(t => {
+        // Aplicar filtros de categoria
+        if (categoryFilter !== 'all') {
+          if (categoryFilter === 'income' && t.type !== 'income') return false;
+          if (categoryFilter === 'expense' && t.type !== 'expense') return false;
+        }
+        return true;
+      });
+
+      const startDateObj = startDate ? new Date(startDate) : new Date(new Date().setMonth(new Date().getMonth() - 1));
+      const endDateObj = endDate ? new Date(endDate) : new Date();
+
+      await PDFExportService.exportTransactionsReport({
+        type: 'transactions',
+        title: 'Relatório de Transações',
+        dateRange: {
+          start: startDateObj,
+          end: endDateObj
+        },
+        data: filteredTxns,
+        summary: {
+          'Total de Transações': summary.transactionCount,
+          'Total Receitas': formatCurrency(summary.income),
+          'Total Despesas': formatCurrency(summary.expenses),
+          'Saldo': formatCurrency(summary.balance)
+        }
+      });
+    } catch (error) {
+      console.error('Error exporting PDF:', error);
+      alert('Erro ao exportar PDF. Verifique o console.');
+    }
+  };
 
   const loadData = useCallback(async () => {
     try {
@@ -276,6 +312,9 @@ const Reports: React.FC<ReportsProps> = ({ className }) => {
         <div className="table-header">
           <div className="table-title">📋 Transações Recentes</div>
           <div className="table-actions">
+            <button className="btn-export" onClick={handleExportPDF} style={{ marginRight: '0.5rem' }}>
+              📄 Exportar PDF
+            </button>
             <button className="btn-export" onClick={() => setShowExportModal(true)}>Exportar</button>
           </div>
         </div>

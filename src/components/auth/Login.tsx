@@ -28,6 +28,17 @@ const Login: React.FC<LoginProps> = ({ onSuccess, onSwitchToRegister }) => {
     setLoading(true);
 
     try {
+      // 🧪 SUPORTE PARA TESTES E2E: Detectar mock de autenticação
+      const mock = (window as any).__AUTH_MOCK__;
+      if (mock?.login) {
+        // Mock está ativo - executar login mockado
+        await mock.login(email, password);
+        // Mock dispara evento 'auth-mock-state-changed' internamente
+        onSuccess?.();
+        return;
+      }
+
+      // Login real com Supabase
       const { error } = await signIn({ email, password });
 
       if (error) {

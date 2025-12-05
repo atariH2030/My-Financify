@@ -1,13 +1,12 @@
 /**
  * SyncIndicator Styles
  * Design moderno e minimalista para indicador de sync
+ * v3.14.0 - Adaptado para sidebar-footer (não fixed)
  */
 
 .sync-indicator {
-  position: fixed;
-  bottom: 24px;
-  right: 24px;
-  z-index: 1000;
+  width: 100%;
+  padding: 0;
 }
 
 .sync-status {
@@ -24,6 +23,7 @@
   font-size: 14px;
   font-weight: 600;
   color: #374151;
+  width: 100%;
 }
 
 .sync-status:hover {
@@ -83,11 +83,11 @@
   50% { opacity: 0.7; }
 }
 
-/* Detalhes do Sync */
+/* Detalhes do Sync - Aparece para cima (modal acima do botão) */
 .sync-details {
-  position: absolute;
-  bottom: calc(100% + 12px);
-  right: 0;
+  position: fixed; /* Fixed para não ficar cortado pelo sidebar */
+  bottom: 80px; /* Espaço do sidebar-footer + margem */
+  left: 20px; /* Alinhado com sidebar */
   width: 320px;
   background: white;
   border: 2px solid #e5e7eb;
@@ -95,6 +95,7 @@
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
   padding: 20px;
   animation: slideUp 0.3s ease;
+  z-index: 1100; /* Acima de tudo */
 }
 
 @keyframes slideUp {
@@ -250,17 +251,65 @@
 
 /* Responsivo */
 @media (max-width: 768px) {
-  .sync-indicator {
-    bottom: 80px;
-    right: 16px;
-  }
-
   .sync-details {
     width: calc(100vw - 32px);
-    right: -8px;
+    left: 16px;
+    bottom: 70px;
   }
 
   .status-text {
-    display: none;
+    font-size: 12px;
   }
+}
+
+/* Dark Mode Support */
+[data-theme="dark"] .sync-status {
+  background: #1f2937;
+  border-color: #374151;
+  color: #e5e7eb;
+}
+
+[data-theme="dark"] .sync-status.online {
+  border-color: #10b981;
+  background: linear-gradient(135deg, #064e3b 0%, #065f46 100%);
+}
+
+[data-theme="dark"] .sync-status.offline {
+  border-color: #ef4444;
+  background: linear-gradient(135deg, #7f1d1d 0%, #991b1b 100%);
+}
+
+[data-theme="dark"] .sync-details {
+  background: #1f2937;
+  border-color: #374151;
+}
+
+[data-theme="dark"] .sync-details-header {
+  border-bottom-color: #374151;
+}
+
+[data-theme="dark"] .sync-details-header h4 {
+  color: #f9fafb;
+}
+
+[data-theme="dark"] .sync-details-header button {
+  color: #9ca3af;
+}
+
+[data-theme="dark"] .sync-details-header button:hover {
+  color: #f9fafb;
+  background: #374151;
+}
+
+[data-theme="dark"] .info-row > span:first-child,
+[data-theme="dark"] .result-row > span:first-child {
+  color: #d1d5db;
+}
+
+[data-theme="dark"] .sync-results {
+  background: #111827;
+}
+
+[data-theme="dark"] .sync-results h5 {
+  color: #9ca3af;
 }

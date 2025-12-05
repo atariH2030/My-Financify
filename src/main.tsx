@@ -1,30 +1,40 @@
-import React from 'react';
+import React, { lazy, Suspense } from 'react';
 import { createRoot } from 'react-dom/client';
 import './styles/globals.css';
 import './styles/smooth-transitions.css';
+import './utils/i18n-validator'; // ✅ Auto-valida traduções ao iniciar
 
 // ✅ APP NORMAL COM AUTENTICAÇÃO INTEGRADA
 import { AuthProvider } from './contexts/AuthContext';
+import { LanguageProvider, useTranslation } from './contexts/LanguageContext';
 import ProtectedRoute from './components/auth/ProtectedRoute';
 import UserHeader from './components/auth/UserHeader';
 import OnlineStatus from './components/common/OnlineStatus';
 import SyncIndicator from './components/common/SyncIndicator';
+import AIChatButton from './components/common/AIChatButton';
 
-// App Components
-import DashboardV2 from './components/dashboard/DashboardV2';
-import Transactions from './components/transactions/Transactions';
-import Reports from './components/reports/Reports';
-import ReportsAdvanced from './components/reports/ReportsAdvanced';
-import Goals from './components/goals/Goals';
-import Budgets from './components/budgets/Budgets';
-import Settings from './components/settings/Settings';
-import ProfilePage from './components/profile/ProfilePage';
-import NotificationCenter from './components/notifications/NotificationCenter';
-import Accounts from './components/accounts/Accounts';
-import RecurringTransactions from './components/recurring/RecurringTransactions';
+// Core Components (carregados imediatamente)
 import { ErrorBoundary, ToastProvider, ToastEnhancedProvider, useKeyboardShortcuts, KeyboardShortcutsHelp, type KeyboardShortcut } from './components/common';
 import CommandPalette from './components/common/CommandPalette';
-import Fase2Example from './components/common/Fase2Example';
+import GlobalCommandPalette from './components/common/GlobalCommandPalette';
+import ThemeCustomizer from './components/common/ThemeCustomizer';
+import LanguageSelector from './components/common/LanguageSelector';
+import WidgetCustomizer from './components/dashboard/WidgetCustomizer';
+
+// Lazy Loading Components (carregados sob demanda)
+const DashboardV2 = lazy(() => import('./components/dashboard/DashboardV2'));
+const Transactions = lazy(() => import('./components/transactions/Transactions'));
+const Reports = lazy(() => import('./components/reports/Reports'));
+const ReportsAdvanced = lazy(() => import('./components/reports/ReportsAdvanced'));
+const Goals = lazy(() => import('./components/goals/Goals'));
+const Budgets = lazy(() => import('./components/budgets/Budgets'));
+const Settings = lazy(() => import('./components/settings/Settings'));
+const ProfilePage = lazy(() => import('./components/profile/ProfilePage'));
+const NotificationCenter = lazy(() => import('./components/notifications/NotificationCenter'));
+const Accounts = lazy(() => import('./components/accounts/Accounts'));
+const RecurringTransactions = lazy(() => import('./components/recurring/RecurringTransactions'));
+const Fase2Example = lazy(() => import('./components/common/Fase2Example'));
+const AIAnalyticsDashboard = lazy(() => import('./components/analytics/AIAnalyticsDashboard'));
 
 import Logger from './services/logger.service';
 import Seeder from './services/seeder.service';
@@ -55,9 +65,20 @@ if (process.env.NODE_ENV === 'development') {
 
 // Componente App principal com sidebar
 const App: React.FC = () => {
+  // ============================================================================
+  // HOOKS DE TRADUÇÃO
+  // ============================================================================
+  const { t } = useTranslation();
+  
+  // ============================================================================
+  // ESTADOS
+  // ============================================================================
   const [currentPage, setCurrentPage] = React.useState('dashboard');
   const [showShortcutsHelp, setShowShortcutsHelp] = React.useState(false);
   const [showCommandPalette, setShowCommandPalette] = React.useState(false);
+  const [showGlobalCommandPalette, setShowGlobalCommandPalette] = React.useState(false);
+  const [showThemeCustomizer, setShowThemeCustomizer] = React.useState(false);
+  const [showWidgetCustomizer, setShowWidgetCustomizer] = React.useState(false);
   const [theme, setTheme] = React.useState(() => {
     return localStorage.getItem('theme') || 'light';
   });
@@ -131,50 +152,57 @@ const App: React.FC = () => {
   };
 
   // ============================================================================
-  // KEYBOARD SHORTCUTS - Atalhos de teclado globais
+  // KEYBOARD SHORTCUTS - Atalhos de teclado globais com traduções
   // ============================================================================
   
-  const shortcuts: KeyboardShortcut[] = [
+  const shortcuts: KeyboardShortcut[] = React.useMemo(() => [
     // Navegação
     {
       key: 'd',
       ctrl: true,
-      description: 'Ir para Dashboard',
+      description: t('shortcuts.dashboard'),
       action: () => setCurrentPage('dashboard'),
       category: 'navigation',
     },
     {
       key: 't',
       ctrl: true,
-      description: 'Ir para Transações',
+      description: t('shortcuts.transactions'),
       action: () => setCurrentPage('transactions'),
       category: 'navigation',
     },
     {
       key: 'g',
       ctrl: true,
-      description: 'Ir para Metas',
+      description: t('shortcuts.goals'),
       action: () => setCurrentPage('goals'),
       category: 'navigation',
     },
     {
       key: 'r',
       ctrl: true,
-      description: 'Ir para Relatórios',
+      description: t('shortcuts.reports'),
       action: () => setCurrentPage('reports'),
+      category: 'navigation',
+    },
+    {
+      key: 'a',
+      ctrl: true,
+      description: t('shortcuts.analytics'),
+      action: () => setCurrentPage('analytics'),
       category: 'navigation',
     },
     {
       key: 'b',
       ctrl: true,
-      description: 'Ir para Orçamentos',
+      description: t('shortcuts.budgets'),
       action: () => setCurrentPage('budgets'),
       category: 'navigation',
     },
     {
       key: ',',
       ctrl: true,
-      description: 'Ir para Configurações',
+      description: t('shortcuts.settings'),
       action: () => setCurrentPage('settings'),
       category: 'navigation',
     },
@@ -182,7 +210,7 @@ const App: React.FC = () => {
     {
       key: 'k',
       ctrl: true,
-      description: 'Abrir Busca Global (Command Palette)',
+      description: t('shortcuts.commandPalette'),
       action: () => setShowCommandPalette(true),
       category: 'actions',
     },
@@ -190,88 +218,146 @@ const App: React.FC = () => {
       key: 'b',
       ctrl: true,
       shift: true,
-      description: 'Abrir/Fechar Sidebar',
+      description: t('shortcuts.toggleSidebar'),
       action: toggleSidebar,
       category: 'actions',
     },
     {
       key: 'l',
       ctrl: true,
-      description: 'Alternar Tema (Light/Dark)',
+      description: t('shortcuts.toggleTheme'),
       action: toggleTheme,
+      category: 'actions',
+    },
+    {
+      key: 't',
+      ctrl: true,
+      shift: true,
+      description: t('shortcuts.themeCustomizer'),
+      action: () => setShowThemeCustomizer(true),
+      category: 'actions',
+    },
+    {
+      key: 'w',
+      ctrl: true,
+      description: t('shortcuts.widgetCustomizer'),
+      action: () => setShowWidgetCustomizer(true),
       category: 'actions',
     },
     // Geral
     {
       key: '/',
       ctrl: true,
-      description: 'Mostrar Atalhos de Teclado',
+      description: t('shortcuts.showHelp'),
       action: () => setShowShortcutsHelp(true),
+      category: 'general',
+    },
+    {
+      key: 'p',
+      ctrl: true,
+      description: t('shortcuts.globalPalette'),
+      action: () => setShowGlobalCommandPalette(true),
       category: 'general',
     },
     {
       key: 'h',
       ctrl: true,
-      description: 'Ajuda - Atalhos de Teclado',
+      description: t('shortcuts.help'),
       action: () => setShowShortcutsHelp(true),
       category: 'general',
     },
     {
       key: 'Escape',
-      description: 'Fechar Modal/Diálogos',
-      action: () => setShowShortcutsHelp(false),
+      description: t('shortcuts.closeModal'),
+      action: () => {
+        setShowShortcutsHelp(false);
+        setShowGlobalCommandPalette(false);
+        setShowThemeCustomizer(false);
+      },
       category: 'general',
     },
-  ];
+  ], [t, setCurrentPage, toggleSidebar, toggleTheme]);
 
   // Registrar atalhos
   useKeyboardShortcuts({ shortcuts });
 
   const renderPage = () => {
-    switch (currentPage) {
-      case 'dashboard':
-        return <DashboardV2 />;
-      case 'transactions':
-        return <Transactions />;
-      case 'accounts':
-        return <Accounts />;
-      case 'recurring':
-        return <RecurringTransactions />;
-      case 'goals':
-        return <Goals />;
-      case 'budgets':
-        return <Budgets />;
-      case 'reports':
-        return <Reports />;
-      case 'reports-advanced':
-        return <ReportsAdvanced />;
-      case 'settings':
-        return <Settings />;
-      case 'profile':
-        return <ProfilePage />;
-      case 'fase2-demo':
-        return <Fase2Example />;
-      default:
-        return <DashboardV2 />;
-    }
+    // Loading fallback para componentes lazy
+    const LoadingFallback = () => (
+      <div style={{
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        height: '60vh',
+        flexDirection: 'column',
+        gap: '1rem'
+      }}>
+        <div className="spinner" style={{
+          width: '48px',
+          height: '48px',
+          border: '4px solid var(--border-color)',
+          borderTopColor: 'var(--primary-color)',
+          borderRadius: '50%',
+          animation: 'spin 1s linear infinite'
+        }}></div>
+        <p style={{ color: 'var(--text-secondary)' }}>Carregando...</p>
+      </div>
+    );
+
+    const pageContent = () => {
+      switch (currentPage) {
+        case 'dashboard':
+          return <DashboardV2 />;
+        case 'transactions':
+          return <Transactions />;
+        case 'accounts':
+          return <Accounts />;
+        case 'recurring':
+          return <RecurringTransactions />;
+        case 'goals':
+          return <Goals />;
+        case 'budgets':
+          return <Budgets />;
+        case 'reports':
+          return <Reports />;
+        case 'reports-advanced':
+          return <ReportsAdvanced />;
+        case 'analytics':
+          return <AIAnalyticsDashboard />;
+        case 'settings':
+          return <Settings />;
+        case 'profile':
+          return <ProfilePage />;
+        case 'fase2-demo':
+          return <Fase2Example />;
+        default:
+          return <DashboardV2 />;
+      }
+    };
+
+    return (
+      <Suspense fallback={<LoadingFallback />}>
+        {pageContent()}
+      </Suspense>
+    );
   };
 
   return (
     <>
-      {/* Notification Center - Fixo no canto superior direito */}
+      {/* Notification Center - Fixed top-right (unchanged) */}
       <NotificationCenter />
-      
-      {/* Sync Indicator - Status de sincronização */}
-      <SyncIndicator />
 
-      {/* Keyboard Shortcuts Button - Fixo ao lado do NotificationCenter */}
-      <button 
-        className="keyboard-shortcuts-btn"
-        onClick={() => setShowShortcutsHelp(true)}
-        title="Atalhos de Teclado (Ctrl+H)"
-      >
-        <i className="fas fa-keyboard"></i>
-      </button>
+      {/* Top-Right Controls - Language + Keyboard (ao lado esquerdo do sininho) */}
+      <div className="top-right-controls">
+        <LanguageSelector />
+        <button 
+          className="keyboard-shortcuts-btn"
+          onClick={() => setShowShortcutsHelp(true)}
+          title="Atalhos de Teclado (Ctrl+H)"
+        >
+          <i className="fas fa-keyboard"></i>
+        </button>
+      </div>
 
       {/* Botão flutuante para abrir sidebar quando fechado */}
       {!sidebarActive && (
@@ -332,7 +418,7 @@ const App: React.FC = () => {
                 }}
               >
                 <i className="fas fa-tachometer-alt"></i>
-                <span>Painel Principal</span>
+                <span>{t('nav.dashboard')}</span>
               </a>
             </li>
             <li>
@@ -349,7 +435,7 @@ const App: React.FC = () => {
                 }}
               >
                 <i className="fas fa-chart-bar"></i>
-                <span>Relatórios</span>
+                <span>{t('nav.reports')}</span>
               </a>
             </li>
             <li>
@@ -366,7 +452,24 @@ const App: React.FC = () => {
                 }}
               >
                 <i className="fas fa-chart-line"></i>
-                <span>Análise Avançada</span>
+                <span>{t('nav.reportsAdvanced')}</span>
+              </a>
+            </li>
+            <li>
+              <a 
+                href="#" 
+                className={`nav-item ${currentPage === 'analytics' ? 'active' : ''}`}
+                onClick={(e) => {
+                  e.preventDefault();
+                  setCurrentPage('analytics');
+                  // Fecha sidebar apenas no mobile
+                  if (window.innerWidth <= 768) {
+                    setSidebarActive(false);
+                  }
+                }}
+              >
+                <i className="fas fa-brain"></i>
+                <span>{t('nav.analytics')}</span>
               </a>
             </li>
             <li>
@@ -383,7 +486,7 @@ const App: React.FC = () => {
                 }}
               >
                 <i className="fas fa-wallet"></i>
-                <span>Receitas e Despesas</span>
+                <span>{t('nav.transactions')}</span>
               </a>
             </li>
             <li>
@@ -400,7 +503,7 @@ const App: React.FC = () => {
                 }}
               >
                 <i className="fas fa-credit-card"></i>
-                <span>Minhas Contas</span>
+                <span>{t('nav.accounts')}</span>
               </a>
             </li>
             <li>
@@ -417,7 +520,7 @@ const App: React.FC = () => {
                 }}
               >
                 <i className="fas fa-sync-alt"></i>
-                <span>Contas Recorrentes</span>
+                <span>{t('nav.recurring')}</span>
               </a>
             </li>
             <li>
@@ -434,7 +537,7 @@ const App: React.FC = () => {
                 }}
               >
                 <i className="fas fa-bullseye"></i>
-                <span>Metas e Objetivos</span>
+                <span>{t('nav.goals')}</span>
               </a>
             </li>
             <li>
@@ -451,7 +554,7 @@ const App: React.FC = () => {
                 }}
               >
                 <i className="fas fa-wallet"></i>
-                <span>Orçamentos</span>
+                <span>{t('nav.budgets')}</span>
               </a>
             </li>
             <li>
@@ -467,7 +570,7 @@ const App: React.FC = () => {
                 }}
               >
                 <i className="fas fa-cog"></i>
-                <span>Configurações</span>
+                <span>{t('nav.settings')}</span>
               </a>
             </li>
             {/* 🆕 Demo Fase 2 */}
@@ -496,16 +599,8 @@ const App: React.FC = () => {
         </nav>
         
         <div className="sidebar-footer">
-          {/* Indicador de Status Online/Offline */}
-          <OnlineStatus 
-            pendingOperations={0}
-            onSync={async () => {
-              // Sincronização já é feita automaticamente pelo SyncService
-              if (import.meta.env.VITE_DEBUG_MODE === 'true') {
-                console.log('Sincronizando operações pendentes...');
-              }
-            }}
-          />
+          {/* Sync Indicator - Status de conexão com opção de reconectar */}
+          <SyncIndicator />
         </div>
       </div>
 
@@ -532,6 +627,39 @@ const App: React.FC = () => {
           setShowCommandPalette(false);
         }}
       />
+
+      {/* Global Command Palette - Navegação Rápida (Ctrl+P) */}
+      <GlobalCommandPalette
+        isOpen={showGlobalCommandPalette}
+        onClose={() => setShowGlobalCommandPalette(false)}
+        onNavigate={(page) => {
+          setCurrentPage(page);
+          if (window.innerWidth <= 768) {
+            setSidebarActive(false);
+          }
+        }}
+      />
+
+      {/* Theme Customizer - Personalização de Temas (Ctrl+Shift+T) */}
+      <ThemeCustomizer
+        isOpen={showThemeCustomizer}
+        onClose={() => setShowThemeCustomizer(false)}
+      />
+
+      {/* Widget Customizer - Sprint 6.1 (Ctrl+W) */}
+      <WidgetCustomizer
+        isOpen={showWidgetCustomizer}
+        onClose={() => setShowWidgetCustomizer(false)}
+        onApply={() => {
+          // Refresh dashboard widgets
+          if (currentPage === 'dashboard') {
+            window.location.reload();
+          }
+        }}
+      />
+
+      {/* AI Chat Button - Canto inferior direito */}
+      <AIChatButton />
     </>
   );
 };
@@ -548,15 +676,17 @@ const root = createRoot(container);
 root.render(
   <React.StrictMode>
     <ErrorBoundary>
-      <AuthProvider>
-        <ToastProvider>
-          <ToastEnhancedProvider position="top-right" maxToasts={5}>
-            <ProtectedRoute>
-              <App />
-            </ProtectedRoute>
-          </ToastEnhancedProvider>
-        </ToastProvider>
-      </AuthProvider>
+      <LanguageProvider>
+        <AuthProvider>
+          <ToastProvider>
+            <ToastEnhancedProvider position="top-right" maxToasts={5}>
+              <ProtectedRoute>
+                <App />
+              </ProtectedRoute>
+            </ToastEnhancedProvider>
+          </ToastProvider>
+        </AuthProvider>
+      </LanguageProvider>
     </ErrorBoundary>
   </React.StrictMode>
 );

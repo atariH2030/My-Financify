@@ -58,12 +58,19 @@
   box-shadow: var(--shadow-xl);
 }
 
-/* Keyboard Shortcuts Button - Fixo ao lado do NotificationCenter */
-.keyboard-shortcuts-btn {
+/* Top-Right Controls - Language + Keyboard (ao lado esquerdo do NotificationCenter) */
+.top-right-controls {
   position: fixed;
-  top: 20px; /* Alinhado com NotificationCenter */
-  right: 70px; /* NotificationCenter + espaçamento */
-  z-index: 1001;
+  top: 20px;
+  right: 80px; /* NotificationCenter width (~60px) + gap */
+  z-index: 1002;
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+/* Keyboard Shortcuts Button - Top Right alinhado com NotificationCenter */
+.keyboard-shortcuts-btn {
   background: var(--primary-color);
   color: white;
   border: none;

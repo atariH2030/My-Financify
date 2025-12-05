@@ -5,15 +5,21 @@ import Button from '../common/Button';
 import Input from '../common/Input';
 import { useToast } from '../common/Toast';
 import SettingsService, { type AppSettings } from '../../services/settings.service';
+import AIService from '../../services/ai.service';
+import SettingsBackupService from '../../services/settings-backup.service';
+import PushNotificationSettings from './PushNotificationSettings';
+import type { AIProviderConfig } from '../../types/ai.types';
 import './Settings.css';
 
-type Tab = 'profile' | 'notifications' | 'preferences' | 'categories' | 'data';
+type Tab = 'profile' | 'notifications' | 'preferences' | 'categories' | 'data' | 'ai';
 
 const Settings: React.FC = () => {
   const [settings, setSettings] = useState<AppSettings | null>(null);
   const [activeTab, setActiveTab] = useState<Tab>('profile');
   const [loading, setLoading] = useState(true);
   const [stats, setStats] = useState<any>(null);
+  const [aiConfig, setAiConfig] = useState<AIProviderConfig | null>(null);
+  const [aiConfigLoading, setAiConfigLoading] = useState(false);
   const { showToast } = useToast();
 
   const loadSettings = useCallback(async () => {
@@ -32,10 +38,20 @@ const Settings: React.FC = () => {
     setStats(data);
   };
 
+  const loadAIConfig = useCallback(async () => {
+    try {
+      const config = await AIService.getConfig();
+      setAiConfig(config);
+    } catch (error) {
+      console.error('Erro ao carregar config IA:', error);
+    }
+  }, []);
+
   useEffect(() => {
     loadSettings();
     loadStats();
-  }, [loadSettings]);
+    loadAIConfig();
+  }, [loadSettings, loadAIConfig]);
 
   const handleProfileSave = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -75,6 +91,51 @@ const Settings: React.FC = () => {
       }
     } catch (error) {
       showToast('Erro ao salvar preferências', 'error');
+    }
+  };
+
+  const handleAISave = async () => {
+    if (!aiConfig) return;
+
+    setAiConfigLoading(true);
+    try {
+      await AIService.configure(aiConfig);
+      showToast('Configurações de IA atualizadas!', 'success');
+      
+      // Verificar se API Key está funcionando
+      if (aiConfig.apiKey) {
+        const isConfigured = await AIService.isConfigured();
+        if (isConfigured) {
+          showToast('API Key validada com sucesso! ✨', 'success');
+        }
+      }
+    } catch (error) {
+      showToast('Erro ao salvar configurações de IA', 'error');
+    } finally {
+      setAiConfigLoading(false);
+    }
+  };
+
+  const handleTestAI = async () => {
+    if (!aiConfig?.apiKey) {
+      showToast('Configure uma API Key primeiro', 'error');
+      return;
+    }
+
+    setAiConfigLoading(true);
+    try {
+      const testContext = {
+        userId: 'test',
+        timeRange: { start: new Date().toISOString(), end: new Date().toISOString() },
+        transactions: { total: 10, income: 5000, expenses: 3000, byCategory: {} },
+      };
+
+      await AIService.chat('Olá! Como você está?', testContext);
+      showToast('Teste realizado com sucesso! IA está funcionando! 🎉', 'success');
+    } catch (error) {
+      showToast(`Erro no teste: ${(error as Error).message}`, 'error');
+    } finally {
+      setAiConfigLoading(false);
     }
   };
 
@@ -179,6 +240,13 @@ const Settings: React.FC = () => {
           >
             <i className="fas fa-database"></i>
             <span>Dados</span>
+          </button>
+          <button
+            className={`tab ${activeTab === 'ai' ? 'active' : ''}`}
+            onClick={() => setActiveTab('ai')}
+          >
+            <i className="fas fa-robot"></i>
+            <span>Assistente IA</span>
           </button>
         </div>
 
@@ -316,6 +384,11 @@ const Settings: React.FC = () => {
             </Card>
           )}
 
+          {/* Push Notifications - Sprint 5.3 */}
+          {activeTab === 'notifications' && (
+            <PushNotificationSettings />
+          )}
+
           {/* Preferences Tab */}
           {activeTab === 'preferences' && (
             <Card className="settings-card">
@@ -450,21 +523,54 @@ const Settings: React.FC = () => {
               {/* Actions */}
               <div className="data-actions">
                 <div className="action-group">
-                  <h3>Backup dos Dados</h3>
-                  <p>Exporte todos os seus dados para um arquivo JSON</p>
-                  <Button onClick={handleExportData} variant="primary">
-                    <i className="fas fa-download"></i> Exportar Backup
+                  <h3>🔐 Backup Completo (Configurações)</h3>
+                  <p>Exporte todas as suas configurações e preferências (sem dados financeiros)</p>
+                  <Button onClick={async () => {
+                    try {
+                      await SettingsBackupService.downloadBackup(false);
+                      showToast('Backup de configurações baixado!', 'success');
+                    } catch (error) {
+                      showToast('Erro ao exportar configurações', 'error');
+                    }
+                  }} variant="primary">
+                    <i className="fas fa-download"></i> Exportar Configurações
                   </Button>
                 </div>
 
                 <div className="action-group">
-                  <h3>Restaurar Backup</h3>
-                  <p>Importe um arquivo de backup anteriormente exportado</p>
+                  <h3>💾 Backup Completo (Tudo)</h3>
+                  <p>Exporte TODAS configurações E dados financeiros (contas, budgets, metas)</p>
+                  <Button onClick={async () => {
+                    try {
+                      await SettingsBackupService.downloadBackup(true);
+                      showToast('Backup completo baixado!', 'success');
+                    } catch (error) {
+                      showToast('Erro ao exportar dados', 'error');
+                    }
+                  }} variant="primary">
+                    <i className="fas fa-download"></i> Exportar Tudo
+                  </Button>
+                </div>
+
+                <div className="action-group">
+                  <h3>📤 Restaurar Backup</h3>
+                  <p>Importe um arquivo de backup (configurações ou completo)</p>
                   <label className="file-input-label">
                     <input
                       type="file"
                       accept=".json"
-                      onChange={handleImportData}
+                      onChange={async (e) => {
+                        const file = e.target.files?.[0];
+                        if (!file) return;
+                        
+                        try {
+                          await SettingsBackupService.uploadBackup(file);
+                          showToast('Backup restaurado com sucesso!', 'success');
+                          setTimeout(() => window.location.reload(), 1500);
+                        } catch (error) {
+                          showToast('Erro ao restaurar backup: ' + (error as Error).message, 'error');
+                        }
+                      }}
                       style={{ display: 'none' }}
                     />
                     <Button variant="secondary">
@@ -473,12 +579,187 @@ const Settings: React.FC = () => {
                   </label>
                 </div>
 
+                <div className="action-group">
+                  <h3>⚡ Backup Automático Local</h3>
+                  <p>Restaurar última versão salva automaticamente no navegador</p>
+                  <Button onClick={async () => {
+                    try {
+                      const success = await SettingsBackupService.restoreAutoBackup();
+                      if (success) {
+                        showToast('Backup automático restaurado!', 'success');
+                        setTimeout(() => window.location.reload(), 1500);
+                      } else {
+                        showToast('Nenhum backup automático encontrado', 'warning');
+                      }
+                    } catch (error) {
+                      showToast('Erro ao restaurar backup automático', 'error');
+                    }
+                  }} variant="secondary">
+                    <i className="fas fa-history"></i> Restaurar Auto-Backup
+                  </Button>
+                </div>
+
+                <div className="action-group">
+                  <h3>📊 Backup de Dados Brutos (JSON)</h3>
+                  <p>Exportar dados financeiros para análise externa (formato antigo)</p>
+                  <Button onClick={handleExportData} variant="secondary">
+                    <i className="fas fa-file-code"></i> Exportar JSON
+                  </Button>
+                </div>
+
                 <div className="action-group danger">
                   <h3>⚠️ Zona de Perigo</h3>
                   <p>Resetar completamente o sistema (apaga TODOS os dados)</p>
                   <Button onClick={handleResetSystem} variant="danger">
                     <i className="fas fa-trash"></i> Resetar Sistema
                   </Button>
+                </div>
+              </div>
+            </Card>
+          )}
+
+          {/* AI Tab */}
+          {activeTab === 'ai' && aiConfig && (
+            <Card className="settings-card">
+              <h2><i className="fas fa-robot"></i> Assistente IA</h2>
+              <p className="section-description">
+                Configure o assistente financeiro inteligente com Google Gemini Pro (gratuito)
+              </p>
+
+              <div className="settings-group">
+                {/* API Key */}
+                <div className="form-group">
+                  <label>
+                    <i className="fas fa-key"></i> API Key do Google Gemini
+                  </label>
+                  <Input
+                    type="password"
+                    value={aiConfig.apiKey || ''}
+                    onChange={(e) => setAiConfig({ ...aiConfig, apiKey: e.target.value })}
+                    placeholder="Cole sua API Key aqui..."
+                  />
+                  <small className="help-text">
+                    📝 Obtenha gratuitamente em: <a href="https://aistudio.google.com/app/apikey" target="_blank" rel="noopener noreferrer">Google AI Studio</a>
+                  </small>
+                </div>
+
+                {/* Modelo */}
+                <div className="form-group">
+                  <label>
+                    <i className="fas fa-microchip"></i> Modelo de IA
+                  </label>
+                  <select
+                    value={aiConfig.model}
+                    onChange={(e) => setAiConfig({ ...aiConfig, model: e.target.value })}
+                    className="select-input"
+                  >
+                    <option value="gemini-1.5-flash">Gemini 1.5 Flash (Rápido e Gratuito)</option>
+                    <option value="gemini-1.5-pro">Gemini 1.5 Pro (Mais Poderoso)</option>
+                  </select>
+                  <small className="help-text">
+                    ⚡ Flash: Mais rápido, ideal para uso diário | 🚀 Pro: Análises mais complexas
+                  </small>
+                </div>
+
+                {/* Temperatura */}
+                <div className="form-group">
+                  <label>
+                    <i className="fas fa-temperature-half"></i> Criatividade (Temperature): {aiConfig.temperature}
+                  </label>
+                  <input
+                    type="range"
+                    min="0"
+                    max="1"
+                    step="0.1"
+                    value={aiConfig.temperature}
+                    onChange={(e) => setAiConfig({ ...aiConfig, temperature: parseFloat(e.target.value) })}
+                    className="slider-input"
+                  />
+                  <div className="slider-labels">
+                    <span>Conservador (0.0)</span>
+                    <span>Criativo (1.0)</span>
+                  </div>
+                  <small className="help-text">
+                    💡 0.7 recomendado para finanças (equilíbrio entre precisão e criatividade)
+                  </small>
+                </div>
+
+                {/* Max Tokens */}
+                <div className="form-group">
+                  <label>
+                    <i className="fas fa-text-width"></i> Máximo de Tokens
+                  </label>
+                  <select
+                    value={aiConfig.maxTokens}
+                    onChange={(e) => setAiConfig({ ...aiConfig, maxTokens: parseInt(e.target.value) })}
+                    className="select-input"
+                  >
+                    <option value="1024">1024 (Respostas Curtas)</option>
+                    <option value="2048">2048 (Recomendado)</option>
+                    <option value="4096">4096 (Respostas Longas)</option>
+                  </select>
+                  <small className="help-text">
+                    📊 Maior = Respostas mais detalhadas (consome mais tokens gratuitos)
+                  </small>
+                </div>
+
+                {/* Status */}
+                <div className="ai-status">
+                  <div className="status-indicator">
+                    {aiConfig.apiKey ? (
+                      <>
+                        <i className="fas fa-check-circle" style={{ color: 'var(--success-color)' }}></i>
+                        <span>API Key configurada</span>
+                      </>
+                    ) : (
+                      <>
+                        <i className="fas fa-exclamation-circle" style={{ color: 'var(--warning-color)' }}></i>
+                        <span>API Key não configurada</span>
+                      </>
+                    )}
+                  </div>
+                </div>
+
+                {/* Ações */}
+                <div className="button-group">
+                  <Button 
+                    onClick={handleAISave} 
+                    variant="primary"
+                    disabled={aiConfigLoading || !aiConfig.apiKey}
+                  >
+                    <i className="fas fa-save"></i> Salvar Configurações
+                  </Button>
+                  <Button 
+                    onClick={handleTestAI}
+                    variant="secondary"
+                    disabled={aiConfigLoading || !aiConfig.apiKey}
+                  >
+                    <i className="fas fa-flask"></i> Testar IA
+                  </Button>
+                </div>
+
+                {/* Guia Rápido */}
+                <div className="info-box">
+                  <h4>🚀 Como Configurar (2 minutos)</h4>
+                  <ol>
+                    <li>Acesse <a href="https://aistudio.google.com/app/apikey" target="_blank" rel="noopener noreferrer">Google AI Studio</a></li>
+                    <li>Faça login com sua conta Google</li>
+                    <li>Clique em "Create API Key" (gratuito, sem cartão)</li>
+                    <li>Copie a chave gerada</li>
+                    <li>Cole no campo acima e clique em "Salvar"</li>
+                    <li>Clique em "Testar IA" para validar</li>
+                  </ol>
+                </div>
+
+                {/* Limites Gratuitos */}
+                <div className="info-box" style={{ borderColor: 'var(--success-color)' }}>
+                  <h4>💚 Totalmente Gratuito!</h4>
+                  <ul>
+                    <li>✅ 60 requisições por minuto</li>
+                    <li>✅ 1 milhão de tokens por dia</li>
+                    <li>✅ Sem cartão de crédito</li>
+                    <li>✅ Suficiente para centenas de usuários</li>
+                  </ul>
                 </div>
               </div>
             </Card>

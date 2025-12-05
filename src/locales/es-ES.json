@@ -1,0 +1,163 @@
+{
+  "common": {
+    "loading": "Cargando...",
+    "save": "Guardar",
+    "cancel": "Cancelar",
+    "delete": "Eliminar",
+    "edit": "Editar",
+    "add": "Agregar",
+    "search": "Buscar",
+    "filter": "Filtrar",
+    "all": "Todas",
+    "yes": "Sí",
+    "no": "No",
+    "close": "Cerrar",
+    "apply": "Aplicar",
+    "reset": "Restablecer",
+    "export": "Exportar",
+    "import": "Importar",
+    "download": "Descargar",
+    "upload": "Subir",
+    "error": "Error",
+    "success": "Éxito",
+    "warning": "Advertencia",
+    "info": "Información"
+  },
+  "nav": {
+    "dashboard": "Panel Principal",
+    "transactions": "Ingresos y Gastos",
+    "accounts": "Mis Cuentas",
+    "recurring": "Transacciones Recurrentes",
+    "goals": "Metas y Objetivos",
+    "budgets": "Presupuestos",
+    "reports": "Informes",
+    "reportsAdvanced": "Análisis Avanzado",
+    "analytics": "Analytics IA",
+    "settings": "Configuración",
+    "profile": "Perfil",
+    "fase2Demo": "Demo Fase 2"
+  },
+  "auth": {
+    "login": "Iniciar Sesión",
+    "logout": "Cerrar Sesión",
+    "email": "Correo Electrónico",
+    "password": "Contraseña",
+    "forgotPassword": "¿Olvidaste tu contraseña?",
+    "noAccount": "¿No tienes cuenta?",
+    "signUp": "Regístrate",
+    "welcome": "Bienvenido a Financy Life",
+    "subtitle": "Gestión Financiera Inteligente"
+  },
+  "dashboard": {
+    "title": "Panel Principal",
+    "widgets": {
+      "balance": "Saldo",
+      "income": "Ingresos",
+      "expenses": "Gastos",
+      "budgets": "Presupuestos",
+      "goals": "Metas",
+      "incomeVsExpenses": "Ingresos vs Gastos"
+    },
+    "greeting": {
+      "morning": "Buenos días",
+      "afternoon": "Buenas tardes",
+      "evening": "Buenas noches"
+    }
+  },
+  "transactions": {
+    "title": "Transacciones",
+    "add": "Agregar Nuevo Registro",
+    "edit": "Editar Transacción",
+    "delete": "Eliminar Transacción",
+    "description": "Descripción",
+    "amount": "Monto",
+    "date": "Fecha",
+    "category": "Categoría",
+    "subcategory": "Subcategoría",
+    "section": "Sección",
+    "type": "Tipo",
+    "income": "Ingresos",
+    "expense": "Gastos",
+    "filters": {
+      "all": "Todas",
+      "income": "Ingresos",
+      "expenses": "Gastos",
+      "date": "Fecha",
+      "today": "Hoy",
+      "week": "Últimos 7 días",
+      "month": "Último mes",
+      "custom": "Personalizado",
+      "search": "Buscar por descripción, categoría..."
+    },
+    "empty": "No se encontraron transacciones",
+    "emptyHint": "Intenta ajustar los filtros o agrega un nuevo registro"
+  },
+  "reports": {
+    "title": "Informes Financieros",
+    "subtitle": "Análisis visual completo de sus finanzas",
+    "exportPDF": "Exportar PDF",
+    "exportExcel": "Exportar Excel",
+    "exportEmail": "Enviar por Correo",
+    "exporting": "Exportando...",
+    "noData": "Agregue transacciones para exportar informes",
+    "period": {
+      "3months": "Últimos 3 meses",
+      "6months": "Últimos 6 meses",
+      "12months": "Último año"
+    }
+  },
+  "settings": {
+    "title": "Configuración",
+    "language": "Idioma",
+    "theme": "Tema",
+    "notifications": "Notificaciones",
+    "account": "Cuenta",
+    "privacy": "Privacidad",
+    "about": "Acerca de"
+  },
+  "footer": {
+    "online": "En línea",
+    "offline": "Sin conexión",
+    "syncing": "Sincronizando...",
+    "lastSync": "Última sincronización",
+    "pendingOperations": "operaciones pendientes",
+    "aiChat": "Chat IA",
+    "aiChatHint": "Haz clic para chatear con la IA",
+    "keyboardShortcuts": "Atajos de Teclado",
+    "connectionStatus": "Estado de Conexión"
+  },
+  "shortcuts": {
+    "title": "Atajos de Teclado",
+    "navigation": "Navegación",
+    "actions": "Acciones Rápidas",
+    "general": "General",
+    "dashboard": "Ir al Panel",
+    "transactions": "Ir a Transacciones",
+    "goals": "Ir a Metas",
+    "reports": "Ir a Informes",
+    "analytics": "Ir a Analytics IA",
+    "budgets": "Ir a Presupuestos",
+    "settings": "Ir a Configuración",
+    "search": "Abrir Búsqueda Global (Command Palette)",
+    "toggleSidebar": "Abrir/Cerrar Barra Lateral",
+    "toggleTheme": "Alternar Tema (Claro/Oscuro)",
+    "themeCustomizer": "Abrir Personalizador de Tema",
+    "widgetCustomizer": "Personalizar Widgets del Panel",
+    "showShortcuts": "Mostrar Atajos de Teclado",
+    "showHelp": "Mostrar Ayuda",
+    "commandPalette": "Abrir Command Palette",
+    "globalPalette": "Búsqueda Global (Command Palette)",
+    "help": "Ayuda - Atajos de Teclado",
+    "closeModal": "Cerrar Modal/Diálogos"
+  },
+  "aiChat": {
+    "title": "Asistente IA Financiero",
+    "placeholder": "Pregunta cualquier cosa sobre tus finanzas...",
+    "suggestions": [
+      "¿Cuánto gasté este mes?",
+      "¿Cómo está mi presupuesto?",
+      "¿Sugerencias para ahorrar?",
+      "Análisis de los últimos 3 meses"
+    ]
+  }
+}

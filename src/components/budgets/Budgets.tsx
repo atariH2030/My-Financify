@@ -12,6 +12,7 @@ import type { Budget, Transaction } from '../../types/financial.types';
 
 const Budgets: React.FC = () => {
   const [budgets, setBudgets] = useState<Budget[]>([]);
+  const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingBudget, setEditingBudget] = useState<Budget | undefined>();
   const [isLoading, setIsLoading] = useState(true);

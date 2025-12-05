@@ -1,0 +1,232 @@
+/**
+ * PushNotificationSettings.css
+ * Sprint 5.3 - Estilos para configurações de Push Notifications
+ */
+
+.push-notification-settings {
+  background: var(--card-bg, white);
+  border-radius: 12px;
+  padding: 2rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  border: 1px solid var(--border-color, #e0e0e0);
+}
+
+.push-notification-settings .settings-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.push-notification-settings .settings-header h3 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--text-primary, #1a1a2e);
+  margin: 0;
+}
+
+.push-notification-settings .status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: white;
+}
+
+.push-notification-settings .description {
+  font-size: 1rem;
+  color: var(--text-secondary, #6c757d);
+  line-height: 1.6;
+  margin-bottom: 2rem;
+}
+
+.push-notification-settings .notification-types {
+  background: var(--hover-bg, #f8fafc);
+  border-radius: 8px;
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.push-notification-settings .notification-types h4 {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--text-primary, #1a1a2e);
+  margin: 0 0 1rem 0;
+}
+
+.push-notification-settings .notification-types ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.push-notification-settings .notification-types li {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-size: 0.875rem;
+  color: var(--text-primary, #1a1a2e);
+}
+
+.push-notification-settings .notification-types li i {
+  width: 24px;
+  color: var(--primary-color, #3b82f6);
+  flex-shrink: 0;
+}
+
+.push-notification-settings .notification-types li strong {
+  font-weight: 600;
+}
+
+.push-notification-settings .actions {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+  margin-bottom: 1rem;
+}
+
+.push-notification-settings .btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.5rem;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.push-notification-settings .btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.push-notification-settings .btn-primary {
+  background: var(--primary-color, #3b82f6);
+  color: white;
+}
+
+.push-notification-settings .btn-primary:hover:not(:disabled) {
+  background: #2563eb;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+}
+
+.push-notification-settings .btn-success {
+  background: #10b981;
+  color: white;
+}
+
+.push-notification-settings .btn-success:hover:not(:disabled) {
+  background: #059669;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+}
+
+.push-notification-settings .alert {
+  display: flex;
+  gap: 1rem;
+  padding: 1rem;
+  border-radius: 8px;
+  margin-top: 1rem;
+  align-items: flex-start;
+}
+
+.push-notification-settings .alert i {
+  font-size: 1.25rem;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.push-notification-settings .alert p,
+.push-notification-settings .alert div {
+  margin: 0;
+  flex: 1;
+}
+
+.push-notification-settings .alert strong {
+  display: block;
+  margin-bottom: 0.5rem;
+}
+
+.push-notification-settings .alert ol {
+  margin: 0.5rem 0 0 0;
+  padding-left: 1.5rem;
+}
+
+.push-notification-settings .alert ol li {
+  margin-bottom: 0.25rem;
+}
+
+.push-notification-settings .alert-warning {
+  background: #fffbeb;
+  border: 1px solid #fef3c7;
+  color: #92400e;
+}
+
+.push-notification-settings .alert-warning i {
+  color: #f59e0b;
+}
+
+.push-notification-settings .alert-info {
+  background: #eff6ff;
+  border: 1px solid #dbeafe;
+  color: #1e40af;
+}
+
+.push-notification-settings .alert-info i {
+  color: #3b82f6;
+}
+
+/* Dark mode support */
+[data-theme='dark'] .push-notification-settings {
+  background: var(--card-bg, #2d3748);
+  border-color: var(--border-color, #4a5568);
+}
+
+[data-theme='dark'] .push-notification-settings .notification-types {
+  background: var(--hover-bg, #374151);
+}
+
+[data-theme='dark'] .push-notification-settings .alert-warning {
+  background: rgba(245, 158, 11, 0.1);
+  border-color: rgba(245, 158, 11, 0.3);
+  color: #fbbf24;
+}
+
+[data-theme='dark'] .push-notification-settings .alert-info {
+  background: rgba(59, 130, 246, 0.1);
+  border-color: rgba(59, 130, 246, 0.3);
+  color: #93c5fd;
+}
+
+/* Mobile responsive */
+@media (max-width: 768px) {
+  .push-notification-settings {
+    padding: 1.5rem;
+  }
+
+  .push-notification-settings .settings-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .push-notification-settings .actions {
+    flex-direction: column;
+  }
+
+  .push-notification-settings .btn {
+    width: 100%;
+    justify-content: center;
+  }
+}

@@ -112,21 +112,6 @@ const WidgetGrid: React.FC<WidgetGridProps> = ({ onCustomize }) => {
     };
   }, [loadWidgets, loadLayoutSettings]);
 
-  const mapWidgetIdToType = (id: string): WidgetType => {
-    const typeMap: Record<string, WidgetType> = {
-      'balance': 'balance',
-      'expenses': 'expenses',
-      'income': 'income',
-      'goals': 'goals',
-      'budgets': 'budget',
-      'recurring': 'recurring',
-      'recent': 'recent-transactions',
-      'accounts': 'accounts',
-      'categories': 'budget', // Fallback
-    };
-    return typeMap[id] || 'balance';
-  };
-
   const handleRemoveWidget = (widgetId: string) => {
     if (window.confirm('Deseja realmente remover este widget?')) {
       WidgetService.toggleWidgetVisibility(widgetId);

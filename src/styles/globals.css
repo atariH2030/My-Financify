@@ -602,3 +602,7 @@ body {
     color: black !important;
   }
 }
+/* ===== SPINNER ANIMATION (Code Splitting Fallback) ===== */
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}

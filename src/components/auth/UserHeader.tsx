@@ -15,10 +15,22 @@ const UserHeader: React.FC = () => {
 
   // Carregar avatar do localStorage ao montar
   React.useEffect(() => {
-    const savedAvatar = localStorage.getItem('user_avatar');
-    if (savedAvatar) {
-      setAvatarUrl(savedAvatar);
-    }
+    const loadAvatar = () => {
+      const savedAvatar = localStorage.getItem('user_avatar');
+      setAvatarUrl(savedAvatar || '');
+    };
+
+    loadAvatar();
+
+    const handleAvatarUpdate = () => {
+      loadAvatar();
+    };
+
+    window.addEventListener('avatarUpdated', handleAvatarUpdate);
+    
+    return () => {
+      window.removeEventListener('avatarUpdated', handleAvatarUpdate);
+    };
   }, []);
 
   if (!user) return null;
@@ -42,7 +54,6 @@ const UserHeader: React.FC = () => {
   return (
     <div className="user-header">
       <div className="user-info-compact">
-        <span className="user-status">🟢</span>
         <span className="user-name">{getUserName()}</span>
       </div>
 
@@ -53,7 +64,7 @@ const UserHeader: React.FC = () => {
           title={user.email || ''}
         >
           {avatarUrl ? (
-            <img src={avatarUrl} alt="Avatar" />
+            <img key={avatarUrl} src={avatarUrl} alt="Avatar" />
           ) : (
             <span className="avatar-initials">{getInitials(user.email || '')}</span>
           )}
@@ -66,7 +77,7 @@ const UserHeader: React.FC = () => {
               <div className="menu-header">
                 <div className="menu-avatar">
                   {avatarUrl ? (
-                    <img src={avatarUrl} alt="Avatar" />
+                    <img key={avatarUrl} src={avatarUrl} alt="Avatar" />
                   ) : (
                     <span className="avatar-initials">{getInitials(user.email || '')}</span>
                   )}

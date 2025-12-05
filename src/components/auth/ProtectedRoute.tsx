@@ -15,6 +15,7 @@ interface ProtectedRouteProps {
 
 const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children, fallback }) => {
   const { user, loading } = useAuth();
+  const [loginKey, setLoginKey] = React.useState(0);
 
   // Loading state
   if (loading) {
@@ -34,8 +35,10 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children, fallback }) =
 
     return (
       <Login
+        key={loginKey}
         onSuccess={() => {
-          window.location.reload();
+          // Forçar re-render via key prop - AuthContext já detectou autenticação
+          setLoginKey(prev => prev + 1);
         }}
       />
     );

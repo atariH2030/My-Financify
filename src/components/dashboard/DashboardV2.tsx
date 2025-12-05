@@ -5,7 +5,7 @@
  * @author DEV - Rickson (TQM)
  */
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { motion } from 'framer-motion';
 import { transactionsService } from '../../services/transactions.service';
 import Logger from '../../services/logger.service';
@@ -30,11 +30,7 @@ export const DashboardV2: React.FC = () => {
   });
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    loadDashboardData();
-  }, []);
-
-  const loadDashboardData = async () => {
+  const loadDashboardData = useCallback(async () => {
     try {
       setLoading(true);
       const currentDate = new Date();
@@ -55,21 +51,25 @@ export const DashboardV2: React.FC = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
 
-  const formatCurrency = (value: number) => {
+  useEffect(() => {
+    loadDashboardData();
+  }, [loadDashboardData]);
+
+  const formatCurrency = useCallback((value: number) => {
     return new Intl.NumberFormat('pt-BR', {
       style: 'currency',
       currency: 'BRL',
     }).format(value);
-  };
+  }, []);
 
-  const getCurrentMonth = () => {
+  const currentMonth = useMemo(() => {
     return new Intl.DateTimeFormat('pt-BR', { 
       month: 'long', 
       year: 'numeric' 
     }).format(new Date());
-  };
+  }, []);
 
   return (
     <div className="dashboard-v2-container">
@@ -81,7 +81,7 @@ export const DashboardV2: React.FC = () => {
       >
         <div>
           <h1>Dashboard</h1>
-          <p className="dashboard-period">{getCurrentMonth()}</p>
+          <p className="dashboard-period">{currentMonth}</p>
         </div>
       </motion.div>
 

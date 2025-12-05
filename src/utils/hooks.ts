@@ -159,7 +159,6 @@ export function useAsync<T>(
     return () => {
       mounted = false;
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [asyncFunction, ...dependencies]);
 
   return state;
