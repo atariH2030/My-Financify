@@ -371,7 +371,7 @@ class AnalyticsService {
   trackPageView(pageData?: Partial<PageView>): void {
     if (!this.gaInitialized || !window.gtag) return;
 
-    const data: PageView = {
+    const data = {
       page_title: document.title,
       page_location: window.location.href,
       page_path: window.location.pathname,
