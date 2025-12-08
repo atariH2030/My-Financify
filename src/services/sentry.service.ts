@@ -42,6 +42,9 @@ class SentryService {
         // Release tracking
         release: `my-financify@${import.meta.env.VITE_APP_VERSION || '3.15.0'}`,
 
+        // Send default PII (IP address, user agent)
+        sendDefaultPii: true,
+
         // beforeSend - filtrar dados sensíveis
         beforeSend(event) {
           // Remover dados sensíveis
