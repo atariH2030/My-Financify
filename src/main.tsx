@@ -40,8 +40,16 @@ const AIAnalyticsDashboard = lazy(() => import('./components/analytics/AIAnalyti
 import Logger from './services/logger.service';
 import Seeder from './services/seeder.service';
 import MigrationService from './services/migration.service';
+import AnalyticsService from './services/analytics.service';
+import { sentry } from './services/sentry.service';
 // Inicializa Supabase
 import './config/supabase.config';
+
+// Inicializar serviços de monitoramento
+sentry.initialize();
+AnalyticsService.initializeGA().catch((error) => {
+  Logger.error('Failed to initialize Google Analytics', error as Error, 'APP');
+});
 
 // Executa migrações antes do seeder
 MigrationService.runMigrations()

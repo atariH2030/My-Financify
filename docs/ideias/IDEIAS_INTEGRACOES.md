@@ -495,7 +495,7 @@ bot.onText(/\/add (.+)/, (msg, match) => {
 **Custo**: Comissão ou patrocínio
 
 **Targets**:
-- Nathalia Arcuri (Me Poupe!)
+-                                                                                                                                                                                                                                                                                        Arcuri (Me Poupe!)
 - Thiago Nigro (Primo Rico)
 - Nath Finanças
 - Raul Sena (Investidor Sardinha)
