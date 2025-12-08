@@ -297,7 +297,7 @@ Aplicar **React best practices** para reduzir re-renders desnecessários e otimi
 ### Estratégia
 
 #### 1. React.memo
-Componentes que devem memoizar props:
+Componentes que devem memorizar props:
 
 ```typescript
 const InteractiveChart = React.memo((props) => {
