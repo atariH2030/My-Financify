@@ -26,6 +26,7 @@
     "check:i18n:report": "tsx scripts/detect-untranslated.ts && cat docs/UNTRANSLATED_REPORT_*.md"
   },
   "dependencies": {
+    "@sentry/react": "^10.29.0",
     "@supabase/supabase-js": "^2.84.0",
     "@types/chart.js": "^2.9.41",
     "@types/lodash": "^4.14.202",

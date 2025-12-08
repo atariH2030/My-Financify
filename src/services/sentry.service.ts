@@ -6,17 +6,19 @@
  * @author DEV - Rickson
  */
 
+import * as Sentry from '@sentry/react';
 import Logger from './logger.service';
 
 class SentryService {
   private isInitialized = false;
 
   /**
-   * Inicializar Sentry (placeholder - instalar @sentry/react primeiro)
+   * Inicializar Sentry
    */
   initialize(): void {
     try {
       const dsn = import.meta.env.VITE_SENTRY_DSN;
+      const environment = import.meta.env.VITE_ENV || 'production';
       const isProduction = import.meta.env.PROD;
 
       if (!isProduction) {
@@ -25,43 +27,103 @@ class SentryService {
       }
 
       if (!dsn) {
-        Logger.warn('Sentry DSN not configured - skipping', 'SENTRY');
+        Logger.warn('Sentry DSN not configured - skipping error tracking', 'SENTRY');
         return;
       }
 
-      // TODO: Instalar @sentry/react e @sentry/tracing
-      // npm install @sentry/react @sentry/tracing
-      Logger.warn('Sentry not installed - run: npm install @sentry/react @sentry/tracing', 'SENTRY');
+      // Inicializar Sentry
+      Sentry.init({
+        dsn,
+        environment,
+        
+        // Performance sample rate (10% em produção)
+        tracesSampleRate: environment === 'production' ? 0.1 : 1.0,
+
+        // Release tracking
+        release: `my-financify@${import.meta.env.VITE_APP_VERSION || '3.15.0'}`,
+
+        // beforeSend - filtrar dados sensíveis
+        beforeSend(event) {
+          // Remover dados sensíveis
+          if (event.request?.headers) {
+            delete event.request.headers['Authorization'];
+            delete event.request.headers['Cookie'];
+          }
+          return event;
+        },
+
+        // Ignorar erros conhecidos/não críticos
+        ignoreErrors: [
+          'ResizeObserver loop limit exceeded',
+          'Non-Error promise rejection captured',
+          'NetworkError',
+          'Failed to fetch',
+          /^chrome-extension:\/\//,
+          /^moz-extension:\/\//,
+        ],
+      });
+
+      this.isInitialized = true;
+      Logger.info('✅ Sentry initialized', undefined, 'SENTRY');
     } catch (error) {
       Logger.error('Failed to initialize Sentry', error as Error, 'SENTRY');
     }
   }
 
   captureError(error: Error, context?: Record<string, unknown>): void {
-    Logger.error('Error captured', error, 'SENTRY');
-    if (context) Logger.debug('Error context', context, 'SENTRY');
+    if (!this.isInitialized) {
+      Logger.error('Error captured (Sentry not initialized)', error, 'SENTRY');
+      return;
+    }
+
+    Sentry.withScope((scope) => {
+      if (context) {
+        Object.entries(context).forEach(([key, value]) => {
+          scope.setExtra(key, value);
+        });
+      }
+      Sentry.captureException(error);
+    });
   }
 
-  captureMessage(message: string, _level: 'info' | 'warning' | 'error' = 'info'): void {
-    Logger.info(message, undefined, 'SENTRY');
+  captureMessage(message: string, level: Sentry.SeverityLevel = 'info'): void {
+    if (!this.isInitialized) return;
+    Sentry.captureMessage(message, level);
   }
 
   setUser(user: { id: string; email?: string; username?: string }): void {
-    Logger.debug('User context set', user, 'SENTRY');
+    if (!this.isInitialized) return;
+    Sentry.setUser(user);
   }
 
   clearUser(): void {
-    Logger.debug('User context cleared', undefined, 'SENTRY');
+    if (!this.isInitialized) return;
+    Sentry.setUser(null);
   }
 
   addBreadcrumb(message: string, category: string, data?: Record<string, unknown>): void {
-    Logger.debug(`Breadcrumb: ${category} - ${message}`, data, 'SENTRY');
+    if (!this.isInitialized) return;
+
+    Sentry.addBreadcrumb({
+      message,
+      category,
+      data,
+      level: 'info',
+      timestamp: Date.now() / 1000,
+    });
   }
 
-  startTransaction(name: string, op: string): void {
-    Logger.debug(`Transaction started: ${name} (${op})`, undefined, 'SENTRY');
+  startTransaction(name: string, op: string): unknown {
+    if (!this.isInitialized) return undefined;
+    
+    return Sentry.startSpan({ name, op }, () => {
+      // Span iniciado
+    });
   }
 }
 
 // Singleton
 export const sentry = new SentryService();
+
+// Error Boundary Component Export
+export const SentryErrorBoundary = Sentry.ErrorBoundary;
