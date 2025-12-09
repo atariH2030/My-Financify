@@ -15,7 +15,7 @@ import SyncIndicator from './components/common/SyncIndicator';
 import AIChatButton from './components/common/AIChatButton';
 
 // Core Components (carregados imediatamente)
-import { ErrorBoundary, ToastProvider, ToastEnhancedProvider, useKeyboardShortcuts, KeyboardShortcutsHelp, type KeyboardShortcut } from './components/common';
+import {ErrorBoundary, ToastProvider, ToastEnhancedProvider, useKeyboardShortcuts, KeyboardShortcutsHelp} from './components/common';
 import CommandPalette from './components/common/CommandPalette';
 import GlobalCommandPalette from './components/common/GlobalCommandPalette';
 import ThemeCustomizer from './components/common/ThemeCustomizer';

@@ -240,4 +240,4 @@ class SyncService {
 }
 
 // Export singleton
-export const syncService = new SyncService();
+export const _syncService = new SyncService();

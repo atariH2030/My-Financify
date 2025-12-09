@@ -23,7 +23,11 @@
     "test:mock:headed": "playwright test auth-mock.spec.ts --headed",
     "test:report": "playwright show-report test-results/playwright-report",
     "check:i18n": "tsx scripts/detect-untranslated.ts",
-    "check:i18n:report": "tsx scripts/detect-untranslated.ts && cat docs/UNTRANSLATED_REPORT_*.md"
+    "check:i18n:report": "tsx scripts/detect-untranslated.ts && cat docs/UNTRANSLATED_REPORT_*.md",
+    "analyze:warnings": "tsx scripts/analyze-warnings.ts",
+    "fix:warnings": "tsx scripts/fix-warnings.ts",
+    "fix:specific": "tsx scripts/fix-specific-warnings.ts",
+    "fix:all": "npm run fix:specific && npm run format && npm run lint"
   },
   "dependencies": {
     "@sentry/react": "^10.29.0",

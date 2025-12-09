@@ -3,7 +3,7 @@ import './BudgetsForm.css';
 import Button from '../common/Button';
 import Input from '../common/Input';
 import Tooltip from '../common/Tooltip';
-import { validateBudget, type ValidationError } from '../../utils/validation';
+import {validateBudget} from '../../utils/validation';
 import type { Budget } from '../../types/financial.types';
 
 interface BudgetsFormProps {

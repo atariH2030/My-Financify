@@ -74,15 +74,15 @@ class ExportService {
 
     switch (dataType) {
       case 'transactions':
-        return await this.getTransactions(dateRange);
+        return this.getTransactions(dateRange);
       case 'accounts':
-        return await this.getAccounts();
+        return this.getAccounts();
       case 'budgets':
-        return await this.getBudgets();
+        return this.getBudgets();
       case 'recurring':
-        return await this.getRecurringTransactions();
+        return this.getRecurringTransactions();
       case 'all':
-        return await this.getAllData(dateRange);
+        return this.getAllData(dateRange);
       default:
         return [];
     }

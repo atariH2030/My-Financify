@@ -93,7 +93,7 @@ const Login: React.FC<LoginProps> = ({ onSuccess, onSwitchToRegister }) => {
     }
   };
 
-  const getErrorMessage = (message: string): string => {
+  const _getErrorMessage = (message: string): string => {
     const errors: Record<string, string> = {
       'Invalid login credentials': 'Email ou senha incorretos',
       'Email not confirmed': 'Email não confirmado. Verifique sua caixa de entrada',

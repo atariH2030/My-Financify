@@ -7,7 +7,7 @@
 
 import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { formatShortcut, groupShortcutsByCategory, type KeyboardShortcut } from '../../hooks/useKeyboardShortcuts';
+import {formatShortcut, groupShortcutsByCategory} from '../../hooks/useKeyboardShortcuts';
 import './KeyboardShortcutsHelp.css';
 
 interface KeyboardShortcutsHelpProps {

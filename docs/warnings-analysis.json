@@ -1,0 +1,178 @@
+{
+  "timestamp": "2025-12-09T04:41:14.789Z",
+  "total": 59,
+  "byRule": {
+    "@typescript-eslint/no-unused-vars": 6,
+    "renders": 4,
+    "no-await-in-loop": 47,
+    "@typescript-eslint/no-non-null-assertion": 1,
+    "expression": 1
+  },
+  "byFile": {
+    "AIOnboarding.tsx": 1,
+    "Budgets.tsx": 1,
+    "GlobalCommandPalette.tsx": 1,
+    "GlobalCommandPalette.tsx:222:7": 1,
+    "GlobalCommandPalette.tsx:229:5": 1,
+    "ThemeCustomizer.tsx": 1,
+    "Dashboard.tsx": 1,
+    "WidgetCustomizer.tsx": 1,
+    "main.tsx": 1,
+    "accounts.service.ts": 5,
+    "analytics.service.ts": 1,
+    "budgets.service.ts": 5,
+    "goals.service.ts": 5,
+    "offline-queue.service.ts": 1,
+    "recurring.service.ts": 5,
+    "resilient-storage.service.ts": 5,
+    "sync.service.ts": 1,
+    "transactions.service.ts": 4,
+    "hooks.ts": 1,
+    "pwa.ts": 4,
+    "example-custom-test.spec.ts": 5,
+    "health-check.spec.ts": 8
+  },
+  "topFiles": [
+    {
+      "file": "tests\\e2e\\health-check.spec.ts",
+      "warnings": 8,
+      "rules": [
+        "@typescript-eslint/no-unused-vars",
+        "no-await-in-loop"
+      ]
+    },
+    {
+      "file": "src\\services\\accounts.service.ts",
+      "warnings": 5,
+      "rules": [
+        "no-await-in-loop"
+      ]
+    },
+    {
+      "file": "src\\services\\budgets.service.ts",
+      "warnings": 5,
+      "rules": [
+        "no-await-in-loop"
+      ]
+    },
+    {
+      "file": "src\\services\\goals.service.ts",
+      "warnings": 5,
+      "rules": [
+        "no-await-in-loop"
+      ]
+    },
+    {
+      "file": "src\\services\\recurring.service.ts",
+      "warnings": 5,
+      "rules": [
+        "no-await-in-loop"
+      ]
+    },
+    {
+      "file": "src\\services\\resilient-storage.service.ts",
+      "warnings": 5,
+      "rules": [
+        "no-await-in-loop"
+      ]
+    },
+    {
+      "file": "tests\\e2e\\example-custom-test.spec.ts",
+      "warnings": 5,
+      "rules": [
+        "no-await-in-loop"
+      ]
+    },
+    {
+      "file": "src\\services\\transactions.service.ts",
+      "warnings": 4,
+      "rules": [
+        "no-await-in-loop"
+      ]
+    },
+    {
+      "file": "src\\utils\\pwa.ts",
+      "warnings": 4,
+      "rules": [
+        "no-await-in-loop"
+      ]
+    },
+    {
+      "file": "src\\components\\ai\\AIOnboarding.tsx",
+      "warnings": 1,
+      "rules": [
+        "@typescript-eslint/no-unused-vars"
+      ]
+    },
+    {
+      "file": "src\\components\\budgets\\Budgets.tsx",
+      "warnings": 1,
+      "rules": [
+        "@typescript-eslint/no-unused-vars"
+      ]
+    },
+    {
+      "file": "src\\components\\common\\GlobalCommandPalette.tsx",
+      "warnings": 1,
+      "rules": [
+        "renders"
+      ]
+    },
+    {
+      "file": "src\\components\\common\\GlobalCommandPalette.tsx:222:7",
+      "warnings": 1,
+      "rules": [
+        "renders"
+      ]
+    },
+    {
+      "file": "src\\components\\common\\GlobalCommandPalette.tsx:229:5",
+      "warnings": 1,
+      "rules": [
+        "@typescript-eslint/no-unused-vars"
+      ]
+    },
+    {
+      "file": "src\\components\\common\\ThemeCustomizer.tsx",
+      "warnings": 1,
+      "rules": [
+        "renders"
+      ]
+    },
+    {
+      "file": "src\\components\\dashboard\\Dashboard.tsx",
+      "warnings": 1,
+      "rules": [
+        "@typescript-eslint/no-unused-vars"
+      ]
+    },
+    {
+      "file": "src\\components\\dashboard\\WidgetCustomizer.tsx",
+      "warnings": 1,
+      "rules": [
+        "renders"
+      ]
+    },
+    {
+      "file": "src\\main.tsx",
+      "warnings": 1,
+      "rules": [
+        "@typescript-eslint/no-unused-vars"
+      ]
+    },
+    {
+      "file": "src\\services\\analytics.service.ts",
+      "warnings": 1,
+      "rules": [
+        "@typescript-eslint/no-non-null-assertion"
+      ]
+    },
+    {
+      "file": "src\\services\\offline-queue.service.ts",
+      "warnings": 1,
+      "rules": [
+        "no-await-in-loop"
+      ]
+    }
+  ]
+}

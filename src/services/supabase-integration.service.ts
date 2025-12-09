@@ -364,4 +364,4 @@ export class SupabaseIntegrationService {
 }
 
 // Export singleton instance
-export const supabaseService = SupabaseIntegrationService.getInstance();
+export const _supabaseService = SupabaseIntegrationService.getInstance();

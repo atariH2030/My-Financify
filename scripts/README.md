@@ -2,12 +2,48 @@
 
 ## 📋 Scripts Disponíveis
 
+### 🔧 `fix-warnings.ts` (NOVO!)
+
+**Correção automática de warnings ESLint**
+
+Corrige automaticamente os warnings mais comuns do projeto, economizando tempo e padronizando o código.
+
+#### Como Usar:
+
+```bash
+# Corrigir warnings automaticamente
+npm run fix:warnings
+
+# Corrigir + formatar + verificar (recomendado)
+npm run fix:all
+```
+
+#### O que corrige:
+
+1. **Imports não usados** - Remove ou limpa imports
+2. **Aspas em JSX** - Escapa `"` para `&quot;`
+3. **Variáveis não usadas** - Prefixa com `_`
+4. **setState em useEffect** - Adiciona TODO comment
+5. **Await desnecessário** - Remove `return await`
+
+#### Estatísticas:
+
+```
+📊 FIX STATISTICS
+Files processed: 15
+Total warnings fixed: 45
+```
+
+---
+
 ### 🔍 `detect-untranslated.ts`
+
 **Detecta textos não traduzidos em componentes React**
 
 Escaneia todos os arquivos `.tsx` e `.jsx` em `src/components/` e identifica strings hard-coded que devem usar o sistema i18n.
 
 #### Como Usar:
+
 ```bash
 # Executar detecção
 npx tsx scripts/detect-untranslated.ts
@@ -17,10 +53,12 @@ npm run check:i18n
 ```
 
 #### Saída:
+
 - **Console**: Lista de textos suspeitos com arquivo, linha e contexto
 - **Markdown**: Relatório detalhado em `docs/UNTRANSLATED_REPORT_YYYY-MM-DD.md`
 
 #### Exemplo de Saída:
+
 ```
 🔍 Textos Não Traduzidos Detectados: 3
 
@@ -39,11 +77,13 @@ npm run check:i18n
 ```
 
 #### O que Detecta:
+
 ✅ Strings em português, inglês e espanhol  
 ✅ Textos de interface (botões, labels, mensagens)  
 ✅ Strings > 3 caracteres (ignora IDs, classes)
 
 #### O que Ignora:
+
 ❌ `className`, `style`, `data-*`, `aria-*`  
 ❌ Imports, exports, tipos TypeScript  
 ❌ Console.log e Logger  
@@ -89,6 +129,7 @@ npm run check:i18n
 ## 🚀 CI/CD Integration
 
 ### GitHub Actions
+
 ```yaml
 name: i18n Check
 
@@ -107,6 +148,7 @@ jobs:
 ```
 
 ### Pre-commit Hook
+
 ```bash
 # .husky/pre-commit
 #!/bin/sh

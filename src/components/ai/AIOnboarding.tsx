@@ -153,15 +153,15 @@ const AIOnboarding: React.FC<AIOnboardingProps> = ({ onComplete, onSkip }) => {
             <h4>Experimente perguntar:</h4>
             <div className="tip-item">
               <i className="fas fa-comments"></i>
-              <span>"Quanto gastei este mês?"</span>
+              <span>&quot;Quanto gastei este mês?&quot;</span>
             </div>
             <div className="tip-item">
               <i className="fas fa-comments"></i>
-              <span>"Quais categorias posso economizar?"</span>
+              <span>&quot;Quais categorias posso economizar?&quot;</span>
             </div>
             <div className="tip-item">
               <i className="fas fa-comments"></i>
-              <span>"Me dê dicas de investimento"</span>
+              <span>&quot;Me dê dicas de investimento&quot;</span>
             </div>
           </div>
         </div>

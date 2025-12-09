@@ -70,7 +70,7 @@ class StorageService {
       // Validação de integridade
       if (!this.validateData(storageData)) {
         Logger.warn('Dados corrompidos detectados, tentando recovery', { key }, 'STORAGE');
-        return await this.attemptRecovery<T>(key);
+        return this.attemptRecovery<T>(key);
       }
 
       Logger.info('Dados carregados com sucesso', { key, version: storageData.version }, 'STORAGE');
@@ -78,7 +78,7 @@ class StorageService {
 
     } catch (error) {
       Logger.error('Falha ao carregar dados', error as Error, 'STORAGE');
-      return await this.attemptRecovery<T>(key);
+      return this.attemptRecovery<T>(key);
     }
   }
 

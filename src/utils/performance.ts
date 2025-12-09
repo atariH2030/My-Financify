@@ -41,7 +41,7 @@ export function throttle<T extends (...args: any[]) => any>(
 /**
  * Lazy load de imagens - Otimiza carregamento
  */
-export const lazyLoadImage = (src: string): Promise<string> => {
+export const _lazyLoadImage = (src: string): Promise<string> => {
   return new Promise((resolve, reject) => {
     const img = new Image();
     img.onload = () => resolve(src);
@@ -63,7 +63,7 @@ export const formatCurrencyString = (value: number): string => {
 /**
  * Format date - Memoizado
  */
-export const formatDate = (date: string | Date): string => {
+export const _formatDate = (date: string | Date): string => {
   return new Date(date).toLocaleDateString('pt-BR', {
     day: '2-digit',
     month: '2-digit',
@@ -74,7 +74,7 @@ export const formatDate = (date: string | Date): string => {
 /**
  * Format date relative - "há 2 dias", "ontem", etc.
  */
-export const formatDateRelative = (date: string | Date): string => {
+export const _formatDateRelative = (date: string | Date): string => {
   const now = new Date();
   const past = new Date(date);
   const diffMs = now.getTime() - past.getTime();
@@ -91,14 +91,14 @@ export const formatDateRelative = (date: string | Date): string => {
 /**
  * Generate unique ID - Performance otimizada
  */
-export const generateId = (): string => {
+export const _generateId = (): string => {
   return `${Date.now().toString(36)}-${Math.random().toString(36).substr(2, 9)}`;
 };
 
 /**
  * Deep compare para React.memo - Evita re-renders desnecessários
  */
-export const deepCompare = <T extends Record<string, any>>(
+export const _deepCompare = <T extends Record<string, any>>(
   prevProps: T,
   nextProps: T
 ): boolean => {
@@ -118,7 +118,7 @@ export const deepCompare = <T extends Record<string, any>>(
  * Batch updates - Agrupa múltiplas atualizações
  * Reduz re-renders
  */
-export const batchUpdates = <T,>(
+export const _batchUpdates = <T,>(
   updates: T[],
   callback: (batch: T[]) => void,
   delay: number = 100
@@ -164,7 +164,7 @@ export function memoize<T extends (...args: any[]) => any>(fn: T): T {
 /**
  * Check if element is in viewport - Para lazy loading
  */
-export const isInViewport = (element: HTMLElement): boolean => {
+export const _isInViewport = (element: HTMLElement): boolean => {
   const rect = element.getBoundingClientRect();
   return (
     rect.top >= 0 &&
@@ -177,7 +177,7 @@ export const isInViewport = (element: HTMLElement): boolean => {
 /**
  * Request Animation Frame throttle - Para animações suaves
  */
-export const rafThrottle = <T extends (...args: any[]) => any>(
+export const _rafThrottle = <T extends (...args: any[]) => any>(
   callback: T
 ): ((...args: Parameters<T>) => void) => {
   let requestId: number | null = null;
@@ -195,7 +195,7 @@ export const rafThrottle = <T extends (...args: any[]) => any>(
 /**
  * Local storage com try/catch automático
  */
-export const safeStorage = {
+export const _safeStorage = {
   get: <T,>(key: string, defaultValue: T): T => {
     try {
       const item = localStorage.getItem(key);
@@ -225,12 +225,12 @@ export const safeStorage = {
 };
 
 // Mantém função legada disponível se necessário
-export const formatCurrencyLegacy = formatCurrencyString;
+export const _formatCurrencyLegacy = formatCurrencyString;
 
 /**
  * Truncate string - Trunca string longa
  */
-export const truncateString = (str: string, maxLength: number): string => {
+export const _truncateString = (str: string, maxLength: number): string => {
   if (str.length <= maxLength) return str;
   return `${str.substring(0, maxLength)}...`;
 };
@@ -238,14 +238,14 @@ export const truncateString = (str: string, maxLength: number): string => {
 /**
  * Deep clone object - Cria cópia profunda
  */
-export const deepClone = <T>(obj: T): T => {
+export const _deepClone = <T>(obj: T): T => {
   return JSON.parse(JSON.stringify(obj));
 };
 
 /**
  * Check if object is empty
  */
-export const isEmptyObject = (obj: object): boolean => {
+export const _isEmptyObject = (obj: object): boolean => {
   return Object.keys(obj).length === 0;
 };
 

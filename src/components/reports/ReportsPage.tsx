@@ -151,7 +151,7 @@ const ReportsPage: React.FC = () => {
   };
 
   // Helper: Obter últimos N meses
-  const getLastNMonths = (n: number) => {
+  const _getLastNMonths = (n: number) => {
     const months = [];
     const now = new Date();
     

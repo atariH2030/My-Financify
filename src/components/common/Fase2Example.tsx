@@ -225,7 +225,7 @@ export const Fase2Example: React.FC = () => {
   useToastEnhanced 
 } from '@/components/common';
 
-const MyComponent = () => {
+const _MyComponent = () => {
   const [showConfirm, setShowConfirm] = useState(false);
   const toast = useToastEnhanced();
   

@@ -386,7 +386,7 @@ export const getSectionById = (id: string): SectionConfig | undefined => {
 /**
  * Helper: Buscar categoria por ID dentro de uma sessão
  */
-export const getCategoryById = (sectionId: string, categoryId: string) => {
+export const _getCategoryById = (sectionId: string, categoryId: string) => {
   const section = getSectionById(sectionId);
   return section?.categories.find(cat => cat.id === categoryId);
 };
@@ -394,7 +394,7 @@ export const getCategoryById = (sectionId: string, categoryId: string) => {
 /**
  * Helper: Listar todas as categorias de uma sessão
  */
-export const getCategoriesBySection = (sectionId: string) => {
+export const _getCategoriesBySection = (sectionId: string) => {
   const section = getSectionById(sectionId);
   return section?.categories || [];
 };
@@ -402,26 +402,26 @@ export const getCategoriesBySection = (sectionId: string) => {
 /**
  * Helper: Listar todas as sessões de despesas (excluindo receitas)
  */
-export const getExpenseSections = (): SectionConfig[] => {
+export const _getExpenseSections = (): SectionConfig[] => {
   return SECTIONS_CONFIG.filter(section => section.id !== 'income');
 };
 
 /**
  * Helper: Listar sessão de receitas
  */
-export const getIncomeSection = (): SectionConfig | undefined => {
+export const _getIncomeSection = (): SectionConfig | undefined => {
   return SECTIONS_CONFIG.find(section => section.id === 'income');
 };
 
 /**
  * Cores para tipos de despesa
  */
-export const EXPENSE_TYPE_COLORS = {
+export const _EXPENSE_TYPE_COLORS = {
   fixed: '#3b82f6',    // Azul - Previsível, estável
   variable: '#f59e0b'  // Laranja - Requer atenção
 };
 
-export const EXPENSE_TYPE_LABELS = {
+export const _EXPENSE_TYPE_LABELS = {
   fixed: 'Gasto Fixo',
   variable: 'Gasto Variável'
 };

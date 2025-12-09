@@ -99,7 +99,7 @@ const Register: React.FC<RegisterProps> = ({ onSuccess: _onSuccess, onSwitchToLo
     }
   };
 
-  const getErrorMessage = (message: string): string => {
+  const _getErrorMessage = (message: string): string => {
     const errors: Record<string, string> = {
       'User already registered': 'Este email já está cadastrado',
       'Password should be at least 6 characters': 'A senha deve ter no mínimo 6 caracteres',

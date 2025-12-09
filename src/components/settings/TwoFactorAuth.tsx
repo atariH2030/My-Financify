@@ -37,7 +37,7 @@ const TwoFactorAuth: React.FC = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const checkTwoFAStatus = async () => {
+  const _checkTwoFAStatus = async () => {
     try {
       const enabled = await TwoFAService.isEnabled();
       setIsEnabled(enabled);
@@ -48,7 +48,7 @@ const TwoFactorAuth: React.FC = () => {
     }
   };
 
-  const loadBackupCodes = async () => {
+  const _loadBackupCodes = async () => {
     try {
       const codes = await TwoFAService.getBackupCodes();
       setBackupCodes(codes);

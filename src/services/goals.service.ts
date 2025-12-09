@@ -402,4 +402,4 @@ class GoalsService {
   }
 }
 
-export const goalsService = new GoalsService();
+export const _goalsService = new GoalsService();

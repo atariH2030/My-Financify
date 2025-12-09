@@ -155,7 +155,7 @@ const Settings: React.FC = () => {
     }
   };
 
-  const handleImportData = async (e: React.ChangeEvent<HTMLInputElement>) => {
+  const _handleImportData = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
 
@@ -744,10 +744,10 @@ const Settings: React.FC = () => {
                   <ol>
                     <li>Acesse <a href="https://aistudio.google.com/app/apikey" target="_blank" rel="noopener noreferrer">Google AI Studio</a></li>
                     <li>Faça login com sua conta Google</li>
-                    <li>Clique em "Create API Key" (gratuito, sem cartão)</li>
+                    <li>Clique em &quot;Create API Key&quot; (gratuito, sem cartão)</li>
                     <li>Copie a chave gerada</li>
-                    <li>Cole no campo acima e clique em "Salvar"</li>
-                    <li>Clique em "Testar IA" para validar</li>
+                    <li>Cole no campo acima e clique em &quot;Salvar&quot;</li>
+                    <li>Clique em &quot;Testar IA&quot; para validar</li>
                   </ol>
                 </div>
 

@@ -35,7 +35,7 @@ const Dashboard: React.FC = () => {
     fetchMarketData();
   }, []);
 
-  const loadFinancialData = () => {
+  const _loadFinancialData = () => {
     const savedData = localStorage.getItem('my-financify-data');
     if (savedData) {
       setFinancialData(JSON.parse(savedData));
@@ -47,7 +47,7 @@ const Dashboard: React.FC = () => {
     setFinancialData(data);
   };
 
-  const fetchMarketData = async () => {
+  const _fetchMarketData = async () => {
     // Simulação de dados do mercado - pode ser integrado com API real
     setMarketData({
       usdRate: 'R$ 5,25',

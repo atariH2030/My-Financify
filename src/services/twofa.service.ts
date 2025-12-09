@@ -178,7 +178,7 @@ class TwoFAService {
         return isValid;
       } else if (code.length === 10) {
         // Verificar backup code
-        return await this.verifyBackupCode(code);
+        return this.verifyBackupCode(code);
       }
 
       return false;
@@ -239,7 +239,7 @@ class TwoFAService {
    */
   private async getConfig(): Promise<TwoFAConfig | null> {
     try {
-      return await Storage.load<TwoFAConfig>(this.STORAGE_KEY);
+      return Storage.load<TwoFAConfig>(this.STORAGE_KEY);
     } catch (error) {
       Logger.error('Erro ao carregar config 2FA', error as Error, '2FA');
       return null;

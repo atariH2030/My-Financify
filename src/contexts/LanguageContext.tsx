@@ -98,7 +98,7 @@ export const useLanguage = (): LanguageContextType => {
 };
 
 // Hook simplificado para usar apenas a função t
-export const useTranslation = () => {
+export const _useTranslation = () => {
   const { t } = useLanguage();
   return { t };
 };

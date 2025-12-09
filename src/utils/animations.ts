@@ -95,7 +95,7 @@ export const listItem: Variants = {
 /**
  * Animação de card hover
  */
-export const cardHover = {
+export const _cardHover = {
   rest: { scale: 1 },
   hover: {
     scale: 1.02,
@@ -110,7 +110,7 @@ export const cardHover = {
 /**
  * Animação de button tap
  */
-export const buttonTap = {
+export const _buttonTap = {
   whileTap: { scale: 0.95 },
   whileHover: { scale: 1.05 },
 };
@@ -190,7 +190,7 @@ export const collapse: Variants = {
 /**
  * Shimmer loading animation
  */
-export const shimmer = {
+export const _shimmer = {
   animate: {
     backgroundPosition: ['200% 0', '-200% 0'],
     transition: {
@@ -204,7 +204,7 @@ export const shimmer = {
 /**
  * Pulse animation (para notificações/badges)
  */
-export const pulse = {
+export const _pulse = {
   animate: {
     scale: [1, 1.1, 1],
     transition: {

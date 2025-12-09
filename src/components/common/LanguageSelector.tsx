@@ -4,7 +4,7 @@
  */
 
 import React from 'react';
-import { useLanguage, type Language } from '../../contexts/LanguageContext';
+import {useLanguage} from '../../contexts/LanguageContext';
 import './LanguageSelector.css';
 
 const LanguageSelector: React.FC = () => {

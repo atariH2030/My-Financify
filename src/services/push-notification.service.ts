@@ -247,7 +247,7 @@ class PushNotificationService {
       if (!this.registration) {
         return [];
       }
-      return await this.registration.getNotifications();
+      return this.registration.getNotifications();
     } catch (error) {
       Logger.error('Erro ao obter notificações ativas', error as Error, 'PUSH');
       return [];

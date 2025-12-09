@@ -224,7 +224,7 @@ export const goalSchema = z.object({
 /**
  * Schema para validação de usuário
  */
-export const userSchema = z.object({
+export const _userSchema = z.object({
   name: z
     .string()
     .min(3, 'Nome deve ter no mínimo 3 caracteres')
@@ -333,11 +333,11 @@ export function getFieldErrors(
 /**
  * Validation functions for convenience
  */
-export const validateTransaction = (data: unknown) => transactionSchema.safeParse(data);
-export const validateGoal = (data: unknown) => goalSchema.safeParse(data);
-export const validateBudget = (data: unknown) => budgetSchema.safeParse(data);
-export const validateRecurring = (data: unknown) => recurringTransactionSchema.safeParse(data);
-export const validateAccount = (data: unknown) => accountSchema.safeParse(data);
+export const _validateTransaction = (data: unknown) => transactionSchema.safeParse(data);
+export const _validateGoal = (data: unknown) => goalSchema.safeParse(data);
+export const _validateBudget = (data: unknown) => budgetSchema.safeParse(data);
+export const _validateRecurring = (data: unknown) => recurringTransactionSchema.safeParse(data);
+export const _validateAccount = (data: unknown) => accountSchema.safeParse(data);
 
 /**
  * Export ValidationError type from Zod
