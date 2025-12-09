@@ -6,6 +6,7 @@
 import React from 'react';
 import { useAuth } from '../../contexts/AuthContext';
 import Login from '../auth/Login';
+import Register from '../auth/Register';
 import './ProtectedRoute.css';
 
 interface ProtectedRouteProps {
@@ -16,6 +17,7 @@ interface ProtectedRouteProps {
 const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children, fallback }) => {
   const { user, loading } = useAuth();
   const [loginKey, setLoginKey] = React.useState(0);
+  const [showRegister, setShowRegister] = React.useState(false);
 
   // Loading state
   if (loading) {
@@ -27,10 +29,25 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children, fallback }) =
     );
   }
 
-  // Se não autenticado, mostrar login ou fallback
+  // Se não autenticado, mostrar login/register ou fallback
   if (!user) {
     if (fallback) {
       return <>{fallback}</>;
+    }
+
+    // Alternar entre Login e Register
+    if (showRegister) {
+      return (
+        <Register
+          key={loginKey}
+          onSuccess={() => {
+            // Após registro bem-sucedido, voltar para login
+            setShowRegister(false);
+            setLoginKey(prev => prev + 1);
+          }}
+          onSwitchToLogin={() => setShowRegister(false)}
+        />
+      );
     }
 
     return (
@@ -40,6 +57,7 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children, fallback }) =
           // Forçar re-render via key prop - AuthContext já detectou autenticação
           setLoginKey(prev => prev + 1);
         }}
+        onSwitchToRegister={() => setShowRegister(true)}
       />
     );
   }
