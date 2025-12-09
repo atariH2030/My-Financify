@@ -1,0 +1,212 @@
+/**
+ * InviteMemberModal.css
+ * 
+ * Estilos do modal de convite de membros
+ * 
+ * @version 3.15.0
+ */
+
+.invite-member-modal {
+  max-width: 600px;
+}
+
+/* ===========================
+   WORKSPACE INFO BOX
+   =========================== */
+
+.workspace-info-box {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem;
+  background: var(--primary-light, #e7f1ff);
+  border: 1px solid var(--primary-color, #007bff);
+  border-radius: 12px;
+  margin-bottom: 1.5rem;
+}
+
+.workspace-info-box i {
+  font-size: 2rem;
+  color: var(--primary-color, #007bff);
+  flex-shrink: 0;
+}
+
+.workspace-info-box strong {
+  display: block;
+  font-size: 1rem;
+  color: var(--text-primary, #212529);
+  margin-bottom: 0.25rem;
+}
+
+.workspace-info-box span {
+  font-size: 0.85rem;
+  color: var(--text-secondary, #6c757d);
+}
+
+/* ===========================
+   ROLE GRID
+   =========================== */
+
+.role-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0.75rem;
+}
+
+.role-card {
+  display: flex;
+  flex-direction: column;
+  padding: 1rem;
+  background: var(--bg-secondary, #f8f9fa);
+  border: 2px solid var(--border-color, #dee2e6);
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-family: inherit;
+  text-align: left;
+}
+
+.role-card:hover {
+  border-color: var(--border-hover, #ced4da);
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.role-card.active {
+  background: var(--primary-light, #e7f1ff);
+  border-color: var(--primary-color, #007bff);
+  box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
+}
+
+.role-header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 0.5rem;
+}
+
+.role-header i {
+  font-size: 1.5rem;
+  color: var(--primary-color, #007bff);
+}
+
+.role-name {
+  font-weight: 700;
+  font-size: 1rem;
+  color: var(--text-primary, #212529);
+}
+
+.role-description {
+  margin: 0;
+  font-size: 0.85rem;
+  color: var(--text-secondary, #6c757d);
+  line-height: 1.4;
+}
+
+/* ===========================
+   PERMISSIONS PREVIEW
+   =========================== */
+
+.permissions-preview {
+  margin-top: 1.5rem;
+  padding: 1rem;
+  background: var(--bg-secondary, #f8f9fa);
+  border-radius: 12px;
+}
+
+.permissions-preview h4 {
+  margin: 0 0 1rem 0;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--text-primary, #212529);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.permissions-preview h4 i {
+  color: var(--warning-color, #ffc107);
+}
+
+.permissions-list {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.5rem;
+}
+
+.permission-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.85rem;
+  color: var(--text-primary, #212529);
+}
+
+.permission-item i {
+  color: var(--success-color, #28a745);
+  font-size: 0.75rem;
+}
+
+/* ===========================
+   SUCCESS ALERT
+   =========================== */
+
+.alert-success {
+  background: #d4edda;
+  color: #155724;
+  border: 1px solid #c3e6cb;
+}
+
+.alert-warning {
+  background: #fff3cd;
+  color: #856404;
+  border: 1px solid #ffeeba;
+}
+
+/* ===========================
+   RESPONSIVE
+   =========================== */
+
+@media (max-width: 768px) {
+  .invite-member-modal {
+    max-width: 100%;
+  }
+
+  .permissions-list {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ===========================
+   DARK MODE
+   =========================== */
+
+[data-theme="dark"] .workspace-info-box {
+  background: rgba(0, 123, 255, 0.15);
+  border-color: var(--primary-color, #007bff);
+}
+
+[data-theme="dark"] .role-card {
+  background: var(--bg-secondary-dark, #2d3748);
+  border-color: var(--border-color-dark, #4a5568);
+}
+
+[data-theme="dark"] .role-card:hover {
+  background: var(--bg-hover-dark, #374151);
+}
+
+[data-theme="dark"] .permissions-preview {
+  background: var(--bg-secondary-dark, #2d3748);
+}
+
+[data-theme="dark"] .alert-success {
+  background: rgba(40, 167, 69, 0.2);
+  color: #95d5a2;
+  border-color: rgba(40, 167, 69, 0.3);
+}
+
+[data-theme="dark"] .alert-warning {
+  background: rgba(255, 193, 7, 0.2);
+  color: #ffd966;
+  border-color: rgba(255, 193, 7, 0.3);
+}

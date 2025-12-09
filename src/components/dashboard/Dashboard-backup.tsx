@@ -22,6 +22,7 @@ const Dashboard: React.FC = () => {
   });
 
   const [marketData, setMarketData] = useState({
+    btcPrice: 'Carregando...',
     usdRate: 'Carregando...',
     selicRate: 'Carregando...'
   });
@@ -35,24 +36,25 @@ const Dashboard: React.FC = () => {
     fetchMarketData();
   }, []);
 
-  const _loadFinancialData = () => {
+  const loadFinancialData = () => {
     const savedData = localStorage.getItem('my-financify-data');
     if (savedData) {
       setFinancialData(JSON.parse(savedData));
     }
   };
 
+  const fetchMarketData = async () => {
+    // Placeholder para dados de mercado
+    setMarketData({
+      btcPrice: 'N/A',
+      usdRate: 'N/A',
+      selicRate: 'N/A'
+    });
+  };
+
   const saveFinancialData = (data: FinancialData) => {
     localStorage.setItem('my-financify-data', JSON.stringify(data));
     setFinancialData(data);
-  };
-
-  const _fetchMarketData = async () => {
-    // Simulação de dados do mercado - pode ser integrado com API real
-    setMarketData({
-      usdRate: 'R$ 5,25',
-      selicRate: '11,75%'
-    });
   };
 
   const calculateTotals = () => {

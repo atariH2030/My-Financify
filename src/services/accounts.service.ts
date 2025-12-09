@@ -408,4 +408,4 @@ class AccountsService {
   }
 }
 
-export const _accountsService = new AccountsService();
+export const accountsService = new AccountsService();

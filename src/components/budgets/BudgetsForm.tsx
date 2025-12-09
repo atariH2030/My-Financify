@@ -51,6 +51,11 @@ const BudgetsForm: React.FC<BudgetsFormProps> = ({ budget, onSave, onCancel }) =
     startDate: budget?.startDate || new Date().toISOString().split('T')[0]
   });
 
+  interface ValidationError {
+    path?: (string | number | symbol)[];
+    message: string;
+  }
+
   const [errors, setErrors] = useState<ValidationError[]>([]);
 
   const handleChange = (field: string, value: any) => {

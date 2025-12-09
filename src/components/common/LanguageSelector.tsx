@@ -7,6 +7,8 @@ import React from 'react';
 import {useLanguage} from '../../contexts/LanguageContext';
 import './LanguageSelector.css';
 
+type Language = 'pt-BR' | 'en-US' | 'es-ES';
+
 const LanguageSelector: React.FC = () => {
   const { language, setLanguage } = useLanguage();
 

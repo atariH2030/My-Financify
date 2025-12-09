@@ -76,7 +76,7 @@ export const useKeyboardShortcuts = ({
 /**
  * Formata atalho para exibição
  */
-export const _formatShortcut = (shortcut: KeyboardShortcut): string => {
+export const formatShortcut = (shortcut: KeyboardShortcut): string => {
   const parts: string[] = [];
   
   if (shortcut.ctrl) parts.push('Ctrl');
@@ -96,7 +96,7 @@ export const _formatShortcut = (shortcut: KeyboardShortcut): string => {
 /**
  * Agrupa atalhos por categoria
  */
-export const _groupShortcutsByCategory = (shortcuts: KeyboardShortcut[]) => {
+export const groupShortcutsByCategory = (shortcuts: KeyboardShortcut[]) => {
   const grouped: Record<string, KeyboardShortcut[]> = {
     navigation: [],
     actions: [],

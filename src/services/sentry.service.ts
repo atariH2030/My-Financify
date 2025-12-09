@@ -126,7 +126,7 @@ class SentryService {
 }
 
 // Singleton
-export const _sentry = new SentryService();
+export const sentry = new SentryService();
 
 // Error Boundary Component Export
 export const _SentryErrorBoundary = Sentry.ErrorBoundary;

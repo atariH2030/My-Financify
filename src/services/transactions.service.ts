@@ -511,4 +511,4 @@ class TransactionsService {
   }
 }
 
-export const _transactionsService = new TransactionsService();
+export const transactionsService = new TransactionsService();

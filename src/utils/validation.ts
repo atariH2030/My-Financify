@@ -333,11 +333,11 @@ export function getFieldErrors(
 /**
  * Validation functions for convenience
  */
-export const _validateTransaction = (data: unknown) => transactionSchema.safeParse(data);
-export const _validateGoal = (data: unknown) => goalSchema.safeParse(data);
-export const _validateBudget = (data: unknown) => budgetSchema.safeParse(data);
-export const _validateRecurring = (data: unknown) => recurringTransactionSchema.safeParse(data);
-export const _validateAccount = (data: unknown) => accountSchema.safeParse(data);
+export const validateTransaction = (data: unknown) => transactionSchema.safeParse(data);
+export const validateGoal = (data: unknown) => goalSchema.safeParse(data);
+export const validateBudget = (data: unknown) => budgetSchema.safeParse(data);
+export const validateRecurring = (data: unknown) => recurringTransactionSchema.safeParse(data);
+export const validateAccount = (data: unknown) => accountSchema.safeParse(data);
 
 /**
  * Export ValidationError type from Zod

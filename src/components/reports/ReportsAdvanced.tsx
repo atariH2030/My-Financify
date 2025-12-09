@@ -39,7 +39,7 @@ const ReportsAdvanced: React.FC = () => {
     loadData();
   }, []);
 
-  const _loadData = async () => {
+  const loadData = async () => {
     try {
       const [txns, bdgs, gls] = await Promise.all([
         StorageService.load<Transaction[]>('transactions'),

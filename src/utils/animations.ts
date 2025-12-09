@@ -110,7 +110,7 @@ export const _cardHover = {
 /**
  * Animação de button tap
  */
-export const _buttonTap = {
+export const buttonTap = {
   whileTap: { scale: 0.95 },
   whileHover: { scale: 1.05 },
 };

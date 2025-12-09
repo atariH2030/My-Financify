@@ -122,7 +122,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     };
   }, []);
 
-  const _loadSession = async () => {
+  const loadSession = async () => {
     try {
       // Usar SafeAuth que NUNCA falha
       const { data: session } = await SafeAuth.getSession();

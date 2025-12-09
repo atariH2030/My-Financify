@@ -7,7 +7,8 @@ import './utils/i18n-validator'; // ✅ Auto-valida traduções ao iniciar
 
 // ✅ APP NORMAL COM AUTENTICAÇÃO INTEGRADA
 import { AuthProvider } from './contexts/AuthContext';
-import { LanguageProvider, useTranslation } from './contexts/LanguageContext';
+import { WorkspaceProvider } from './contexts/WorkspaceContext';
+import { LanguageProvider, useLanguage } from './contexts/LanguageContext';
 import ProtectedRoute from './components/auth/ProtectedRoute';
 import UserHeader from './components/auth/UserHeader';
 import OnlineStatus from './components/common/OnlineStatus';
@@ -15,14 +16,16 @@ import SyncIndicator from './components/common/SyncIndicator';
 import AIChatButton from './components/common/AIChatButton';
 
 // Core Components (carregados imediatamente)
-import {ErrorBoundary, ToastProvider, ToastEnhancedProvider, useKeyboardShortcuts, KeyboardShortcutsHelp} from './components/common';
+import {ErrorBoundary, ToastProvider, ToastEnhancedProvider, useKeyboardShortcuts, KeyboardShortcutsHelp, type KeyboardShortcut} from './components/common';
 import CommandPalette from './components/common/CommandPalette';
 import GlobalCommandPalette from './components/common/GlobalCommandPalette';
 import ThemeCustomizer from './components/common/ThemeCustomizer';
 import LanguageSelector from './components/common/LanguageSelector';
 import WidgetCustomizer from './components/dashboard/WidgetCustomizer';
+import WorkspaceSwitcher from './components/workspace/WorkspaceSwitcher';
 
 // Lazy Loading Components (carregados sob demanda)
+const LandingPage = lazy(() => import('./components/landing/LandingPage'));
 const DashboardV2 = lazy(() => import('./components/dashboard/DashboardV2'));
 const Transactions = lazy(() => import('./components/transactions/Transactions'));
 const Reports = lazy(() => import('./components/reports/Reports'));
@@ -77,7 +80,7 @@ const App: React.FC = () => {
   // ============================================================================
   // HOOKS DE TRADUÇÃO
   // ============================================================================
-  const { t } = useTranslation();
+  const { t } = useLanguage();
   
   // ============================================================================
   // ESTADOS
@@ -411,6 +414,12 @@ const App: React.FC = () => {
           </div>
         </div>
         
+        {/* Workspace Switcher */}
+        <WorkspaceSwitcher onCreateNew={() => {
+          // TODO: Abrir modal de criação de workspace
+          console.log('Criar novo workspace');
+        }} />
+        
         <nav className="sidebar-nav">
           <ul>
             <li>
@@ -681,19 +690,77 @@ if (!container) {
 
 const root = createRoot(container);
 
-// ✅ APP NORMAL - Com autenticação integrada e rotas protegidas
+// Estado de rota global simples
+let currentRoute = window.location.hash.replace('#', '') || '/';
+
+const RootApp: React.FC = () => {
+  const [route, setRoute] = React.useState(currentRoute);
+  const [isAuthenticated, setIsAuthenticated] = React.useState(false);
+
+  React.useEffect(() => {
+    const handleHashChange = () => {
+      const newRoute = window.location.hash.replace('#', '') || '/';
+      setRoute(newRoute);
+      currentRoute = newRoute;
+    };
+
+    window.addEventListener('hashchange', handleHashChange);
+    
+    // Verificar autenticação
+    const session = localStorage.getItem('supabase.auth.token');
+    setIsAuthenticated(!!session);
+
+    return () => window.removeEventListener('hashchange', handleHashChange);
+  }, []);
+
+  // Função global de navegação
+  (window as any).navigateTo = (path: string) => {
+    window.location.hash = path;
+  };
+
+  const renderContent = () => {
+    // Se não autenticado e não está em rota pública, mostrar landing/login
+    if (!isAuthenticated && !route.startsWith('/login') && !route.startsWith('/register') && route !== '/') {
+      return (
+        <Suspense fallback={<div className="loading">Carregando...</div>}>
+          <LandingPage />
+        </Suspense>
+      );
+    }
+
+    // Rotas públicas
+    if (route === '/' || route === '') {
+      return (
+        <Suspense fallback={<div className="loading">Carregando...</div>}>
+          <LandingPage />
+        </Suspense>
+      );
+    }
+
+    // Rotas autenticadas
+    return (
+      <ProtectedRoute>
+        <App />
+      </ProtectedRoute>
+    );
+  };
+
+  return renderContent();
+};
+
+// ✅ APP COM ROUTING SIMPLES
 root.render(
   <React.StrictMode>
     <ErrorBoundary>
       <LanguageProvider>
         <AuthProvider>
-          <ToastProvider>
-            <ToastEnhancedProvider position="top-right" maxToasts={5}>
-              <ProtectedRoute>
-                <App />
-              </ProtectedRoute>
-            </ToastEnhancedProvider>
-          </ToastProvider>
+          <WorkspaceProvider>
+            <ToastProvider>
+              <ToastEnhancedProvider position="top-right" maxToasts={5}>
+                <RootApp />
+              </ToastEnhancedProvider>
+            </ToastProvider>
+          </WorkspaceProvider>
         </AuthProvider>
       </LanguageProvider>
     </ErrorBoundary>

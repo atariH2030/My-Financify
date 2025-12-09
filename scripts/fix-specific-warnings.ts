@@ -21,7 +21,7 @@ console.log('🔧 Fixing specific warnings...\n');
 // 1. FIX: no-await-in-loop (47 warnings)
 // ============================================================================
 
-function fixAwaitInLoop(content: string): string {
+function fixAwaitInLoop(content: string): { fixed: string; count: number } {
   let fixed = content;
   let count = 0;
 
@@ -53,7 +53,7 @@ function fixAwaitInLoop(content: string): string {
 // 2. FIX: @typescript-eslint/no-unused-vars (6 warnings)
 // ============================================================================
 
-function fixUnusedVars(content: string, filePath: string): string {
+function fixUnusedVars(content: string, filePath: string): { fixed: string; count: number } {
   let fixed = content;
   let count = 0;
 
@@ -107,7 +107,7 @@ function fixUnusedVars(content: string, filePath: string): string {
 // 3. FIX: setState in effect (4 warnings)
 // ============================================================================
 
-function fixSetStateInEffect(content: string): string {
+function fixSetStateInEffect(content: string): { fixed: string; count: number } {
   let fixed = content;
   let count = 0;
 

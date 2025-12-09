@@ -52,6 +52,21 @@ const ReportsPage: React.FC = () => {
     }
   };
 
+  // Helper para obter últimos N meses
+  const getLastNMonths = (n: number) => {
+    const months = [];
+    const today = new Date();
+    for (let i = n - 1; i >= 0; i--) {
+      const date = new Date(today.getFullYear(), today.getMonth() - i, 1);
+      months.push({
+        month: date.getMonth(),
+        year: date.getFullYear(),
+        label: date.toLocaleString('pt-BR', { month: 'short', year: 'numeric' })
+      });
+    }
+    return months;
+  };
+
   // Processar dados para Evolução Financeira
   const getEvolutionData = () => {
     const months = getLastNMonths(selectedPeriod === '3m' ? 3 : selectedPeriod === '6m' ? 6 : 12);

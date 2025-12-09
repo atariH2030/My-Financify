@@ -439,4 +439,4 @@ class RecurringTransactionsService {
   }
 }
 
-export const _recurringTransactionsService = new RecurringTransactionsService();
+export const recurringTransactionsService = new RecurringTransactionsService();

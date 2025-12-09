@@ -174,7 +174,7 @@ const DashboardCustomizer: React.FC<DashboardCustomizerProps> = ({ isOpen, onClo
     }
   };
 
-  const _getGridColumns = (mode: LayoutMode): number => {
+  const getGridColumns = (mode: LayoutMode): number => {
     switch (mode) {
       case 'grid-large':
         return 2;

@@ -98,6 +98,55 @@
   background: #ffffff !important;
 }
 
+/* CPF Validation Feedback */
+.input-with-validation {
+  position: relative;
+}
+
+.cpf-validation-status {
+  margin-top: 0.5rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem;
+  border-radius: 0.375rem;
+  transition: all 0.2s ease;
+}
+
+.cpf-validation-status.valid {
+  background: #f0fdf4;
+  border: 1px solid #86efac;
+  color: #166534;
+}
+
+.cpf-validation-status.invalid {
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  color: #991b1b;
+}
+
+.cpf-validation-status .checking {
+  color: #2563eb;
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+.cpf-validation-status .valid {
+  color: #166534;
+  font-weight: 600;
+}
+
+.cpf-validation-status .invalid {
+  color: #991b1b;
+  font-weight: 500;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
 .password-requirements {
   background: #f7fafc;
   border: 1px solid #e2e8f0;

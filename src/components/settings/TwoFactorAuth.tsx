@@ -37,7 +37,7 @@ const TwoFactorAuth: React.FC = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const _checkTwoFAStatus = async () => {
+  const checkTwoFAStatus = async () => {
     try {
       const enabled = await TwoFAService.isEnabled();
       setIsEnabled(enabled);
@@ -48,12 +48,12 @@ const TwoFactorAuth: React.FC = () => {
     }
   };
 
-  const _loadBackupCodes = async () => {
+  const loadBackupCodes = async () => {
     try {
       const codes = await TwoFAService.getBackupCodes();
-      setBackupCodes(codes);
+      setBackupCodes(codes || []);
     } catch (error) {
-      console.error('Erro ao carregar backup codes:', error);
+      console.error('Erro ao carregar códigos de backup:', error);
     }
   };
 

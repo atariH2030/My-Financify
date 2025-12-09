@@ -1,7 +1,109 @@
 # 💡 Backlog de Features - Ideias Futuras
 
 **Status**: Brainstorm  
-**Organização**: Por categoria e prioridade
+**Organização**: Por categoria e prioridade  
+**Última Atualização**: 9 de dezembro de 2025
+
+---
+
+## 🎨 MELHORIAS UX/PERFORMANCE (Landing Page - Dezembro 2025)
+
+### 1. Ícone PWA 512x512
+**Complexidade**: Baixa  
+**Valor**: Médio  
+**Tempo Estimado**: 30 minutos
+
+**Descrição**:
+- Criar ícone `pwa-512x512.png` de alta qualidade
+- Seguir guidelines PWA do Google
+- Testar em diferentes dispositivos
+- Garantir manifest.webmanifest atualizado
+
+---
+
+### 2. Animações de Transição entre Rotas
+**Complexidade**: Média  
+**Valor**: Alto  
+**Tempo Estimado**: 2 horas
+
+**Descrição**:
+- Implementar transições suaves com Framer Motion
+- Fade in/out ao mudar rotas
+- Slide animations (Landing → Login)
+- Loading states elegantes
+
+**Implementação**:
+```tsx
+<AnimatePresence mode="wait">
+  <motion.div
+    key={route}
+    initial={{ opacity: 0, y: 20 }}
+    animate={{ opacity: 1, y: 0 }}
+    exit={{ opacity: 0, y: -20 }}
+    transition={{ duration: 0.3 }}
+  >
+    {renderContent()}
+  </motion.div>
+</AnimatePresence>
+```
+
+---
+
+### 3. Responsividade Mobile Aprimorada
+**Complexidade**: Média  
+**Valor**: Alto  
+**Tempo Estimado**: 3 horas
+
+**Descrição**:
+- Melhorar navbar mobile (hamburger menu)
+- Otimizar gráficos para telas pequenas
+- Touch gestures para chatbot
+- Testar em dispositivos reais (iOS/Android)
+
+---
+
+### 4. Code Splitting e Lazy Loading
+**Complexidade**: Média  
+**Valor**: Muito Alto  
+**Tempo Estimado**: 4 horas
+
+**Descrição**:
+- Reduzir bundle de 705KB → <300KB
+- Lazy load de componentes Chart.js
+- Dynamic imports para rotas
+- Prefetch de páginas críticas
+
+**Implementação**:
+```tsx
+// Lazy load charts
+const ChartComponents = lazy(() => import('./ChartComponents'));
+
+// Prefetch login page
+const prefetchLogin = () => {
+  import('./components/auth/Login');
+};
+```
+
+---
+
+### 5. Lighthouse Audit >90
+**Complexidade**: Média  
+**Valor**: Alto  
+**Tempo Estimado**: 2 horas
+
+**Descrição**:
+- Performance: >90
+- Accessibility: >95
+- Best Practices: >95
+- SEO: >90
+- PWA: 100
+
+**Ações**:
+- Otimizar imagens (WebP)
+- Minificar CSS/JS
+- Implementar cache strategy
+- Adicionar meta tags SEO
+- Corrigir warnings acessibilidade
 
 ---
 

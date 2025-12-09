@@ -245,7 +245,7 @@ export function monthsBetween(date1: Date | string, date2: Date | string): numbe
 /**
  * Helpers para verificações rápidas de período
  */
-export const _dateHelpers = {
+export const dateHelpers = {
   isToday,
   isYesterday,
   isTomorrow,
