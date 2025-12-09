@@ -8,6 +8,7 @@
 import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Button from './Button';
+import { useTranslation } from '../../contexts/LanguageContext';
 import './ConfirmDialog.css';
 
 interface ConfirmDialogProps {
@@ -27,14 +28,17 @@ const ConfirmDialog: React.FC<ConfirmDialogProps> = ({
   isOpen,
   title,
   message,
-  confirmText = 'Confirmar',
-  cancelText = 'Cancelar',
+  confirmText,
+  cancelText,
   confirmVariant = 'danger',
   onConfirm,
   onCancel,
   icon,
   loading = false,
 }) => {
+  const { t } = useTranslation();
+  const finalConfirmText = confirmText || t('common.yes');
+  const finalCancelText = cancelText || t('common.cancel');
   // Prevenir scroll quando modal aberto
   React.useEffect(() => {
     if (isOpen) {
@@ -108,7 +112,7 @@ const ConfirmDialog: React.FC<ConfirmDialogProps> = ({
               disabled={loading}
               fullWidth
             >
-              {cancelText}
+              {finalCancelText}
             </Button>
             <Button
               variant={confirmVariant}
@@ -117,7 +121,7 @@ const ConfirmDialog: React.FC<ConfirmDialogProps> = ({
               loading={loading}
               fullWidth
             >
-              {confirmText}
+              {finalConfirmText}
             </Button>
           </div>
         </motion.div>

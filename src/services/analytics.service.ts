@@ -1,11 +1,37 @@
 /**
  * @file analytics.service.ts
- * @description Sistema de analytics para tracking de uso da IA
- * @version 3.12.0
+ * @description Sistema de analytics unificado - IA + Google Analytics 4
+ * @version 3.15.0
  * @author DEV - Rickson (TQM)
  */
 
 import Logger from './logger.service';
+
+// Google Analytics Types
+interface GAEvent {
+  action: string;
+  category: string;
+  label?: string;
+  value?: number;
+}
+
+interface PageView {
+  page_title: string;
+  page_location: string;
+  page_path: string;
+}
+
+// Google Analytics gtag interface
+declare global {
+  interface Window {
+    gtag?: (
+      command: 'config' | 'event' | 'set',
+      targetId: string,
+      params?: Record<string, unknown>
+    ) => void;
+    dataLayer?: unknown[];
+  }
+}
 
 export interface AIAnalyticsEvent {
   id: string;
@@ -272,6 +298,149 @@ class AnalyticsService {
 
   private generateId(): string {
     return `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+  }
+
+  // ========== GOOGLE ANALYTICS 4 INTEGRATION ==========
+
+  private gaInitialized = false;
+  private measurementId: string | null = null;
+
+  /**
+   * Inicializar Google Analytics 4
+   */
+  async initializeGA(): Promise<void> {
+    try {
+      this.measurementId = import.meta.env.VITE_GA_MEASUREMENT_ID;
+
+      if (!this.measurementId) {
+        Logger.warn('Google Analytics Measurement ID not configured', 'ANALYTICS');
+        return;
+      }
+
+      // Somente em produção
+      if (!import.meta.env.PROD) {
+        Logger.info('Google Analytics disabled in development', 'ANALYTICS');
+        return;
+      }
+
+      // Carregar script
+      await this.loadGtagScript();
+      this.configGA();
+
+      this.gaInitialized = true;
+      Logger.info('✅ Google Analytics initialized', 'ANALYTICS');
+    } catch (error) {
+      Logger.error('Failed to initialize Google Analytics', error as Error, 'ANALYTICS');
+    }
+  }
+
+  private async loadGtagScript(): Promise<void> {
+    return new Promise((resolve, reject) => {
+      if (window.gtag) {
+        resolve();
+        return;
+      }
+
+      const script = document.createElement('script');
+      script.async = true;
+      script.src = `https://www.googletagmanager.com/gtag/js?id=${this.measurementId}`;
+      script.onload = () => resolve();
+      script.onerror = () => reject(new Error('Failed to load gtag script'));
+
+      document.head.appendChild(script);
+
+      window.dataLayer = window.dataLayer || [];
+      window.gtag = function gtag(...args: unknown[]) {
+        window.dataLayer?.push(args);
+      };
+    });
+  }
+
+  private configGA(): void {
+    if (!window.gtag || !this.measurementId) return;
+
+    window.gtag('config', this.measurementId, {
+      send_page_view: false,
+      cookie_flags: 'SameSite=None;Secure',
+    });
+  }
+
+  /**
+   * Track pageview no GA4
+   */
+  trackPageView(pageData?: Partial<PageView>): void {
+    if (!this.gaInitialized || !window.gtag) return;
+
+    const data = {
+      page_title: document.title,
+      page_location: window.location.href,
+      page_path: window.location.pathname,
+      ...pageData,
+    };
+
+    window.gtag('event', 'page_view', data);
+  }
+
+  /**
+   * Track evento customizado no GA4
+   */
+  trackGAEvent(event: GAEvent): void {
+    if (!this.gaInitialized || !window.gtag) return;
+
+    window.gtag('event', event.action, {
+      event_category: event.category,
+      event_label: event.label,
+      value: event.value,
+    });
+  }
+
+  /**
+   * Track conversão
+   */
+  trackConversion(name: string, value?: number): void {
+    this.trackGAEvent({
+      action: 'conversion',
+      category: 'Conversions',
+      label: name,
+      value,
+    });
+  }
+
+  /**
+   * Helpers de tracking comuns
+   */
+  trackSignup(method: string): void {
+    this.trackGAEvent({ action: 'sign_up', category: 'Engagement', label: method });
+  }
+
+  trackLogin(method: string): void {
+    this.trackGAEvent({ action: 'login', category: 'Engagement', label: method });
+  }
+
+  trackTransactionCreated(category: string, amount: number): void {
+    this.trackGAEvent({
+      action: 'transaction_created',
+      category: 'Transactions',
+      label: category,
+      value: amount,
+    });
+  }
+
+  trackGoalCreated(type: string): void {
+    this.trackGAEvent({ action: 'goal_created', category: 'Goals', label: type });
+  }
+
+  trackExport(format: string): void {
+    this.trackGAEvent({ action: 'export', category: 'Features', label: format });
+  }
+
+  trackUpgrade(plan: 'plus' | 'premium'): void {
+    this.trackConversion('upgrade', plan === 'premium' ? 19.9 : 9.9);
+  }
+
+  setUserProperties(props: { user_id?: string; plan?: string }): void {
+    if (!this.gaInitialized || !window.gtag) return;
+    window.gtag('set', 'user_properties', props);
   }
 }
 

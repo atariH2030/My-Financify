@@ -7,6 +7,7 @@ import React, { useState } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
 import { Button } from '../common';
 import AvatarUpload from './AvatarUpload';
+import TwoFactorAuth from '../settings/TwoFactorAuth';
 import './ProfilePage.css';
 
 const ProfilePage: React.FC = () => {
@@ -183,17 +184,10 @@ const ProfilePage: React.FC = () => {
               🔒 Alterar Senha
             </Button>
           </div>
-
-          <div className="security-item">
-            <div className="security-info">
-              <strong>Autenticação de Dois Fatores</strong>
-              <p>Adicione uma camada extra de segurança</p>
-            </div>
-            <Button variant="secondary" disabled>
-              🛡️ Em Breve
-            </Button>
-          </div>
         </div>
+
+        {/* Two-Factor Authentication */}
+        <TwoFactorAuth />
 
         {/* Account Info */}
         <div className="profile-card">

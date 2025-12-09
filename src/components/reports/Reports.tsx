@@ -4,6 +4,7 @@ import ExportModal from '../export/ExportModal';
 import { formatCurrency, formatPercentage } from '../../utils/currency';
 import { transactionsService } from '../../services/transactions.service';
 import { PDFExportService } from '../../services/pdf-export.service';
+import { useTranslation } from '../../contexts/LanguageContext';
 import type { Transaction } from '../../types/financial.types';
 
 interface KPICardProps {
@@ -32,6 +33,7 @@ interface ReportsProps {
 }
 
 const Reports: React.FC<ReportsProps> = ({ className }) => {
+  const { t } = useTranslation();
   const [showExportModal, setShowExportModal] = useState(false);
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [summary, setSummary] = useState({
@@ -180,8 +182,8 @@ const Reports: React.FC<ReportsProps> = ({ className }) => {
               <label>Categoria</label>
               <select value={categoryFilter} onChange={(e) => setCategoryFilter(e.target.value as any)}>
                 <option value="all">Todas as categorias</option>
-                <option value="income">📈 Receitas</option>
-                <option value="expense">📉 Despesas</option>
+                <option value="income">📈 {t('transactions.income')}</option>
+                <option value="expense">📉 {t('transactions.expense')}</option>
               </select>
             </div>
             {period === 'custom' && (
@@ -230,18 +232,18 @@ const Reports: React.FC<ReportsProps> = ({ className }) => {
           title="Receita Total"
           value={formatCurrency(summary.income)}
           icon="💰"
-          trend={loading ? 'Carregando...' : `${summary.transactionCount} transações`}
+          trend={loading ? t('common.loading') : `${summary.transactionCount} transações`}
           trendType="positive"
         />
         <KPICard
-          title="Despesas Totais"
+          title={t('dashboard.widgets.expenses') + ' Totais'}
           value={formatCurrency(summary.expenses)}
           icon="💸"
-          trend={loading ? 'Carregando...' : 'Total do mês'}
+          trend={loading ? t('common.loading') : 'Total do mês'}
           trendType="negative"
         />
         <KPICard
-          title="Saldo"
+          title={t('dashboard.widgets.balance')}
           value={formatCurrency(summary.balance)}
           icon="📈"
           trend={summary.balance >= 0 ? 'Positivo' : 'Atenção'}

@@ -211,6 +211,12 @@ class AIService {
    */
   async chat(message: string, context: AIContext): Promise<string> {
     try {
+      // Verificar se está configurado, senão usar demo
+      const configured = await this.isConfigured();
+      if (!configured) {
+        return this.getDemoResponse(message, context);
+      }
+
       // Carregar histórico
       const history = await this.getConversationHistory();
 
@@ -252,6 +258,61 @@ class AIService {
       Logger.error('Falha no chat', error as Error, 'AI');
       throw error;
     }
+  }
+
+  /**
+   * Gerar resposta demo (quando não configurado)
+   */
+  private getDemoResponse(message: string, context: AIContext): string {
+    const lowerMessage = message.toLowerCase();
+
+    // Respostas contextualizadas baseadas na pergunta
+    if (lowerMessage.includes('gasto') || lowerMessage.includes('despesa')) {
+      const expenses = context.transactions?.expenses || 0;
+      const income = context.transactions?.income || 0;
+      const percentage = income > 0 ? ((expenses / income) * 100).toFixed(0) : '0';
+      return `📊 **Análise de Gastos (Modo Demo)**\n\nSeus gastos no período: **R$ ${expenses.toFixed(2)}**\n\nIsso representa ${percentage}% da sua receita total.\n\n💡 **Dica**: Configure a API Key do Gemini para análises personalizadas e insights mais detalhados!\n\n[Ir para Configurações →](/settings)`;
+    }
+
+    if (lowerMessage.includes('econom') || lowerMessage.includes('poupar')) {
+      const byCategory = context.transactions?.byCategory || {};
+      const topCategory = Object.entries(byCategory).sort(([, a], [, b]) => b - a)[0];
+      if (topCategory) {
+        const [category, amount] = topCategory;
+        return `💰 **Oportunidades de Economia (Modo Demo)**\n\nSua maior categoria de gastos é **${category}**: R$ ${amount.toFixed(2)}\n\n💡 Reduzir 10% aqui = **R$ ${(amount * 0.1).toFixed(2)}** economizados!\n\n🤖 Configure a IA completa para dicas personalizadas.\n\n[Configurar Gemini API →](/settings)`;
+      }
+      return `💡 **Dicas de Economia (Modo Demo)**\n\n1. Revise assinaturas que não usa\n2. Compare preços antes de comprar\n3. Defina um orçamento mensal\n\n🤖 Configure a API Key para análises personalizadas!`;
+    }
+
+    if (lowerMessage.includes('orçamento') || lowerMessage.includes('budget')) {
+      const budgetUsed = context.budgets?.percentage || 0;
+      const budgetTotal = context.budgets?.total || 0;
+      const budgetSpent = context.budgets?.used || 0;
+      return `📈 **Status do Orçamento (Modo Demo)**\n\nOrçamento total: **R$ ${budgetTotal.toFixed(2)}**\nUsado: **R$ ${budgetSpent.toFixed(2)}** (${budgetUsed.toFixed(0)}%)\n\n${budgetUsed >= 80 ? '⚠️ Atenção: você está próximo do limite!' : '✅ Você está dentro do orçamento!'}\n\n🤖 Configure a IA para alertas proativos.`;
+    }
+
+    if (lowerMessage.includes('meta') || lowerMessage.includes('goal')) {
+      const goalsTotal = context.goals?.total || 0;
+      const goalsCompleted = context.goals?.completed || 0;
+      return `🎯 **Suas Metas (Modo Demo)**\n\nMetas ativas: **${goalsTotal}**\nConcluídas: **${goalsCompleted}**\n\n${goalsTotal > 0 ? '💪 Continue firme! Pequenos passos fazem grande diferença.' : '📝 Que tal criar sua primeira meta?'}\n\n🤖 Configure a IA para acompanhamento personalizado.`;
+    }
+
+    if (lowerMessage.includes('categoria') || lowerMessage.includes('category')) {
+      const byCategory = context.transactions?.byCategory || {};
+      const entries = Object.entries(byCategory).sort(([, a], [, b]) => b - a).slice(0, 3);
+      if (entries.length > 0) {
+        const list = entries.map(([cat, amt], i) => `${i + 1}. **${cat}**: R$ ${amt.toFixed(2)}`).join('\n');
+        return `📊 **Top Categorias (Modo Demo)**\n\n${list}\n\n💡 Foque em reduzir as principais categorias para maior impacto!\n\n🤖 Configure a IA para análises detalhadas.`;
+      }
+      return `📊 **Categorias de Gastos (Modo Demo)**\n\nAinda não há dados suficientes para análise.\n\n🤖 Configure a API Key para insights personalizados!`;
+    }
+
+    if (lowerMessage.includes('ajuda') || lowerMessage.includes('help') || lowerMessage.includes('o que') || lowerMessage.includes('como')) {
+      return `🤖 **Assistente IA - Modo Demo**\n\n**Posso ajudar com:**\n• Análise de gastos\n• Dicas de economia\n• Status de orçamentos\n• Acompanhamento de metas\n• Identificação de padrões\n\n⚡ **Ative o modo completo:**\n1. Obtenha API Key gratuita: [Google AI Studio](https://aistudio.google.com/app/apikey)\n2. Configure em [Configurações](/settings)\n3. Aproveite análises personalizadas ilimitadas!`;
+    }
+
+    // Resposta padrão
+    return `🤖 **Modo Demo Ativo**\n\nOlá! Estou funcionando em modo demonstração limitado.\n\n**Perguntas que posso responder:**\n• "Como estão meus gastos?"\n• "Onde posso economizar?"\n• "Estou dentro do orçamento?"\n• "Como estão minhas metas?"\n\n💡 Para análises completas e personalizadas, configure a API Key do Google Gemini gratuitamente!\n\n[Configurar agora →](/settings)`;
   }
 
   /**

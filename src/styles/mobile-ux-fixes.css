@@ -1,0 +1,531 @@
+/**
+ * @file mobile-ux-fixes.css
+ * @description Correções Mobile UX para WCAG 2.5.5 compliance (Touch Targets 44x44px)
+ * @version 3.14.0
+ * @author DEV - Rickson (TQM)
+ * 
+ * OBJETIVO: Resolver último bloqueador crítico para Beta Launch
+ * 
+ * PROBLEMAS CORRIGIDOS:
+ * ❌ Ícones sidebar: 36x36px → ✅ 44x44px
+ * ❌ Botões modais: 32x40px → ✅ 44x44px
+ * ❌ Checkbox inputs: 20x20px → ✅ 24x24px (área clicável 44x44px com padding)
+ * ❌ Dashboard cards: 2 colunas mobile → ✅ 1 coluna < 480px
+ * ❌ Transaction tables: scroll horizontal → ✅ Card layout mobile
+ * ❌ Modals: altura fixa → ✅ 100dvh (dynamic viewport height)
+ */
+
+/* ============================================================================
+   1. TOUCH TARGETS - Aumentar para 44x44px (WCAG 2.5.5)
+   ============================================================================ */
+
+/* Sidebar Icons - 36px → 44px */
+.keyboard-shortcuts-btn {
+  width: 44px !important;
+  height: 44px !important;
+  font-size: 1.2rem !important;
+}
+
+.sidebar-toggle {
+  width: 44px !important;
+  height: 44px !important;
+  font-size: 1.2rem !important;
+}
+
+/* Sidebar nav items - mínimo 44px altura */
+.sidebar nav ul li a,
+.sidebar nav ul li button {
+  min-height: 44px !important;
+  padding: 12px 16px !important;
+  display: flex !important;
+  align-items: center !important;
+}
+
+/* Modal close buttons - 32px → 44px */
+.modal-close,
+.modal-header-close,
+button[aria-label*="Close"],
+button[aria-label*="Fechar"],
+.close-btn {
+  width: 44px !important;
+  height: 44px !important;
+  min-width: 44px !important;
+  min-height: 44px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  font-size: 1.4rem !important;
+}
+
+/* Theme customizer color buttons - 40px → 44px */
+.theme-option,
+.color-option,
+.theme-customizer button[role="button"] {
+  min-width: 44px !important;
+  min-height: 44px !important;
+}
+
+/* Reports filter buttons - 40px → 44px */
+.reports-container button,
+.filter-btn,
+.tab-btn {
+  min-height: 44px !important;
+  padding: 10px 16px !important;
+}
+
+/* ============================================================================
+   2. CHECKBOX/RADIO INPUTS - Área clicável 44x44px
+   ============================================================================ */
+
+/* Wrapper com padding para aumentar área clicável */
+input[type="checkbox"],
+input[type="radio"] {
+  width: 24px !important;
+  height: 24px !important;
+  min-width: 24px !important;
+  min-height: 24px !important;
+  cursor: pointer !important;
+  /* Área clicável real com padding do label */
+}
+
+/* Labels de checkbox/radio com padding generoso */
+input[type="checkbox"] + label,
+input[type="radio"] + label,
+label:has(input[type="checkbox"]),
+label:has(input[type="radio"]),
+.checkbox-label,
+.radio-label {
+  padding: 10px 12px !important;
+  min-height: 44px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 12px !important;
+  cursor: pointer !important;
+  user-select: none !important;
+}
+
+/* Settings toggles/switches */
+.toggle-wrapper,
+.switch-wrapper {
+  min-height: 44px !important;
+  display: flex !important;
+  align-items: center !important;
+  padding: 4px 0 !important;
+}
+
+/* ============================================================================
+   3. MOBILE RESPONSIVE - Cards 1 coluna < 480px
+   ============================================================================ */
+
+@media (max-width: 480px) {
+  /* Dashboard cards - forçar 1 coluna */
+  .dashboard-grid,
+  .stats-grid,
+  .widgets-grid,
+  .cards-grid {
+    grid-template-columns: 1fr !important;
+    gap: 1rem !important;
+  }
+
+  /* Account cards - stack vertical */
+  .accounts-list,
+  .accounts-grid {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 1rem !important;
+  }
+
+  /* Budget cards - stack vertical */
+  .budgets-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  /* Goals cards - stack vertical */
+  .goals-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  /* Widget grid - 1 coluna */
+  .widget-grid,
+  .widget-grid-grid-large,
+  .widget-grid-grid-medium,
+  .widget-grid-grid-small {
+    grid-template-columns: 1fr !important;
+  }
+
+  /* Reports cards */
+  .reports-grid {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+/* ============================================================================
+   4. TRANSACTION TABLES - Card layout mobile
+   ============================================================================ */
+
+@media (max-width: 768px) {
+  /* Esconder table header em mobile */
+  .transactions-table thead,
+  .table-responsive thead {
+    display: none !important;
+  }
+
+  /* Table rows viram cards */
+  .transactions-table tbody tr,
+  .table-responsive tbody tr {
+    display: block !important;
+    margin-bottom: 1rem !important;
+    padding: 1rem !important;
+    background: var(--card-bg, #ffffff) !important;
+    border-radius: 12px !important;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08) !important;
+    border: 1px solid var(--border-color, #e5e7eb) !important;
+  }
+
+  /* Table cells viram stack vertical */
+  .transactions-table tbody td,
+  .table-responsive tbody td {
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+    padding: 8px 0 !important;
+    border: none !important;
+    min-height: 44px !important;
+  }
+
+  /* Adicionar labels antes dos valores */
+  .transactions-table tbody td:before,
+  .table-responsive tbody td:before {
+    content: attr(data-label) !important;
+    font-weight: 600 !important;
+    color: var(--text-secondary, #6b7280) !important;
+    font-size: 0.875rem !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.05em !important;
+  }
+
+  /* Botões de ação em cards - aumentar touch target */
+  .transactions-table button,
+  .table-responsive button,
+  .transaction-actions button {
+    min-width: 44px !important;
+    min-height: 44px !important;
+    padding: 10px !important;
+  }
+}
+
+/* ============================================================================
+   5. MODALS - Fullscreen mobile (100dvh)
+   ============================================================================ */
+
+@media (max-width: 768px) {
+  /* Modals ocupam 100% da altura dinâmica da viewport */
+  .modal-content,
+  .modal-container,
+  [role="dialog"] {
+    max-height: 100dvh !important; /* Dynamic Viewport Height */
+    height: auto !important;
+    max-width: 100% !important;
+    width: 100% !important;
+    margin: 0 !important;
+    border-radius: 0 !important;
+    /* iOS Safari: compensar barra de endereço */
+    min-height: -webkit-fill-available !important;
+  }
+
+  /* Modal overlay fullscreen */
+  .modal-overlay,
+  [role="dialog"]::backdrop {
+    position: fixed !important;
+    inset: 0 !important;
+    height: 100dvh !important;
+  }
+
+  /* Modal body com scroll seguro */
+  .modal-body,
+  .modal-content > div {
+    overflow-y: auto !important;
+    max-height: calc(100dvh - 120px) !important; /* Header + Footer */
+    -webkit-overflow-scrolling: touch !important;
+  }
+
+  /* Header fixo no topo */
+  .modal-header {
+    position: sticky !important;
+    top: 0 !important;
+    z-index: 10 !important;
+    background: var(--card-bg, #ffffff) !important;
+    border-bottom: 1px solid var(--border-color, #e5e7eb) !important;
+    padding: 1rem !important;
+    min-height: 60px !important;
+  }
+
+  /* Footer fixo no bottom */
+  .modal-footer {
+    position: sticky !important;
+    bottom: 0 !important;
+    z-index: 10 !important;
+    background: var(--card-bg, #ffffff) !important;
+    border-top: 1px solid var(--border-color, #e5e7eb) !important;
+    padding: 1rem !important;
+    min-height: 60px !important;
+  }
+
+  /* Botões footer - stack vertical em mobile pequeno */
+  @media (max-width: 480px) {
+    .modal-footer {
+      display: flex !important;
+      flex-direction: column-reverse !important;
+      gap: 0.75rem !important;
+    }
+
+    .modal-footer button {
+      width: 100% !important;
+      min-height: 48px !important;
+    }
+  }
+}
+
+/* ============================================================================
+   6. FORMS - Touch targets melhorados
+   ============================================================================ */
+
+@media (max-width: 768px) {
+  /* Input fields - altura confortável */
+  input[type="text"],
+  input[type="email"],
+  input[type="password"],
+  input[type="number"],
+  input[type="tel"],
+  input[type="date"],
+  input[type="datetime-local"],
+  select,
+  textarea {
+    min-height: 48px !important;
+    font-size: 16px !important; /* iOS: previne zoom automático */
+    padding: 12px 16px !important;
+  }
+
+  /* Select dropdowns */
+  select {
+    background-position: right 12px center !important;
+    background-size: 16px !important;
+  }
+
+  /* Textarea - altura mínima */
+  textarea {
+    min-height: 120px !important;
+  }
+
+  /* Form buttons - touch friendly */
+  form button,
+  .form-actions button {
+    min-height: 48px !important;
+    padding: 12px 24px !important;
+    font-size: 1rem !important;
+  }
+
+  /* Submit buttons - destaque */
+  button[type="submit"],
+  .btn-primary {
+    min-height: 52px !important;
+    font-size: 1.1rem !important;
+    font-weight: 600 !important;
+  }
+}
+
+/* ============================================================================
+   7. NAVIGATION - Touch targets sidebar mobile
+   ============================================================================ */
+
+@media (max-width: 768px) {
+  /* Sidebar nav items - touch friendly */
+  .sidebar nav ul li {
+    margin-bottom: 4px !important;
+  }
+
+  .sidebar nav ul li a,
+  .sidebar nav ul li button {
+    min-height: 52px !important; /* Maior em mobile */
+    padding: 14px 20px !important;
+    font-size: 1rem !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 12px !important;
+  }
+
+  /* Icons na sidebar - maior */
+  .sidebar nav ul li a svg,
+  .sidebar nav ul li button svg {
+    width: 24px !important;
+    height: 24px !important;
+    min-width: 24px !important;
+  }
+
+  /* Sidebar collapsed em mobile - botões só ícone */
+  .sidebar.collapsed nav ul li a,
+  .sidebar.collapsed nav ul li button {
+    justify-content: center !important;
+    min-width: 52px !important;
+  }
+}
+
+/* ============================================================================
+   8. CARDS - Padding e spacing mobile
+   ============================================================================ */
+
+@media (max-width: 768px) {
+  /* Cards com padding generoso */
+  .card,
+  .widget,
+  .stat-card,
+  .account-card,
+  .budget-card,
+  .goal-card {
+    padding: 1.25rem !important;
+  }
+
+  /* Card headers */
+  .card-header {
+    padding: 1rem 1.25rem !important;
+    min-height: 60px !important;
+  }
+
+  /* Card actions - touch targets */
+  .card-actions button,
+  .card-header button {
+    min-width: 44px !important;
+    min-height: 44px !important;
+  }
+}
+
+/* ============================================================================
+   9. TABS - Touch friendly
+   ============================================================================ */
+
+@media (max-width: 768px) {
+  /* Tab buttons - altura adequada */
+  .tabs button,
+  [role="tab"] {
+    min-height: 48px !important;
+    padding: 12px 20px !important;
+    font-size: 0.95rem !important;
+  }
+
+  /* Tabs com scroll horizontal em mobile */
+  .tabs {
+    overflow-x: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+    scrollbar-width: thin !important;
+  }
+
+  .tabs::-webkit-scrollbar {
+    height: 4px !important;
+  }
+}
+
+/* ============================================================================
+   10. DARK MODE - Ajustes touch targets
+   ============================================================================ */
+
+[data-theme="dark"] .modal-content,
+[data-theme="dark"] .modal-header,
+[data-theme="dark"] .modal-footer {
+  background: var(--card-bg, #1f2937) !important;
+  border-color: var(--border-color, #374151) !important;
+}
+
+[data-theme="dark"] .transactions-table tbody tr,
+[data-theme="dark"] .table-responsive tbody tr {
+  background: var(--card-bg, #1f2937) !important;
+  border-color: var(--border-color, #374151) !important;
+}
+
+/* ============================================================================
+   11. LANDSCAPE MOBILE - Ajustes específicos
+   ============================================================================ */
+
+@media (max-width: 768px) and (orientation: landscape) {
+  /* Modals landscape - aproveitar largura */
+  .modal-content {
+    max-width: 90% !important;
+    max-height: 90dvh !important;
+    border-radius: 16px !important;
+    margin: auto !important;
+  }
+
+  /* Sidebar collapse automático em landscape */
+  .sidebar {
+    transform: translateX(-100%) !important;
+  }
+
+  .sidebar.open {
+    transform: translateX(0) !important;
+  }
+}
+
+/* ============================================================================
+   12. ACCESSIBILITY - High contrast mode
+   ============================================================================ */
+
+@media (prefers-contrast: high) {
+  /* Touch targets com borda visível */
+  button,
+  input[type="checkbox"],
+  input[type="radio"],
+  .btn {
+    border: 2px solid currentColor !important;
+  }
+
+  /* Increase visible area in high contrast */
+  .modal-close,
+  .keyboard-shortcuts-btn,
+  .sidebar-toggle {
+    border: 3px solid currentColor !important;
+    outline: 2px solid transparent !important;
+    outline-offset: 2px !important;
+  }
+}
+
+/* ============================================================================
+   13. SAFE AREA INSETS - iOS notch/home indicator
+   ============================================================================ */
+
+@supports (padding: max(0px)) {
+  @media (max-width: 768px) {
+    /* Safe area top (notch) */
+    .modal-header,
+    .sidebar-header {
+      padding-top: max(1rem, env(safe-area-inset-top)) !important;
+    }
+
+    /* Safe area bottom (home indicator) */
+    .modal-footer,
+    .sidebar-footer,
+    .mobile-navigation {
+      padding-bottom: max(1rem, env(safe-area-inset-bottom)) !important;
+    }
+
+    /* Safe area left/right (landscape) */
+    .modal-content {
+      padding-left: max(1rem, env(safe-area-inset-left)) !important;
+      padding-right: max(1rem, env(safe-area-inset-right)) !important;
+    }
+  }
+}
+
+/* ============================================================================
+   14. REDUCED MOTION - Respeitar preferências
+   ============================================================================ */
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* ============================================================================
+   FIM - Mobile UX Fixes v3.14.0
+   ============================================================================ */
