@@ -27,7 +27,9 @@
     "analyze:warnings": "tsx scripts/analyze-warnings.ts",
     "fix:warnings": "tsx scripts/fix-warnings.ts",
     "fix:specific": "tsx scripts/fix-specific-warnings.ts",
-    "fix:all": "npm run fix:specific && npm run format && npm run lint"
+    "fix:all": "npm run fix:specific && npm run format && npm run lint",
+    "setup:dev": "tsx scripts/setup-dev.ts",
+    "setup:hooks": "tsx scripts/setup-dev.ts"
   },
   "dependencies": {
     "@sentry/react": "^10.29.0",

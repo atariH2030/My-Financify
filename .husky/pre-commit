@@ -1,0 +1,56 @@
+#!/bin/sh
+# Pre-commit hook para qualidade de código
+# Instalar: npm run setup:hooks
+
+echo "🔍 Running pre-commit quality checks..."
+
+# 1. Verificar arquivos staged
+FILES=$(git diff --cached --name-only --diff-filter=ACM | grep -E '\.(ts|tsx)$')
+
+if [ -z "$FILES" ]; then
+  echo "✅ No TypeScript files to check"
+  exit 0
+fi
+
+echo "📁 Files to check: $(echo $FILES | wc -w)"
+
+# 2. Análise rápida de warnings nos arquivos modificados
+echo ""
+echo "🔧 Running auto-fixes on staged files..."
+
+# Executar fix específico
+npm run fix:specific > /dev/null 2>&1
+
+# 3. Re-adicionar arquivos corrigidos
+for FILE in $FILES; do
+  if [ -f "$FILE" ]; then
+    git add "$FILE"
+  fi
+done
+
+# 4. Verificar TypeScript
+echo ""
+echo "✅ Checking TypeScript..."
+npx tsc --noEmit --pretty false
+
+if [ $? -ne 0 ]; then
+  echo ""
+  echo "❌ TypeScript errors found!"
+  echo "💡 Fix errors and try again, or use --no-verify to skip"
+  exit 1
+fi
+
+# 5. Executar lint nos arquivos staged (não bloquear)
+echo ""
+echo "🧹 Running ESLint..."
+echo $FILES | xargs npx eslint --max-warnings 50 --quiet
+
+if [ $? -ne 0 ]; then
+  echo ""
+  echo "⚠️  ESLint warnings found, but commit will continue"
+  echo "💡 Run 'npm run fix:all' to fix common issues"
+fi
+
+echo ""
+echo "✅ Pre-commit checks passed!"
+exit 0

@@ -1,0 +1,115 @@
+name: Code Quality Check
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
+
+jobs:
+  quality-check:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: 📥 Checkout code
+      uses: actions/checkout@v4
+
+    - name: 📦 Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '22'
+        cache: 'npm'
+
+    - name: 🔧 Install dependencies
+      run: npm ci
+
+    - name: 🔍 Analyze warnings
+      run: npm run analyze:warnings
+      continue-on-error: true
+
+    - name: 📊 Upload warning analysis
+      uses: actions/upload-artifact@v4
+      with:
+        name: warnings-analysis
+        path: docs/warnings-analysis.json
+
+    - name: ✅ Run TypeScript check
+      run: npx tsc --noEmit
+
+    - name: 🧹 Run ESLint
+      run: npm run lint
+      continue-on-error: true
+
+    - name: 📈 Generate quality report
+      run: |
+        echo "## 📊 Code Quality Report" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        
+        # TypeScript errors
+        TS_ERRORS=$(npx tsc --noEmit 2>&1 | grep -c "error TS" || echo "0")
+        echo "- **TypeScript Errors**: $TS_ERRORS" >> $GITHUB_STEP_SUMMARY
+        
+        # ESLint warnings
+        LINT_OUTPUT=$(npm run lint 2>&1 || true)
+        WARNINGS=$(echo "$LINT_OUTPUT" | grep -oP '\d+(?= warnings)' | head -1 || echo "0")
+        ERRORS=$(echo "$LINT_OUTPUT" | grep -oP '\d+(?= errors)' | head -1 || echo "0")
+        echo "- **ESLint Errors**: $ERRORS" >> $GITHUB_STEP_SUMMARY
+        echo "- **ESLint Warnings**: $WARNINGS" >> $GITHUB_STEP_SUMMARY
+        
+        # Warning analysis
+        if [ -f docs/warnings-analysis.json ]; then
+          TOTAL=$(jq '.total' docs/warnings-analysis.json)
+          echo "- **Total Issues**: $TOTAL" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### 🔝 Top Issues" >> $GITHUB_STEP_SUMMARY
+          jq -r '.byRule | to_entries | sort_by(.value) | reverse | .[:5] | .[] | "- \(.key): \(.value)x"' docs/warnings-analysis.json >> $GITHUB_STEP_SUMMARY
+        fi
+
+    - name: 💬 Comment on PR
+      if: github.event_name == 'pull_request'
+      uses: actions/github-script@v7
+      with:
+        script: |
+          const fs = require('fs');
+          
+          let comment = '## 🤖 Automated Code Quality Report\n\n';
+          
+          if (fs.existsSync('docs/warnings-analysis.json')) {
+            const analysis = JSON.parse(fs.readFileSync('docs/warnings-analysis.json', 'utf8'));
+            
+            comment += `### 📊 Summary\n`;
+            comment += `- **Total Warnings**: ${analysis.total}\n\n`;
+            
+            comment += `### 🔝 Top 5 Issues\n`;
+            const topIssues = Object.entries(analysis.byRule)
+              .sort((a, b) => b[1] - a[1])
+              .slice(0, 5);
+            
+            for (const [rule, count] of topIssues) {
+              comment += `- \`${rule}\`: ${count}x\n`;
+            }
+            
+            comment += `\n### 📁 Files Needing Attention\n`;
+            const topFiles = analysis.topFiles.slice(0, 5);
+            for (const file of topFiles) {
+              comment += `- ${file.file}: ${file.warnings} warnings\n`;
+            }
+            
+            comment += `\n💡 Run \`npm run fix:all\` to auto-fix common issues.`;
+          }
+          
+          github.rest.issues.createComment({
+            issue_number: context.issue.number,
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            body: comment
+          });
+
+    - name: ❌ Fail if critical errors
+      run: |
+        # Falhar apenas se houver erros TypeScript
+        if npx tsc --noEmit 2>&1 | grep -q "error TS"; then
+          echo "❌ TypeScript errors found!"
+          exit 1
+        fi
+        echo "✅ No critical errors found"
