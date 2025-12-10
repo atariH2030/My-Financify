@@ -68,7 +68,7 @@ const getPlanLabel = (plan: PlanType): string => {
 // COMPONENT
 // ===========================
 
-export const WorkspaceSwitcher: React.FC<WorkspaceSwitcherProps> = ({ onCreateNew }) => {
+export const WorkspaceSwitcher: React.FC<WorkspaceSwitcherProps> = ({ onCreateNew: _onCreateNew }) => {
   const { activeWorkspace, workspaces, setActiveWorkspace } = useWorkspace();
   const [isOpen, setIsOpen] = useState(false);
   const [showCreateModal, setShowCreateModal] = useState(false);

@@ -8,21 +8,21 @@
 
 import { supabase } from '../config/supabase.config';
 import { Logger } from './logger.service';
-import type {
-  Workspace,
-  WorkspaceMember,
-  WorkspaceInvite,
-  WorkspaceWithMembers,
-  CreateWorkspaceRequest,
-  UpdateWorkspaceRequest,
-  InviteMemberRequest,
-  UpdateMemberRoleRequest,
-  AcceptInviteRequest,
-  MemberRole,
-  Permission,
-  WorkspaceSettings
+import {
+  hasPermission,
+  type Workspace,
+  type WorkspaceMember,
+  type WorkspaceInvite,
+  type WorkspaceWithMembers,
+  type CreateWorkspaceRequest,
+  type UpdateWorkspaceRequest,
+  type InviteMemberRequest,
+  type UpdateMemberRoleRequest,
+  type AcceptInviteRequest,
+  type MemberRole,
+  type Permission,
+  type WorkspaceSettings
 } from '../types/workspace.types';
-import { hasPermission } from '../types/workspace.types';
 
 // ============================================================================
 // INTERFACES DE RESPOSTA
@@ -194,7 +194,11 @@ class WorkspaceService {
       }
 
       const mappedMembers = (members || []).map(m => this.mapMember(m));
-      const owner = mappedMembers.find(m => m.role === 'owner')!;
+      const owner = mappedMembers.find(m => m.role === 'owner');
+
+      if (!owner) {
+        throw new Error('Workspace owner not found');
+      }
 
       return {
         success: true,
@@ -595,6 +599,137 @@ class WorkspaceService {
   clearCurrentWorkspace(): void {
     this.currentWorkspaceId = null;
     localStorage.removeItem('current_workspace_id');
+  }
+
+  /**
+   * Busca todos os workspaces de um usuário
+   */
+  async getUserWorkspaces(userId: string): Promise<Workspace[]> {
+    try {
+      const { data, error } = await supabase
+        .from('workspaces')
+        .select('*')
+        .or(`owner_id.eq.${userId},id.in.(select workspace_id from workspace_members where user_id='${userId}' and removed_at is null)`)
+        .is('deleted_at', null)
+        .order('created_at', { ascending: false });
+
+      if (error) {
+        throw error;
+      }
+
+      return (data || []).map(w => this.mapWorkspace(w));
+    } catch (error) {
+      this.logger.error('WORKSPACE', error as Error);
+      return [];
+    }
+  }
+
+  /**
+   * Busca membros de um workspace
+   */
+  async getWorkspaceMembers(workspaceId: string): Promise<WorkspaceMember[]> {
+    try {
+      const { data, error } = await supabase
+        .from('workspace_members')
+        .select(`
+          *,
+          user:users!inner(
+            id,
+            email,
+            user_profiles(full_name, avatar_url)
+          )
+        `)
+        .eq('workspace_id', workspaceId)
+        .is('removed_at', null)
+        .order('joined_at', { ascending: true });
+
+      if (error) {
+        throw error;
+      }
+
+      return (data || []).map(m => this.mapMember(m));
+    } catch (error) {
+      this.logger.error('WORKSPACE', error as Error);
+      return [];
+    }
+  }
+
+  /**
+   * Busca convites pendentes de um workspace
+   */
+  async getWorkspaceInvites(workspaceId: string): Promise<WorkspaceInvite[]> {
+    try {
+      const { data, error } = await supabase
+        .from('workspace_invites')
+        .select('*')
+        .eq('workspace_id', workspaceId)
+        .eq('status', 'pending')
+        .order('created_at', { ascending: false });
+
+      if (error) {
+        throw error;
+      }
+
+      return (data || []).map(inv => this.mapInvite(inv));
+    } catch (error) {
+      this.logger.error('WORKSPACE', error as Error);
+      return [];
+    }
+  }
+
+  /**
+   * Recusa convite
+   */
+  async declineInvite(token: string): Promise<ServiceResponse<void>> {
+    try {
+      const { error } = await supabase
+        .from('workspace_invites')
+        .update({
+          status: 'declined',
+          declined_at: new Date().toISOString()
+        })
+        .eq('token', token);
+
+      if (error) {
+        throw error;
+      }
+
+      this.logger.info('WORKSPACE', `Invite declined: ${token}`);
+
+      return { success: true };
+    } catch (error) {
+      this.logger.error('WORKSPACE', error as Error);
+      return {
+        success: false,
+        error: 'Erro ao recusar convite'
+      };
+    }
+  }
+
+  /**
+   * Cancela convite pendente
+   */
+  async cancelInvite(inviteId: string): Promise<ServiceResponse<void>> {
+    try {
+      const { error } = await supabase
+        .from('workspace_invites')
+        .delete()
+        .eq('id', inviteId);
+
+      if (error) {
+        throw error;
+      }
+
+      this.logger.info('WORKSPACE', `Invite cancelled: ${inviteId}`);
+
+      return { success: true };
+    } catch (error) {
+      this.logger.error('WORKSPACE', error as Error);
+      return {
+        success: false,
+        error: 'Erro ao cancelar convite'
+      };
+    }
   }
 
   // ==========================================================================

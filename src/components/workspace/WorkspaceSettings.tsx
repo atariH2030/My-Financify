@@ -12,11 +12,10 @@
  * @version 3.15.0
  */
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
 import { useWorkspace } from '../../contexts/WorkspaceContext';
 import WorkspaceService from '../../services/workspace.service';
-import Logger from '../../services/logger.service';
 import InviteMemberModal from './InviteMemberModal';
 import { 
   MemberRole, 
@@ -41,16 +40,7 @@ export const WorkspaceSettings: React.FC = () => {
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
 
-  // Carregar dados do workspace
-  useEffect(() => {
-    if (activeWorkspace) {
-      setName(activeWorkspace.name);
-      setDescription(activeWorkspace.description || '');
-      loadMembers();
-    }
-  }, [activeWorkspace?.id]);
-
-  const loadMembers = async () => {
+  const loadMembers = useCallback(async () => {
     if (!activeWorkspace?.id) return;
 
     try {
@@ -58,15 +48,25 @@ export const WorkspaceSettings: React.FC = () => {
       const response = await WorkspaceService.getWorkspace(activeWorkspace.id);
       
       if (response.success && response.data) {
-        // TODO: Carregar membros via service quando método estiver disponível
-        Logger.info('WorkspaceSettings', 'Membros carregados');
+        setMembers(response.data.members);
+      } else {
+        setError(response.error || 'Erro ao carregar membros');
       }
     } catch (err) {
-      Logger.error('Erro ao carregar membros', err instanceof Error ? err : undefined);
+      setError(err instanceof Error ? err.message : 'Erro ao carregar membros');
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [activeWorkspace?.id]);
+
+  // Carregar dados do workspace
+  useEffect(() => {
+    if (activeWorkspace) {
+      setName(activeWorkspace.name);
+      setDescription(activeWorkspace.description || '');
+      loadMembers();
+    }
+  }, [activeWorkspace, loadMembers]);
 
   const handleSaveBasicInfo = async (e: React.FormEvent) => {
     e.preventDefault();
