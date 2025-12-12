@@ -5,6 +5,7 @@
  */
 
 /* ===== IMPORT DESIGN SYSTEM ===== */
+@import './design-tokens.css'; /* 🆕 v3.17.0 - Sistema unificado */
 @import './legacy-assets.css';
 @import './accessibility.css';
 @import './accessible-colors.css';
