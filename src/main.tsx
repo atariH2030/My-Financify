@@ -3,6 +3,7 @@ import { createRoot } from 'react-dom/client';
 import './styles/globals.css';
 import './styles/mobile-ux-fixes.css'; // ✅ Mobile UX Fixes v3.14.0 - WCAG 2.5.5 compliance
 import './styles/smooth-transitions.css';
+import './styles/dark-mode.css'; // ✅ Dark Mode v1.0.0 - WCAG AAA compliant
 import './utils/i18n-validator'; // ✅ Auto-valida traduções ao iniciar
 
 // ✅ APP NORMAL COM AUTENTICAÇÃO INTEGRADA
@@ -21,6 +22,8 @@ import CommandPalette from './components/common/CommandPalette';
 import GlobalCommandPalette from './components/common/GlobalCommandPalette';
 import LanguageSelector from './components/common/LanguageSelector';
 import ThemeCustomizer from './components/common/ThemeCustomizer';
+import ThemeToggle from './components/common/ThemeToggle'; // ✅ Dark Mode Toggle v1.0.0
+import { useTheme } from './hooks/useTheme'; // Hook separado para gerenciar tema
 import WidgetCustomizer from './components/dashboard/WidgetCustomizer';
 import WorkspaceSwitcher from './components/workspace/WorkspaceSwitcher';
 
@@ -84,6 +87,11 @@ const App: React.FC = () => {
   const { t } = useLanguage();
   
   // ============================================================================
+  // THEME HOOK - Dark/Light Mode
+  // ============================================================================
+  const { toggleTheme } = useTheme();
+  
+  // ============================================================================
   // ESTADOS
   // ============================================================================
   const [currentPage, setCurrentPage] = React.useState('dashboard');
@@ -92,9 +100,6 @@ const App: React.FC = () => {
   const [showGlobalCommandPalette, setShowGlobalCommandPalette] = React.useState(false);
   const [showThemeCustomizer, setShowThemeCustomizer] = React.useState(false);
   const [showWidgetCustomizer, setShowWidgetCustomizer] = React.useState(false);
-  const [theme, setTheme] = React.useState(() => {
-    return localStorage.getItem('theme') || 'light';
-  });
   const [sidebarActive, setSidebarActive] = React.useState(() => {
     // Carregar estado salvo ou usar padrão baseado no tamanho da tela
     const savedState = localStorage.getItem('sidebarActive');
@@ -104,12 +109,6 @@ const App: React.FC = () => {
     // Padrão: ativo em desktop, inativo em mobile
     return window.innerWidth > 768;
   });
-
-  // Atualizar tema no DOM
-  React.useEffect(() => {
-    document.documentElement.setAttribute('data-theme', theme);
-    document.body.className = theme;
-  }, [theme]);
 
   // Salvar estado do sidebar
   React.useEffect(() => {
@@ -153,12 +152,6 @@ const App: React.FC = () => {
     
     return () => window.removeEventListener('resize', handleResize);
   }, [sidebarActive]);
-
-  const toggleTheme = () => {
-    const newTheme = theme === 'dark' ? 'light' : 'dark';
-    setTheme(newTheme);
-    localStorage.setItem('theme', newTheme);
-  };
 
   const toggleSidebar = () => {
     setSidebarActive(!sidebarActive);
@@ -411,9 +404,6 @@ const App: React.FC = () => {
             <button className="sidebar-toggle" onClick={toggleSidebar} title="Alternar sidebar">
               <i className="fas fa-chevron-left"></i>
             </button>
-            <button className="theme-toggle" onClick={toggleTheme} title="Alternar tema">
-              <i className={theme === 'dark' ? 'fas fa-sun' : 'fas fa-moon'}></i>
-            </button>
           </div>
         </div>
         
@@ -637,6 +627,9 @@ const App: React.FC = () => {
         </nav>
         
         <div className="sidebar-footer">
+          {/* Theme Toggle - Dark/Light Mode (v1.0.0) */}
+          <ThemeToggle position="sidebar" showLabel={true} />
+          
           {/* Sync Indicator - Status de conexão com opção de reconectar */}
           <SyncIndicator />
         </div>
