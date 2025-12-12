@@ -317,7 +317,7 @@
 .transactions-list {
   width: 100%;
   border-collapse: collapse;
-  table-layout: auto;
+  table-layout: fixed;
   min-width: 100%;
 }
 
@@ -432,15 +432,18 @@
 .transactions-list th.sortable:hover {
   color: var(--primary, #3b82f6);
   background: var(--input-hover-bg, #f3f4f6);
+  box-shadow: var(--elevation-1);
 }
 
 .transactions-list tbody tr {
   border-bottom: 1px solid var(--border-color, #e5e7eb);
-  transition: all 0.2s ease;
+  transition: all var(--transition-base);
 }
 
 .transactions-list tbody tr:hover {
   background: var(--bg-secondary, #f9fafb);
+  box-shadow: var(--elevation-2);
+  transform: translateX(2px);
 }
 
 .transactions-list tbody tr.income {

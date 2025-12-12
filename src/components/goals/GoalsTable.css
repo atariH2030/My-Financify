@@ -172,14 +172,15 @@
 .goal-card {
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-lg);
-  padding: var(--spacing-xl) !important;
-  transition: all 0.3s ease;
+  gap: var(--spacing-6);
+  padding: var(--card-padding-md) !important;
+  transition: all var(--transition-base);
+  border-radius: var(--card-radius);
 }
 
 .goal-card:hover {
   transform: translateY(-4px);
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+  box-shadow: var(--elevation-3);
 }
 
 .goal-header {
@@ -311,14 +312,19 @@
 .goal-progress-bar {
   height: 12px;
   background: var(--bg-tertiary);
-  border-radius: 999px;
+  border-radius: var(--border-radius-full);
   overflow: hidden;
+  cursor: pointer;
+  min-height: var(--touch-target-min);
+  display: flex;
+  align-items: center;
+  padding: var(--spacing-4) 0;
 }
 
 .goal-progress-fill {
-  height: 100%;
-  border-radius: 999px;
-  transition: width 0.5s ease, background-color 0.3s ease;
+  height: 12px;
+  border-radius: var(--border-radius-full);
+  transition: width var(--transition-slow), background-color var(--transition-base);
 }
 
 .goal-amounts {

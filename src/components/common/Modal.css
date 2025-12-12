@@ -11,9 +11,9 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 1100;
-  padding: 1rem;
-  animation: fadeIn 0.2s ease;
+  z-index: var(--z-modal-backdrop);
+  padding: var(--spacing-4);
+  animation: fadeIn var(--transition-base);
 }
 
 @keyframes fadeIn {
@@ -28,13 +28,14 @@
 /* === MODAL CONTAINER === */
 .modal {
   background: var(--card-bg, #ffffff);
-  border-radius: var(--border-radius-lg, 12px);
-  box-shadow: var(--shadow-xl, 0 20px 25px rgba(0, 0, 0, 0.15));
+  border-radius: var(--card-radius);
+  box-shadow: var(--elevation-4);
   display: flex;
   flex-direction: column;
-  max-height: calc(100vh - 2rem);
-  animation: slideUp 0.3s ease;
+  max-height: calc(100vh - var(--spacing-8));
+  animation: slideUp var(--transition-base);
   width: 100%;
+  z-index: var(--z-modal);
 }
 
 @keyframes slideUp {
@@ -70,32 +71,32 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 1.5rem;
+  padding: var(--card-padding-md);
   border-bottom: 1px solid var(--border-color, #e5e7eb);
   flex-shrink: 0;
 }
 
 .modal-title {
-  font-size: 1.25rem;
-  font-weight: 600;
+  font-size: var(--font-size-xl);
+  font-weight: var(--font-weight-semibold);
   color: var(--text-primary, #1f2937);
   margin: 0;
-  line-height: 1.4;
+  line-height: var(--line-height-tight);
 }
 
 .modal-close {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 32px;
-  height: 32px;
+  width: var(--touch-target-min);
+  height: var(--touch-target-min);
   border: none;
   background: transparent;
   color: var(--text-secondary, #6b7280);
   cursor: pointer;
-  border-radius: var(--border-radius-md, 8px);
-  transition: all var(--transition-base, 0.2s ease);
-  font-size: 1.25rem;
+  border-radius: var(--button-radius);
+  transition: all var(--transition-base);
+  font-size: var(--font-size-xl);
   flex-shrink: 0;
 }
 
@@ -111,7 +112,7 @@
 
 /* === BODY === */
 .modal-body {
-  padding: 1.5rem;
+  padding: var(--card-padding-md);
   overflow-y: auto;
   flex: 1;
 }
@@ -121,8 +122,8 @@
   display: flex;
   align-items: center;
   justify-content: flex-end;
-  gap: 0.75rem;
-  padding: 1.5rem;
+  gap: var(--spacing-3);
+  padding: var(--card-padding-md);
   border-top: 1px solid var(--border-color, #e5e7eb);
   flex-shrink: 0;
 }

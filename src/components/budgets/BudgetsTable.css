@@ -109,13 +109,13 @@
 .budget-card {
   background-color: var(--bg-secondary);
   border: 1px solid var(--border-color);
-  border-radius: var(--radius-lg);
-  padding: var(--spacing-lg);
-  transition: all 0.3s ease;
+  border-radius: var(--card-radius);
+  padding: var(--card-padding-md);
+  transition: all var(--transition-base);
 }
 
 .budget-card:hover {
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--elevation-2);
   transform: translateX(4px);
 }
 
@@ -179,14 +179,19 @@
 }
 
 .icon-button {
-  padding: var(--spacing-sm);
+  padding: var(--spacing-3);
   background: none;
   border: 1px solid var(--border-color);
-  border-radius: var(--radius-md);
+  border-radius: var(--button-radius);
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: all var(--transition-base);
   color: var(--text-secondary);
   font-size: 1rem;
+  min-width: var(--touch-target-min);
+  min-height: var(--touch-target-min);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .icon-button:hover {
@@ -240,9 +245,9 @@
 .progress-bar-container {
   height: 24px;
   background-color: var(--bg-primary);
-  border-radius: var(--radius-md);
+  border-radius: var(--button-radius);
   overflow: hidden;
-  border: 1px solid var(--border-color);
+  border: 1px solid var(--border-light);
   position: relative;
 }
 
