@@ -1,26 +1,26 @@
 import React, { lazy, Suspense } from 'react';
 import { createRoot } from 'react-dom/client';
 import './styles/globals.css';
-import './styles/smooth-transitions.css';
 import './styles/mobile-ux-fixes.css'; // ✅ Mobile UX Fixes v3.14.0 - WCAG 2.5.5 compliance
+import './styles/smooth-transitions.css';
 import './utils/i18n-validator'; // ✅ Auto-valida traduções ao iniciar
 
 // ✅ APP NORMAL COM AUTENTICAÇÃO INTEGRADA
-import { AuthProvider } from './contexts/AuthContext';
-import { WorkspaceProvider } from './contexts/WorkspaceContext';
-import { LanguageProvider, useLanguage } from './contexts/LanguageContext';
 import ProtectedRoute from './components/auth/ProtectedRoute';
 import UserHeader from './components/auth/UserHeader';
-import OnlineStatus from './components/common/OnlineStatus';
-import SyncIndicator from './components/common/SyncIndicator';
 import AIChatButton from './components/common/AIChatButton';
+import { HealthIndicator } from './components/common/HealthIndicator';
+import SyncIndicator from './components/common/SyncIndicator';
+import { AuthProvider } from './contexts/AuthContext';
+import { LanguageProvider, useLanguage } from './contexts/LanguageContext';
+import { WorkspaceProvider } from './contexts/WorkspaceContext';
 
 // Core Components (carregados imediatamente)
-import {ErrorBoundary, ToastProvider, ToastEnhancedProvider, useKeyboardShortcuts, KeyboardShortcutsHelp, type KeyboardShortcut} from './components/common';
+import { ErrorBoundary, KeyboardShortcutsHelp, ToastEnhancedProvider, ToastProvider, useKeyboardShortcuts, type KeyboardShortcut } from './components/common';
 import CommandPalette from './components/common/CommandPalette';
 import GlobalCommandPalette from './components/common/GlobalCommandPalette';
-import ThemeCustomizer from './components/common/ThemeCustomizer';
 import LanguageSelector from './components/common/LanguageSelector';
+import ThemeCustomizer from './components/common/ThemeCustomizer';
 import WidgetCustomizer from './components/dashboard/WidgetCustomizer';
 import WorkspaceSwitcher from './components/workspace/WorkspaceSwitcher';
 
@@ -41,10 +41,10 @@ const Fase2Example = lazy(() => import('./components/common/Fase2Example'));
 const AIAnalyticsDashboard = lazy(() => import('./components/analytics/AIAnalyticsDashboard'));
 const WorkspaceSettings = lazy(() => import('./components/workspace/WorkspaceSettings'));
 
-import Logger from './services/logger.service';
-import Seeder from './services/seeder.service';
-import MigrationService from './services/migration.service';
 import AnalyticsService from './services/analytics.service';
+import Logger from './services/logger.service';
+import MigrationService from './services/migration.service';
+import Seeder from './services/seeder.service';
 import { sentry } from './services/sentry.service';
 // Inicializa Supabase
 import './config/supabase.config';
@@ -698,6 +698,7 @@ const App: React.FC = () => {
 
       {/* AI Chat Button - Canto inferior direito */}
       <AIChatButton />
+      <HealthIndicator />
     </>
   );
 };

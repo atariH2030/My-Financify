@@ -4,8 +4,8 @@
  * Fallback automático em caso de falha
  */
 
-import { Logger } from './logger.service';
-import { supabase } from '../config/supabase';
+import { supabase } from '../config/supabase.config';
+import Logger from './logger.service';
 
 export interface HealthStatus {
   service: string;
@@ -33,7 +33,7 @@ class HealthCheckService {
     const start = performance.now();
     
     try {
-      const { data, error } = await supabase
+      const { error } = await supabase
         .from('users')
         .select('id')
         .limit(1)
@@ -55,7 +55,7 @@ class HealthCheckService {
       this.healthCache.set('supabase', status);
       return status;
     } catch (error) {
-      Logger.error('Supabase health check failed', error);
+      Logger.error('Supabase health check failed', error as Error);
       
       const status: HealthStatus = {
         service: 'supabase',
@@ -86,7 +86,7 @@ class HealthCheckService {
       this.healthCache.set('sentry', status);
       return status;
     } catch (error) {
-      Logger.error('Sentry health check failed', error);
+      Logger.error('Sentry health check failed', error as Error);
       
       const status: HealthStatus = {
         service: 'sentry',
@@ -160,7 +160,7 @@ class HealthCheckService {
       this.healthCache.set('indexeddb', status);
       return status;
     } catch (error) {
-      Logger.error('IndexedDB health check failed', error);
+      Logger.error('IndexedDB health check failed', error as Error);
       
       const status: HealthStatus = {
         service: 'indexeddb',
@@ -213,7 +213,7 @@ class HealthCheckService {
         lastCheck: new Date(),
       };
     } catch (error) {
-      Logger.error('System health check failed', error);
+      Logger.error('System health check failed', error as Error);
       
       return {
         overall: 'critical',

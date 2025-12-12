@@ -1,10 +1,13 @@
 import React, { useEffect, useState } from 'react';
-import { healthCheck, type SystemHealth } from '../services/health-check.service';
-import '../styles/health-indicator.css';
+import { healthCheck, type SystemHealth } from '../../services/health-check.service';
+import '../../styles/health-indicator.css';
 
 export const HealthIndicator: React.FC = () => {
   const [health, setHealth] = useState<SystemHealth | null>(null);
   const [isExpanded, setIsExpanded] = useState(false);
+
+  // 🔒 Visível APENAS em desenvolvimento
+  const isDevelopment = import.meta.env.MODE === 'development';
 
   useEffect(() => {
     // Check inicial
@@ -25,6 +28,8 @@ export const HealthIndicator: React.FC = () => {
     };
   }, []);
 
+  // Não renderizar em produção
+  if (!isDevelopment) return null;
   if (!health) return null;
 
   const getStatusColor = (status: string) => {

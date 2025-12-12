@@ -1,10 +1,11 @@
 /* Health Indicator Component Styles */
+/* 🔒 Visível APENAS em modo desenvolvimento */
 
 .health-indicator {
   position: fixed;
-  bottom: 20px;
-  right: 20px;
-  z-index: 1000;
+  bottom: 92px; /* Acima do chat bot (56px botão + 24px espaço + 12px margem) */
+  right: 24px;
+  z-index: 999; /* Abaixo do chat bot (1000) */
 }
 
 .health-indicator__toggle {
