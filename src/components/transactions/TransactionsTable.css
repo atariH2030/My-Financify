@@ -741,23 +741,26 @@
 /* Tablets portrait e telas muito divididas (600px - 768px) */
 @media (max-width: 768px) {
   .table-filters {
-    padding: 16px;
+    padding: var(--spacing-4);
+    flex-direction: column;
+    gap: var(--spacing-3);
   }
 
   .table-summary {
     grid-template-columns: 1fr 1fr;
+    gap: var(--spacing-3);
   }
 
   .section-header {
-    padding: 14px 16px;
+    padding: var(--spacing-4);
   }
 
   .section-info {
-    gap: 10px;
+    gap: var(--spacing-3);
   }
 
   .section-name {
-    font-size: 15px;
+    font-size: var(--font-size-sm);
   }
 
   /* Esconder colunas menos importantes em telas pequenas */
@@ -779,6 +782,10 @@
 
 /* Mobile (menos de 600px) - Transforma em cards */
 @media (max-width: 600px) {
+  .transactions-container {
+    padding: var(--spacing-3);
+  }
+
   /* Tabela responsiva - cards no mobile */
   .transactions-list {
     display: block;
@@ -794,10 +801,12 @@
 
   .transactions-list tr {
     display: block;
-    margin-bottom: 16px;
-    border-radius: 10px;
+    margin-bottom: var(--spacing-4);
+    border-radius: var(--card-radius);
     border: 2px solid var(--border-color, #e5e7eb);
-    padding: 16px;
+    padding: var(--spacing-4);
+    box-shadow: var(--elevation-1);
+  }
     background: var(--card-bg, #ffffff);
   }
 

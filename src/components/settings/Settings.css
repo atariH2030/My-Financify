@@ -1,17 +1,17 @@
 .settings-page {
-  padding: var(--spacing-xl);
-  max-width: 1400px;
+  padding: var(--spacing-6);
+  max-width: var(--content-max-width);
   margin: 0 auto;
 }
 
 .page-header h1 {
-  font-size: 2rem;
-  font-weight: 700;
+  font-size: var(--font-size-3xl);
+  font-weight: var(--font-weight-bold);
   color: var(--text-primary);
-  margin: 0 0 var(--spacing-xs);
+  margin: 0 0 var(--spacing-1);
   display: flex;
   align-items: center;
-  gap: var(--spacing-md);
+  gap: var(--spacing-4);
 }
 
 .page-header h1 i {
@@ -36,8 +36,8 @@
 .settings-container {
   display: grid;
   grid-template-columns: 250px 1fr;
-  gap: var(--spacing-xl);
-  margin-top: var(--spacing-xl);
+  gap: var(--spacing-6);
+  margin-top: var(--spacing-6);
 }
 
 /* Tabs */
@@ -50,29 +50,32 @@
 .tab {
   display: flex;
   align-items: center;
-  gap: var(--spacing-md);
-  padding: var(--spacing-md);
+  gap: var(--spacing-3);
+  padding: var(--spacing-3) var(--spacing-4);
   background: var(--bg-secondary);
   border: 2px solid transparent;
-  border-radius: var(--radius-md);
+  border-radius: var(--button-radius);
   color: var(--text-secondary);
-  font-size: 0.95rem;
-  font-weight: 500;
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: all var(--transition-base);
   text-align: left;
+  min-height: var(--touch-target-min);
 }
 
 .tab:hover {
   background: var(--bg-tertiary);
   color: var(--text-primary);
   transform: translateX(4px);
+  box-shadow: var(--elevation-1);
 }
 
 .tab.active {
   background: var(--primary);
   color: white;
   border-color: var(--primary);
+  font-weight: var(--font-weight-semibold);
 }
 
 .tab i {
@@ -87,17 +90,17 @@
 }
 
 .settings-card {
-  padding: var(--spacing-xl);
+  padding: var(--card-padding-md);
 }
 
 .settings-card h2 {
-  font-size: 1.5rem;
-  font-weight: 700;
+  font-size: var(--font-size-2xl);
+  font-weight: var(--font-weight-bold);
   color: var(--text-primary);
-  margin: 0 0 var(--spacing-lg);
+  margin: 0 0 var(--spacing-6);
   display: flex;
   align-items: center;
-  gap: var(--spacing-md);
+  gap: var(--spacing-4);
 }
 
 .settings-card h2 i {
@@ -111,22 +114,23 @@
 
 .form-group label {
   display: block;
-  font-weight: 600;
+  font-weight: var(--font-weight-semibold);
   color: var(--text-primary);
-  margin-bottom: var(--spacing-sm);
-  font-size: 0.9rem;
+  margin-bottom: var(--spacing-2);
+  font-size: var(--font-size-sm);
 }
 
 .select-input {
   width: 100%;
-  padding: var(--spacing-sm) var(--spacing-md);
+  padding: var(--spacing-3) var(--spacing-4);
   border: 1px solid var(--border-color);
-  border-radius: var(--radius-md);
+  border-radius: var(--button-radius);
   background: var(--bg-primary);
   color: var(--text-primary);
-  font-size: 0.95rem;
+  font-size: var(--font-size-sm);
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: all var(--transition-base);
+  min-height: var(--touch-target-min);
 }
 
 .select-input:hover {
@@ -151,10 +155,11 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: var(--spacing-md);
+  padding: var(--spacing-4);
   background: var(--bg-secondary);
-  border-radius: var(--radius-md);
-  border: 1px solid var(--border-color);
+  border-radius: var(--card-radius);
+  border: 1px solid var(--border-light);
+  min-height: var(--touch-target-min);
 }
 
 .setting-info h4 {
@@ -173,9 +178,10 @@
 /* Toggle Switch */
 .toggle {
   position: relative;
-  display: inline-block;
-  width: 50px;
-  height: 26px;
+  display: inline-flex;
+  align-items: center;
+  width: 56px;
+  height: var(--touch-target-min);
 }
 
 .toggle input {
@@ -187,25 +193,27 @@
 .slider {
   position: absolute;
   cursor: pointer;
-  top: 0;
+  top: 50%;
+  transform: translateY(-50%);
   left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: #ccc;
-  border-radius: 26px;
-  transition: 0.3s;
+  width: 56px;
+  height: 28px;
+  background-color: var(--border-medium);
+  border-radius: var(--border-radius-full);
+  transition: background-color var(--transition-base);
 }
 
 .slider:before {
   position: absolute;
   content: "";
-  height: 20px;
-  width: 20px;
+  height: 22px;
+  width: 22px;
   left: 3px;
-  bottom: 3px;
+  top: 3px;
   background-color: white;
   border-radius: 50%;
-  transition: 0.3s;
+  transition: transform var(--transition-base);
+  box-shadow: var(--elevation-1);
 }
 
 .toggle input:checked + .slider {
@@ -527,7 +535,45 @@
 }
 
 /* Responsivo */
+@media (max-width: 1024px) {
+  .settings-container {
+    grid-template-columns: 200px 1fr;
+    gap: var(--spacing-4);
+  }
+}
+
 @media (max-width: 768px) {
+  .settings-page {
+    padding: var(--spacing-4);
+  }
+
+  .settings-container {
+    grid-template-columns: 1fr;
+    gap: var(--spacing-6);
+  }
+
+  .settings-tabs {
+    flex-direction: row;
+    overflow-x: auto;
+    gap: var(--spacing-2);
+    padding-bottom: var(--spacing-2);
+  }
+
+  .tab {
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  .settings-card {
+    padding: var(--spacing-4);
+  }
+
+  .setting-item {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--spacing-3);
+  }
+
   .button-group {
     flex-direction: column;
   }

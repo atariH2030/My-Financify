@@ -435,16 +435,23 @@
   .stat-card-wide {
     grid-column: span 1;
   }
+
+  .goals-grid {
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  }
 }
 
 @media (max-width: 768px) {
   .goals-stats {
     grid-template-columns: 1fr;
+    gap: var(--spacing-4);
   }
 
   .goals-filters {
     flex-direction: column;
     align-items: stretch;
+    padding: var(--spacing-4);
+    gap: var(--spacing-3);
   }
 
   .filters-left {
@@ -461,6 +468,11 @@
 
   .goals-grid {
     grid-template-columns: 1fr;
+    gap: var(--spacing-4);
+  }
+
+  .goal-card {
+    padding: var(--spacing-4) !important;
   }
 
   .goal-actions {
