@@ -1,0 +1,237 @@
+/**
+ * @file LoadingSkeleton.css
+ * @description Estilos de loading skeleton otimizados para performance
+ * @version 1.0.0
+ * @author DEV - Rickson (TQM)
+ * 
+ * Otimizações:
+ * - Usa transform/opacity (GPU-accelerated)
+ * - Evita layout thrashing
+ * - Design tokens compliance
+ * - Respeita prefers-reduced-motion
+ */
+
+/* ===== Base Skeleton ===== */
+.skeleton {
+  background: linear-gradient(
+    90deg,
+    var(--bg-secondary) 0%,
+    var(--bg-tertiary) 50%,
+    var(--bg-secondary) 100%
+  );
+  background-size: 200% 100%;
+  border-radius: var(--border-radius-md);
+  animation: skeleton-loading 1.5s ease-in-out infinite;
+  will-change: background-position;
+}
+
+@keyframes skeleton-loading {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+/* Respeitar prefers-reduced-motion */
+@media (prefers-reduced-motion: reduce) {
+  .skeleton {
+    animation: none;
+    opacity: 0.6;
+  }
+}
+
+/* ===== Variantes de Tamanho ===== */
+.skeleton-text {
+  height: var(--font-size-base);
+  width: 100%;
+  margin-bottom: var(--spacing-2);
+}
+
+.skeleton-text-sm {
+  height: var(--font-size-sm);
+  width: 80%;
+}
+
+.skeleton-title {
+  height: var(--font-size-2xl);
+  width: 60%;
+  margin-bottom: var(--spacing-4);
+}
+
+.skeleton-subtitle {
+  height: var(--font-size-base);
+  width: 40%;
+}
+
+.skeleton-avatar {
+  width: 48px;
+  height: 48px;
+  border-radius: var(--border-radius-full);
+  flex-shrink: 0;
+}
+
+.skeleton-avatar-sm {
+  width: 32px;
+  height: 32px;
+  border-radius: var(--border-radius-full);
+  flex-shrink: 0;
+}
+
+.skeleton-button {
+  height: var(--touch-target-min);
+  width: 120px;
+  border-radius: var(--button-radius);
+}
+
+.skeleton-card {
+  height: 200px;
+  width: 100%;
+  border-radius: var(--card-radius);
+  box-shadow: var(--elevation-1);
+}
+
+/* ===== Page Skeleton ===== */
+.skeleton-page {
+  padding: var(--spacing-6);
+  max-width: var(--content-max-width);
+  margin: 0 auto;
+}
+
+.skeleton-header {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-4);
+  margin-bottom: var(--spacing-8);
+}
+
+.skeleton-header-text {
+  flex: 1;
+}
+
+.skeleton-content {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: var(--spacing-6);
+}
+
+/* ===== Table Skeleton ===== */
+.skeleton-table {
+  width: 100%;
+  border-radius: var(--card-radius);
+  overflow: hidden;
+  background: var(--card-bg);
+  border: 1px solid var(--border-light);
+}
+
+.skeleton-table-header {
+  height: 56px;
+  background: linear-gradient(
+    90deg,
+    var(--bg-tertiary) 0%,
+    var(--bg-secondary) 50%,
+    var(--bg-tertiary) 100%
+  );
+  background-size: 200% 100%;
+  animation: skeleton-loading 1.5s ease-in-out infinite;
+  border-bottom: 1px solid var(--border-light);
+}
+
+.skeleton-table-row {
+  height: 60px;
+  margin: var(--spacing-2) var(--spacing-4);
+  border-radius: var(--border-radius-md);
+  animation-delay: calc(var(--index, 0) * 0.1s);
+}
+
+.skeleton-table-row:nth-child(2) { --index: 1; }
+.skeleton-table-row:nth-child(3) { --index: 2; }
+.skeleton-table-row:nth-child(4) { --index: 3; }
+.skeleton-table-row:nth-child(5) { --index: 4; }
+.skeleton-table-row:nth-child(6) { --index: 5; }
+
+/* ===== List Skeleton ===== */
+.skeleton-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-3);
+}
+
+.skeleton-list-item {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-3);
+  padding: var(--spacing-4);
+  background: var(--card-bg);
+  border-radius: var(--card-radius);
+  border: 1px solid var(--border-light);
+}
+
+.skeleton-list-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-2);
+}
+
+/* ===== Dark Mode ===== */
+@media (prefers-color-scheme: dark) {
+  .skeleton {
+    background: linear-gradient(
+      90deg,
+      rgba(255, 255, 255, 0.05) 0%,
+      rgba(255, 255, 255, 0.1) 50%,
+      rgba(255, 255, 255, 0.05) 100%
+    );
+  }
+
+  .skeleton-table-header {
+    background: linear-gradient(
+      90deg,
+      rgba(255, 255, 255, 0.08) 0%,
+      rgba(255, 255, 255, 0.12) 50%,
+      rgba(255, 255, 255, 0.08) 100%
+    );
+  }
+}
+
+/* ===== Responsive ===== */
+@media (max-width: 768px) {
+  .skeleton-page {
+    padding: var(--spacing-4);
+  }
+
+  .skeleton-content {
+    grid-template-columns: 1fr;
+  }
+
+  .skeleton-header {
+    margin-bottom: var(--spacing-6);
+  }
+}
+
+@media (max-width: 600px) {
+  .skeleton-page {
+    padding: var(--spacing-3);
+  }
+
+  .skeleton-content {
+    gap: var(--spacing-4);
+  }
+}
+
+/* ===== Performance Optimizations ===== */
+.skeleton,
+.skeleton-table-header,
+.skeleton-table-row {
+  /* Força GPU acceleration */
+  transform: translate3d(0, 0, 0);
+  backface-visibility: hidden;
+  perspective: 1000px;
+}
+
+/* Evita repaint em hover */
+.skeleton-list-item {
+  contain: layout style paint;
+}

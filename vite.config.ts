@@ -94,11 +94,76 @@ export default defineConfig({
     emptyOutDir: true,
     sourcemap: true,
     minify: 'terser',
+    cssCodeSplit: true,
+    chunkSizeWarningLimit: 600, // Aumentar limite para 600KB
     rollupOptions: {
       input: {
         main: 'src/index.html'
-      }
-    }
+      },
+      output: {
+        manualChunks: (id) => {
+          // Vendor chunks - dependências externas
+          if (id.includes('node_modules')) {
+            // React ecosystem
+            if (id.includes('react') || id.includes('react-dom') || id.includes('react-router')) {
+              return 'vendor-react';
+            }
+            
+            // Charts libraries (maiores chunks)
+            if (id.includes('chart.js') || id.includes('recharts')) {
+              return 'vendor-charts';
+            }
+            
+            // PDF Export (maior chunk individual - 419KB)
+            if (id.includes('html2canvas') || id.includes('jspdf')) {
+              return 'pdf-export';
+            }
+            
+            // Forms & Validation
+            if (id.includes('react-hook-form') || id.includes('zod')) {
+              return 'vendor-forms';
+            }
+            
+            // Supabase
+            if (id.includes('@supabase')) {
+              return 'supabase';
+            }
+            
+            // IndexedDB (Dexie)
+            if (id.includes('dexie')) {
+              return 'indexeddb';
+            }
+            
+            // Animation libraries
+            if (id.includes('framer-motion')) {
+              return 'vendor-animation';
+            }
+            
+            // Utilities
+            if (id.includes('date-fns') || id.includes('dompurify')) {
+              return 'vendor-utils';
+            }
+            
+            // Outros vendors
+            return 'vendor';
+          }
+        },
+        // Chunking strategy para code splitting automático
+        chunkFileNames: 'assets/chunks/[name]-[hash].js',
+        entryFileNames: 'assets/[name]-[hash].js',
+        assetFileNames: 'assets/[name]-[hash].[ext]',
+      },
+    },
+    terserOptions: {
+      compress: {
+        drop_console: true, // Remover console.log em produção
+        drop_debugger: true,
+        pure_funcs: ['console.log', 'console.info', 'console.debug'], // Remover funções específicas
+      },
+      mangle: {
+        safari10: true,
+      },
+    },
   },
   server: {
     port: 3000,
