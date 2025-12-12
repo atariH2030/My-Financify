@@ -1,0 +1,212 @@
+/* Health Indicator Component Styles */
+
+.health-indicator {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  z-index: 1000;
+}
+
+.health-indicator__toggle {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  border: none;
+  border-radius: 24px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.health-indicator__toggle--healthy {
+  background: var(--success-color);
+  color: white;
+}
+
+.health-indicator__toggle--degraded {
+  background: var(--warning-color);
+  color: white;
+}
+
+.health-indicator__toggle--critical {
+  background: var(--error-color);
+  color: white;
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.7;
+  }
+}
+
+.health-indicator__toggle:hover {
+  transform: scale(1.05);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.health-indicator__icon {
+  font-size: 16px;
+  font-weight: bold;
+}
+
+.health-indicator__label {
+  font-size: 13px;
+}
+
+.health-indicator__panel {
+  position: absolute;
+  bottom: 60px;
+  right: 0;
+  width: 320px;
+  background: var(--bg-primary);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  animation: slideUp 0.3s ease;
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.health-indicator__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.health-indicator__header h3 {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.health-indicator__header button {
+  background: none;
+  border: none;
+  font-size: 20px;
+  color: var(--text-secondary);
+  cursor: pointer;
+  padding: 4px;
+  line-height: 1;
+  transition: color 0.2s;
+}
+
+.health-indicator__header button:hover {
+  color: var(--text-primary);
+}
+
+.health-indicator__services {
+  padding: 12px;
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+.health-indicator__service {
+  padding: 12px;
+  margin-bottom: 8px;
+  background: var(--bg-secondary);
+  border-radius: 8px;
+  transition: background 0.2s;
+}
+
+.health-indicator__service:hover {
+  background: var(--bg-hover);
+}
+
+.health-indicator__service:last-child {
+  margin-bottom: 0;
+}
+
+.health-indicator__service-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.health-indicator__service-icon {
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.health-indicator__service-name {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text-primary);
+  text-transform: capitalize;
+}
+
+.health-indicator__service-details {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 12px;
+}
+
+.health-indicator__service-status {
+  color: var(--text-secondary);
+  text-transform: capitalize;
+}
+
+.health-indicator__service-latency {
+  color: var(--text-secondary);
+  background: var(--bg-primary);
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-family: monospace;
+}
+
+.health-indicator__service-error {
+  margin-top: 8px;
+  padding: 8px;
+  background: rgba(var(--error-color-rgb), 0.1);
+  border-left: 3px solid var(--error-color);
+  border-radius: 4px;
+  font-size: 11px;
+  color: var(--error-color);
+  word-break: break-word;
+}
+
+.health-indicator__footer {
+  padding: 12px 16px;
+  border-top: 1px solid var(--border-color);
+  background: var(--bg-secondary);
+  text-align: center;
+}
+
+.health-indicator__footer small {
+  font-size: 11px;
+  color: var(--text-secondary);
+}
+
+/* Mobile adjustments */
+@media (max-width: 480px) {
+  .health-indicator {
+    bottom: 80px;
+    right: 10px;
+  }
+
+  .health-indicator__panel {
+    width: calc(100vw - 20px);
+    right: -10px;
+  }
+}

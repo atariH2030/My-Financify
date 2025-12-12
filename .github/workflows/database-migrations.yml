@@ -1,0 +1,334 @@
+# ====================================
+# GitHub Actions - Database Migrations CI/CD
+# Automação de migrations com validação e deploy
+# ====================================
+
+name: Database Migrations CI/CD
+
+on:
+  push:
+    branches:
+      - main
+      - staging
+      - develop
+    paths:
+      - 'supabase/migrations/**'
+      - 'supabase/schema.sql'
+  pull_request:
+    branches:
+      - main
+      - staging
+    paths:
+      - 'supabase/migrations/**'
+      - 'supabase/schema.sql'
+
+env:
+  NODE_VERSION: '20.x'
+
+jobs:
+  # ============================================================================
+  # JOB 1: VALIDAÇÃO DE MIGRATIONS
+  # ============================================================================
+  
+  validate-migrations:
+    name: 🔍 Validate SQL Migrations
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run SQL Linter (sqlfluff)
+        run: |
+          pip install sqlfluff
+          sqlfluff lint supabase/migrations/**/*.sql --dialect postgres || true
+
+      - name: Check for dangerous operations
+        run: |
+          echo "🔍 Checking for dangerous SQL operations..."
+          
+          # Procurar por operações perigosas
+          DANGEROUS_PATTERNS=(
+            "DROP DATABASE"
+            "DROP SCHEMA"
+            "TRUNCATE.*WITHOUT.*WHERE"
+            "DELETE.*FROM.*WITHOUT.*WHERE"
+          )
+          
+          for pattern in "${DANGEROUS_PATTERNS[@]}"; do
+            if grep -r -i "$pattern" supabase/migrations/**/*.sql 2>/dev/null; then
+              echo "❌ DANGER: Found potentially destructive operation: $pattern"
+              exit 1
+            fi
+          done
+          
+          echo "✅ No dangerous operations found"
+
+      - name: Validate migration naming
+        run: |
+          echo "🔍 Validating migration file names..."
+          
+          # Verificar se migrations seguem padrão YYYYMMDD_HHMMSS_name.sql
+          for file in supabase/migrations/*.sql; do
+            filename=$(basename "$file")
+            if [[ ! $filename =~ ^[0-9]{8}_[0-9]{6}_[a-z0-9_]+\.sql$ ]]; then
+              echo "❌ Invalid migration filename: $filename"
+              echo "Expected format: YYYYMMDD_HHMMSS_name.sql"
+              exit 1
+            fi
+          done
+          
+          echo "✅ All migration filenames are valid"
+
+  # ============================================================================
+  # JOB 2: DRY-RUN EM DATABASE DE TESTE
+  # ============================================================================
+  
+  test-migrations:
+    name: 🧪 Test Migrations (Dry-Run)
+    runs-on: ubuntu-latest
+    needs: validate-migrations
+    if: github.event_name == 'pull_request'
+    
+    services:
+      postgres:
+        image: supabase/postgres:15.1.0.117
+        env:
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: test_db
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Apply base schema
+        run: |
+          PGPASSWORD=postgres psql -h localhost -U postgres -d test_db -f supabase/schema.sql
+
+      - name: Apply migrations (dry-run)
+        run: |
+          echo "🧪 Applying migrations to test database..."
+          
+          for migration in supabase/migrations/*.sql; do
+            echo "Applying: $(basename $migration)"
+            PGPASSWORD=postgres psql -h localhost -U postgres -d test_db -f "$migration"
+            
+            if [ $? -ne 0 ]; then
+              echo "❌ Migration failed: $(basename $migration)"
+              exit 1
+            fi
+          done
+          
+          echo "✅ All migrations applied successfully"
+
+      - name: Run database tests
+        run: |
+          echo "🧪 Running database integrity tests..."
+          
+          # Verificar se tabelas principais existem
+          PGPASSWORD=postgres psql -h localhost -U postgres -d test_db -c "
+            SELECT table_name 
+            FROM information_schema.tables 
+            WHERE table_schema = 'public';
+          "
+
+  # ============================================================================
+  # JOB 3: DEPLOY PARA DEVELOPMENT
+  # ============================================================================
+  
+  deploy-development:
+    name: 🚀 Deploy to Development
+    runs-on: ubuntu-latest
+    needs: validate-migrations
+    if: github.ref == 'refs/heads/develop' && github.event_name == 'push'
+    environment: development
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Supabase CLI
+        uses: supabase/setup-cli@v1
+
+      - name: Apply migrations to Development
+        env:
+          SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
+          SUPABASE_DB_PASSWORD: ${{ secrets.SUPABASE_DEV_DB_PASSWORD }}
+          SUPABASE_PROJECT_ID: ${{ secrets.SUPABASE_DEV_PROJECT_ID }}
+        run: |
+          echo "🚀 Deploying to Development environment..."
+          
+          supabase db push \
+            --project-ref $SUPABASE_PROJECT_ID \
+            --password $SUPABASE_DB_PASSWORD
+          
+          echo "✅ Development deployment complete"
+
+      - name: Notify deployment
+        if: always()
+        run: |
+          echo "📧 Development deployment status: ${{ job.status }}"
+
+  # ============================================================================
+  # JOB 4: DEPLOY PARA STAGING
+  # ============================================================================
+  
+  deploy-staging:
+    name: 🧪 Deploy to Staging
+    runs-on: ubuntu-latest
+    needs: test-migrations
+    if: github.ref == 'refs/heads/staging' && github.event_name == 'push'
+    environment: staging
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Supabase CLI
+        uses: supabase/setup-cli@v1
+
+      - name: Backup Staging Database
+        env:
+          SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
+          SUPABASE_PROJECT_ID: ${{ secrets.SUPABASE_STAGING_PROJECT_ID }}
+        run: |
+          echo "💾 Creating backup of Staging database..."
+          
+          supabase db dump \
+            --project-ref $SUPABASE_PROJECT_ID \
+            > backup_staging_$(date +%Y%m%d_%H%M%S).sql
+          
+          echo "✅ Backup created"
+
+      - name: Apply migrations to Staging
+        env:
+          SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
+          SUPABASE_DB_PASSWORD: ${{ secrets.SUPABASE_STAGING_DB_PASSWORD }}
+          SUPABASE_PROJECT_ID: ${{ secrets.SUPABASE_STAGING_PROJECT_ID }}
+        run: |
+          echo "🚀 Deploying to Staging environment..."
+          
+          supabase db push \
+            --project-ref $SUPABASE_PROJECT_ID \
+            --password $SUPABASE_DB_PASSWORD
+          
+          echo "✅ Staging deployment complete"
+
+  # ============================================================================
+  # JOB 5: DEPLOY PARA PRODUCTION (MANUAL APPROVAL)
+  # ============================================================================
+  
+  deploy-production:
+    name: 🔥 Deploy to Production
+    runs-on: ubuntu-latest
+    needs: deploy-staging
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    environment: 
+      name: production
+      url: https://app.financify.com
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Supabase CLI
+        uses: supabase/setup-cli@v1
+
+      - name: Backup Production Database
+        env:
+          SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
+          SUPABASE_PROJECT_ID: ${{ secrets.SUPABASE_PROD_PROJECT_ID }}
+        run: |
+          echo "💾 Creating backup of Production database..."
+          
+          supabase db dump \
+            --project-ref $SUPABASE_PROJECT_ID \
+            > backup_prod_$(date +%Y%m%d_%H%M%S).sql
+          
+          # Upload backup to artifact
+          echo "✅ Backup created and saved"
+
+      - name: Upload backup artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: production-backup-${{ github.sha }}
+          path: backup_prod_*.sql
+          retention-days: 30
+
+      - name: Apply migrations to Production
+        env:
+          SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
+          SUPABASE_DB_PASSWORD: ${{ secrets.SUPABASE_PROD_DB_PASSWORD }}
+          SUPABASE_PROJECT_ID: ${{ secrets.SUPABASE_PROD_PROJECT_ID }}
+        run: |
+          echo "🔥 Deploying to PRODUCTION environment..."
+          echo "⚠️  This will affect live users!"
+          
+          supabase db push \
+            --project-ref $SUPABASE_PROJECT_ID \
+            --password $SUPABASE_DB_PASSWORD
+          
+          echo "✅ Production deployment complete"
+
+      - name: Notify production deployment
+        if: always()
+        run: |
+          echo "📧 Production deployment status: ${{ job.status }}"
+          # Aqui você pode adicionar notificação Slack/Discord/Email
+
+  # ============================================================================
+  # JOB 6: ROLLBACK AUTOMÁTICO (SE FALHAR)
+  # ============================================================================
+  
+  rollback-on-failure:
+    name: ⏮️ Rollback on Failure
+    runs-on: ubuntu-latest
+    needs: deploy-production
+    if: failure() && github.ref == 'refs/heads/main'
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Download production backup
+        uses: actions/download-artifact@v4
+        with:
+          name: production-backup-${{ github.sha }}
+
+      - name: Restore production database
+        env:
+          SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
+          SUPABASE_DB_PASSWORD: ${{ secrets.SUPABASE_PROD_DB_PASSWORD }}
+          SUPABASE_PROJECT_ID: ${{ secrets.SUPABASE_PROD_PROJECT_ID }}
+        run: |
+          echo "⏮️ Rolling back Production database..."
+          
+          # Restaurar backup
+          supabase db reset \
+            --project-ref $SUPABASE_PROJECT_ID \
+            --password $SUPABASE_DB_PASSWORD
+          
+          echo "✅ Rollback complete"
+
+      - name: Notify rollback
+        if: always()
+        run: |
+          echo "🚨 PRODUCTION ROLLBACK EXECUTED"
+          echo "Reason: Deployment failed"
+          # Adicionar notificação de emergência

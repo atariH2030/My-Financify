@@ -39,6 +39,7 @@ const Accounts = lazy(() => import('./components/accounts/Accounts'));
 const RecurringTransactions = lazy(() => import('./components/recurring/RecurringTransactions'));
 const Fase2Example = lazy(() => import('./components/common/Fase2Example'));
 const AIAnalyticsDashboard = lazy(() => import('./components/analytics/AIAnalyticsDashboard'));
+const WorkspaceSettings = lazy(() => import('./components/workspace/WorkspaceSettings'));
 
 import Logger from './services/logger.service';
 import Seeder from './services/seeder.service';
@@ -338,6 +339,8 @@ const App: React.FC = () => {
           return <AIAnalyticsDashboard />;
         case 'settings':
           return <Settings />;
+        case 'workspace-settings':
+          return <WorkspaceSettings />;
         case 'profile':
           return <ProfilePage />;
         case 'fase2-demo':
@@ -589,6 +592,23 @@ const App: React.FC = () => {
               >
                 <i className="fas fa-cog"></i>
                 <span>{t('nav.settings')}</span>
+              </a>
+            </li>
+            {/* 🆕 Workspace Settings */}
+            <li>
+              <a 
+                href="#" 
+                className={`nav-item ${currentPage === 'workspace-settings' ? 'active' : ''}`}
+                onClick={(e) => {
+                  e.preventDefault();
+                  setCurrentPage('workspace-settings');
+                  if (window.innerWidth <= 768) {
+                    setSidebarActive(false);
+                  }
+                }}
+              >
+                <i className="fas fa-users-cog"></i>
+                <span>Workspace</span>
               </a>
             </li>
             {/* 🆕 Demo Fase 2 */}

@@ -1,10 +1,80 @@
 {
-    "cSpell.words": [
-        "Financify",
-        "selic",
-        "SELIC",
-        "powerbi",
-        "PowerBI"
-    ],
-    "cSpell.language": "en,pt,pt_BR"
+  "editor.formatOnSave": true,
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": "explicit",
+    "source.organizeImports": "explicit"
+  },
+  "typescript.tsdk": "node_modules/typescript/lib",
+  "typescript.enablePromptUseWorkspaceTsdk": true,
+  "files.associations": {
+    "*.css": "css",
+    "*.sql": "sql"
+  },
+  "eslint.validate": [
+    "javascript",
+    "javascriptreact",
+    "typescript",
+    "typescriptreact"
+  ],
+  "prettier.configPath": ".prettierrc",
+  "editor.tabSize": 2,
+  "editor.insertSpaces": true,
+  "files.exclude": {
+    "**/.git": true,
+    "**/.DS_Store": true,
+    "**/node_modules": true,
+    "**/dist": true,
+    "**/.vite": true
+  },
+  "search.exclude": {
+    "**/node_modules": true,
+    "**/dist": true,
+    "**/.vite": true,
+    "**/package-lock.json": true
+  },
+  "cSpell.words": [
+    "Financify",
+    "selic",
+    "SELIC",
+    "powerbi",
+    "PowerBI",
+    "supabase",
+    "dexie",
+    "vitest",
+    "vite",
+    "financify",
+    "rickson",
+    "Rickson",
+    "workspace",
+    "workspaces"
+  ],
+  "cSpell.language": "en,pt,pt_BR",
+  "sqltools.connections": [
+    {
+      "previewLimit": 50,
+      "driver": "PostgreSQL",
+      "name": "Supabase (Local)",
+      "server": "localhost",
+      "port": 54322,
+      "database": "postgres",
+      "username": "postgres",
+      "password": "postgres"
+    }
+  ],
+  "[typescript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[typescriptreact]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[javascript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[json]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[markdown]": {
+    "editor.defaultFormatter": "yzhang.markdown-all-in-one"
+  }
 }

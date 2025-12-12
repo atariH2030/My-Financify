@@ -28,6 +28,13 @@
     "fix:warnings": "tsx scripts/fix-warnings.ts",
     "fix:specific": "tsx scripts/fix-specific-warnings.ts",
     "fix:all": "npm run fix:specific && npm run format && npm run lint",
+    "health-check": "node -e \"import('./src/services/health-check.service.ts').then(m => m.healthCheck.checkSystemHealth()).then(console.log)\"",
+    "update:auto": "powershell -ExecutionPolicy Bypass -File ./scripts/auto-update.ps1",
+    "sync:supabase": "node -e \"import('./src/services/resilient-supabase.service.ts').then(m => m.resilientSupabase.forceSyncNow())\"",
+    "migrate:apply": "powershell -ExecutionPolicy Bypass -File ./APPLY_MIGRATIONS_COMMANDS.ps1",
+    "migrate:create": "node scripts/migrations/migrate.js create",
+    "migrate:list": "node scripts/migrations/migrate.js list",
+    "migrate:status": "node scripts/migrations/migrate.js status",
     "setup:dev": "tsx scripts/setup-dev.ts",
     "setup:hooks": "tsx scripts/setup-dev.ts"
   },
