@@ -2,12 +2,12 @@
 
 .toast-container {
   position: fixed;
-  top: 1rem;
-  right: 1rem;
-  z-index: 1200;
+  top: var(--spacing-4);
+  right: var(--spacing-4);
+  z-index: var(--z-notification);
   display: flex;
   flex-direction: column;
-  gap: 0.75rem;
+  gap: var(--spacing-3);
   pointer-events: none;
   max-width: 400px;
 }
@@ -16,14 +16,14 @@
 .toast {
   display: flex;
   align-items: center;
-  gap: 0.75rem;
-  padding: 1rem 1.25rem;
+  gap: var(--spacing-3);
+  padding: var(--spacing-4) var(--spacing-5);
   background: var(--card-bg, #ffffff);
-  border-radius: var(--border-radius-lg, 12px);
-  box-shadow: var(--shadow-xl, 0 20px 25px rgba(0, 0, 0, 0.15));
+  border-radius: var(--card-radius);
+  box-shadow: var(--elevation-4);
   border-left: 4px solid;
   pointer-events: auto;
-  animation: slideInRight 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  animation: slideInRight var(--transition-base) cubic-bezier(0.4, 0, 0.2, 1);
   backdrop-filter: blur(10px);
   min-width: 300px;
 }
@@ -112,16 +112,16 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 24px;
-  height: 24px;
+  width: var(--touch-target-min);
+  height: var(--touch-target-min);
   border: none;
   background: transparent;
   color: var(--text-secondary, #6b7280);
   cursor: pointer;
-  border-radius: var(--border-radius-sm, 4px);
-  transition: all var(--transition-base, 0.2s ease);
+  border-radius: var(--button-radius);
+  transition: all var(--transition-base);
   flex-shrink: 0;
-  font-size: 0.875rem;
+  font-size: var(--font-size-sm);
 }
 
 .toast-close:hover {

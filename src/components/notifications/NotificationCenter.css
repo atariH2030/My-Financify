@@ -1,30 +1,31 @@
 .notification-center {
   position: fixed;
-  top: 20px;
-  right: 20px;
-  z-index: 1001;
+  top: var(--spacing-5);
+  right: var(--spacing-5);
+  z-index: var(--z-notification);
 }
 
 .notification-bell {
   position: relative;
   background: none;
   border: none;
-  font-size: 1.1rem;
+  font-size: var(--font-size-lg);
   color: var(--text-primary);
   cursor: pointer;
-  padding: var(--spacing-sm);
-  border-radius: var(--radius-md);
-  transition: all 0.2s ease;
+  padding: var(--spacing-2);
+  border-radius: var(--button-radius);
+  transition: all var(--transition-base);
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 36px;
-  height: 36px;
+  width: var(--touch-target-min);
+  height: var(--touch-target-min);
 }
 
 .notification-bell:hover {
   background-color: var(--bg-secondary);
   transform: translateY(-2px);
+  box-shadow: var(--elevation-1);
 }
 
 .notification-bell.has-unread {
@@ -39,37 +40,37 @@
 
 .notification-badge {
   position: absolute;
-  top: 4px;
-  right: 4px;
+  top: var(--spacing-1);
+  right: var(--spacing-1);
   background: linear-gradient(135deg, #ef4444, #dc2626);
   color: white;
-  font-size: 0.7rem;
-  font-weight: 700;
-  padding: 2px 6px;
-  border-radius: 10px;
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-bold);
+  padding: var(--spacing-0) var(--spacing-2);
+  border-radius: var(--border-radius-full);
   min-width: 18px;
   text-align: center;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  box-shadow: var(--elevation-2);
 }
 
 .notification-dropdown {
   position: absolute;
-  top: calc(100% + 10px);
+  top: calc(100% + var(--spacing-3));
   right: 0;
   width: 400px;
   max-height: 600px;
   background: var(--card-bg);
-  border: 1px solid var(--border-color);
-  border-radius: var(--radius-lg);
-  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
-  z-index: 1002;
+  border: 1px solid var(--border-light);
+  border-radius: var(--card-radius);
+  box-shadow: var(--elevation-4);
+  z-index: var(--z-notification);
   display: flex;
   flex-direction: column;
   overflow: hidden;
 }
 
 .notification-header {
-  padding: var(--spacing-lg);
+  padding: var(--spacing-6);
   border-bottom: 1px solid var(--border-color);
   display: flex;
   justify-content: space-between;
@@ -78,26 +79,27 @@
 }
 
 .notification-header h3 {
-  font-size: 1.1rem;
-  font-weight: 700;
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
   color: var(--text-primary);
   margin: 0;
 }
 
 .notification-actions {
   display: flex;
-  gap: var(--spacing-sm);
+  gap: var(--spacing-2);
 }
 
 .notification-action-btn {
-  padding: var(--spacing-xs) var(--spacing-sm);
+  padding: var(--spacing-2) var(--spacing-3);
   background: none;
   border: 1px solid var(--border-color);
-  border-radius: var(--radius-sm);
-  font-size: 0.85rem;
+  border-radius: var(--button-radius);
+  font-size: var(--font-size-xs);
   color: var(--text-secondary);
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: all var(--transition-base);
+  min-height: var(--touch-target-min);
 }
 
 .notification-action-btn:hover {
@@ -163,17 +165,19 @@
 }
 
 .notification-item {
-  padding: var(--spacing-lg);
+  padding: var(--spacing-4);
   border-bottom: 1px solid var(--border-color);
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: all var(--transition-base);
   display: flex;
-  gap: var(--spacing-md);
+  gap: var(--spacing-3);
   position: relative;
+  min-height: var(--touch-target-min);
 }
 
 .notification-item:hover {
   background: var(--bg-secondary);
+  box-shadow: var(--elevation-1);
 }
 
 .notification-item.unread {
